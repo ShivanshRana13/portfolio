@@ -1,0 +1,366 @@
+:root {
+  --bg: #ffffff;
+  --text: #000000;
+  --border: #000000;
+  --note: #ffffff;
+  --sticky-surface: #ffffff;
+  --sticky-ink: #000000;
+  --sticky-border: #000000;
+
+  --sticky-hover-surface: #0d0d0d;
+  --sticky-hover-ink: #ffffff;
+  --sticky-hover-border: #ffffff;
+
+  /*
+   * Selected palettes use a split-complementary relationship per tile:
+   * pick a base hue, take the two accents at hue +150° and hue +210° (split around the complement),
+   * then assign one accent to the sticky background and the other to the text ink.
+   */
+  --sticky-selected-education-surface: #f6c531; /* accent @ base 255° +150° → 45° */
+  --sticky-selected-education-ink: #257d08; /* accent @ base 255° +210° → 105° */
+
+  --sticky-selected-case-tilt-surface: #f6317a; /* base 188° +150° → 338° */
+  /* Same hue family as the split accent @ ~38°, but much darker for readability on hot pink. */
+  --sticky-selected-case-tilt-ink: #140905;
+
+  --sticky-selected-case-surface: #38f631; /* base 328° +150° → 118° */
+  --sticky-selected-case-ink: #087d79; /* base 328° +210° → 178° */
+
+  --sticky-selected-college-surface: #31aef6; /* base 52° +150° → 202° */
+  --sticky-selected-college-ink: #33087d; /* base 52° +210° → 262° */
+
+  --sticky-selected-passions-surface: #c831f6; /* base 136° +150° → 286° */
+  /* Same accent hue family @ ~346°, nudged darker for readability on bright magenta-violet. */
+  --sticky-selected-passions-ink: #380410;
+
+  --sticky-selected-instagram-surface: #31f6e3; /* base 24° +150° → 174° */
+  --sticky-selected-instagram-ink: #08147d; /* base 24° +210° → 234° */
+
+  --font: "Inter", system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+html {
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font);
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+body.theme-dark {
+  --bg: #0d0d0d;
+  --text: #ffffff;
+}
+
+body.theme-dark a {
+  color: #ffffff;
+}
+
+a {
+  color: inherit;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 2px;
+}
+
+.stage {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  height: 100dvh;
+  overflow-x: hidden;
+  overflow-y: auto;
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-start;
+}
+
+.scene {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transform: translate(var(--scene-translate-x, 0px), var(--scene-translate-y, 0px))
+    scale(var(--scene-scale, 1));
+  transform-origin: 0 0;
+  will-change: transform;
+}
+
+@media (min-width: 1440px) and (min-height: 1024px) {
+  .scene {
+    width: 1440px;
+    height: 1024px;
+    flex: 0 0 auto;
+  }
+}
+
+.cards {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.intro {
+  position: absolute;
+  left: 168px;
+  top: calc(50% - 51px);
+  width: 325px;
+  margin: 0;
+  font-size: 14px;
+  line-height: normal;
+}
+
+/* Laptop / smaller screens: ease the bio upward as width decreases (desktop stays vertically centered). */
+@media (max-width: 1160px) and (min-width: 641px) {
+  .intro {
+    left: clamp(20px, 6vw, 168px);
+    width: min(20.3125rem, calc(100vw - 48px));
+    /* Starts identical to the desktop center at 1160px wide, then rises as width decreases. */
+    top: clamp(
+      72px,
+      calc((50% - 51px) - (1160px - 100vw) * 0.11),
+      calc(50% - 51px)
+    );
+  }
+}
+
+.footer {
+  position: absolute;
+  left: 20px;
+  bottom: 20px;
+  font-size: 14px;
+  line-height: normal;
+  white-space: nowrap;
+}
+
+.card {
+  position: absolute;
+  width: 246px;
+  height: 246px;
+  background: var(--sticky-surface);
+  color: var(--sticky-ink);
+  border: 1px solid var(--sticky-border);
+  padding: 20px;
+  user-select: none;
+  touch-action: none;
+  cursor: grab;
+  will-change: transform;
+  transition:
+    background-color 160ms ease,
+    color 160ms ease,
+    border-color 160ms ease;
+}
+
+.card:active {
+  cursor: grabbing;
+}
+
+.card:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 3px;
+}
+
+.card.sticky--dragging {
+  /* Intentionally no shadow while dragging to match the design. */
+}
+
+.card__kicker {
+  margin: 0;
+  font-size: 14px;
+  line-height: normal;
+}
+
+.card__title {
+  margin: 90px 0 0 0;
+  font-size: 20px;
+  line-height: normal;
+  font-weight: 600;
+}
+
+@media (hover: hover) {
+  /* Hover preview: all stickies share the same dark treatment. */
+  .sticky:hover:not(.is-selected) {
+    background: var(--sticky-hover-surface);
+    color: var(--sticky-hover-ink);
+    border-color: var(--sticky-hover-border);
+  }
+}
+
+body.theme-dark .sticky:not(:hover):not(:focus-visible):not(.is-selected) {
+  background: var(--sticky-hover-surface);
+  color: var(--sticky-hover-ink);
+  border-color: var(--sticky-hover-border);
+}
+
+/* Selected tile palettes (persist even while hovered). */
+.card--education.sticky.is-selected {
+  background: var(--sticky-selected-education-surface);
+  color: var(--sticky-selected-education-ink);
+  border-color: transparent;
+}
+
+.card--case-tilt.sticky.is-selected {
+  background: var(--sticky-selected-case-tilt-surface);
+  color: var(--sticky-selected-case-tilt-ink);
+  border-color: transparent;
+}
+
+.card--case.sticky.is-selected {
+  background: var(--sticky-selected-case-surface);
+  color: var(--sticky-selected-case-ink);
+  border-color: transparent;
+}
+
+.card--college.sticky.is-selected {
+  background: var(--sticky-selected-college-surface);
+  color: var(--sticky-selected-college-ink);
+  border-color: transparent;
+}
+
+.card--passions.sticky.is-selected {
+  background: var(--sticky-selected-passions-surface);
+  color: var(--sticky-selected-passions-ink);
+  border-color: transparent;
+}
+
+.card--instagram.sticky.is-selected {
+  background: var(--sticky-selected-instagram-surface);
+  color: var(--sticky-selected-instagram-ink);
+  border-color: transparent;
+}
+
+body.theme-dark .card--education.sticky.is-selected {
+  outline: 1px solid color-mix(in srgb, var(--sticky-selected-education-ink) 55%, transparent);
+  outline-offset: -1px;
+}
+
+body.theme-dark .card--case-tilt.sticky.is-selected {
+  outline: 1px solid color-mix(in srgb, var(--sticky-selected-case-tilt-ink) 55%, transparent);
+  outline-offset: -1px;
+}
+
+body.theme-dark .card--case.sticky.is-selected {
+  outline: 1px solid color-mix(in srgb, var(--sticky-selected-case-ink) 55%, transparent);
+  outline-offset: -1px;
+}
+
+body.theme-dark .card--college.sticky.is-selected {
+  outline: 1px solid color-mix(in srgb, var(--sticky-selected-college-ink) 55%, transparent);
+  outline-offset: -1px;
+}
+
+body.theme-dark .card--passions.sticky.is-selected {
+  outline: 1px solid color-mix(in srgb, var(--sticky-selected-passions-ink) 55%, transparent);
+  outline-offset: -1px;
+}
+
+body.theme-dark .card--instagram.sticky.is-selected {
+  outline: 1px solid color-mix(in srgb, var(--sticky-selected-instagram-ink) 55%, transparent);
+  outline-offset: -1px;
+}
+
+/* Match Figma placements / rotations */
+.card--education {
+  left: 0;
+  top: 0;
+}
+
+.card--case-tilt {
+  left: 0;
+  top: 0;
+}
+
+.card--case {
+  left: 0;
+  top: 0;
+}
+
+.card--college {
+  left: 0;
+  top: 0;
+}
+
+.card--passions {
+  left: 0;
+  top: 0;
+}
+
+.card--instagram {
+  left: 0;
+  top: 0;
+}
+
+/* Mobile layout (see Figma `7:367`): fixed-size stickies that overlap/stack vertically */
+@media (max-width: 640px) {
+  html,
+  body {
+    overflow-x: hidden;
+    overflow-y: auto;
+  }
+
+  .stage {
+    height: auto;
+    min-height: 100vh;
+    min-height: 100dvh;
+    overflow-x: hidden;
+    overflow-y: visible;
+    padding: 24px 16px 40px;
+    display: block;
+    align-items: stretch;
+    justify-content: flex-start;
+  }
+
+  .scene {
+    width: auto;
+    height: auto;
+    transform: none;
+    will-change: auto;
+  }
+
+  .intro {
+    position: static;
+    left: auto;
+    top: auto;
+    width: min(20.3125rem, 100%);
+    margin: 0 0 18px 0;
+  }
+
+  .cards {
+    position: relative;
+    width: 100%;
+    /* Tall enough for the piled mock without clipping rotated bounds */
+    min-height: 820px;
+  }
+
+  .card {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 246px;
+    height: 246px;
+  }
+
+  .footer {
+    position: static;
+    left: auto;
+    bottom: auto;
+    margin-top: 28px;
+    white-space: normal;
+  }
+}

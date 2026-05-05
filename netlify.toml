@@ -1,0 +1,4 @@
+# Static site — no build step. Deploy via Git connect or https://app.netlify.com/drop
+[build]
+  command = "true"
+  publish = "."
