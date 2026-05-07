@@ -39,10 +39,13 @@ function initSceneScale() {
       scaledH = BASE_H * scale;
     }
 
+    // Never shrink below 100% — fit can otherwise dip under 1 and the whole scene looks tiny.
+    scale = Math.max(scale, 1);
+
     scene.dataset.scale = String(scale);
     scene.style.setProperty("--scene-scale", String(scale));
 
-    // Pin the scaled artboard to the top-left (don't drift horizontally on ultra-wide displays).
+    /* Centering is handled in CSS: `.stage` flex-centers the artboard; `transform-origin: center` on `.scene`. */
     scene.style.setProperty("--scene-translate-x", "0px");
     scene.style.setProperty("--scene-translate-y", "0px");
   };

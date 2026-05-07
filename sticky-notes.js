@@ -38,6 +38,9 @@ function initStickyNotes() {
 
   const NOTE_SIZE_PX = 246;
 
+  /** Axis-aligned bounding-box fraction allowed past each stage/container edge (per side). */
+  const EDGE_OVERFLOW_FRACTION = 0.5;
+
   function getSceneScale() {
     if (!(scene instanceof HTMLElement)) return 1;
     const raw = Number(scene.dataset.scale);
@@ -137,21 +140,23 @@ function initStickyNotes() {
 
     let positions = basePositions.map((p) => ({ x: p.x, y: p.y }));
 
-    const boundsFor = (idx) => {
-      const rot = getNumberAttr(notes[idx], "data-rot", 0);
-      const p = positions[idx];
-      return axisAlignedBoundsForRotatedSquare(rot, p.x, p.y);
-    };
-
     for (let iter = 0; iter < 8; iter += 1) {
       let changed = false;
 
       for (let i = 0; i < positions.length; i += 1) {
-        const b = boundsFor(i);
+        const rot = getNumberAttr(notes[i], "data-rot", 0);
+        const p = positions[i];
+        const b = axisAlignedBoundsForRotatedSquare(rot, p.x, p.y);
         let dx = 0;
 
-        if (b.minX < left) dx += left - b.minX;
-        if (b.maxX > right) dx -= b.maxX - right;
+        const bb0 = axisAlignedBoundsForRotatedSquare(rot, 0, 0);
+        const aw = bb0.maxX - bb0.minX;
+        const slack = EDGE_OVERFLOW_FRACTION * aw;
+        const innerLeft = left - slack;
+        const innerRight = right + slack;
+
+        if (b.minX < innerLeft) dx += innerLeft - b.minX;
+        if (b.maxX > innerRight) dx -= b.maxX - innerRight;
 
         if (dx !== 0) {
           positions[i].x += dx;
@@ -206,23 +211,30 @@ function initStickyNotes() {
     }
   }
 
-  function stageBounds() {
-    return stage.getBoundingClientRect();
+  /** Drag coords (`data-x` / `data-y`) are relative to `.cards`; constrain using its box, not padded `.stage`. */
+  function constrainBoundsSize() {
+    const target = cards instanceof HTMLElement ? cards : stage;
+    const r = target.getBoundingClientRect();
+    return { width: r.width, height: r.height };
   }
 
   function constrainToStage(noteEl, x, y) {
-    const sb = stageBounds();
-    const nb = noteEl.getBoundingClientRect();
+    const sb = constrainBoundsSize();
     const rot = getNumberAttr(noteEl, "data-rot", 0);
-    const local = axisAlignedBoundsForRotatedSquare(rot, x, y);
-    const w = local.maxX - local.minX;
-    const h = local.maxY - local.minY;
+    const bb0 = axisAlignedBoundsForRotatedSquare(rot, 0, 0);
+    const w = bb0.maxX - bb0.minX;
+    const h = bb0.maxY - bb0.minY;
+    const sx = EDGE_OVERFLOW_FRACTION * w;
+    const sy = EDGE_OVERFLOW_FRACTION * h;
 
-    const maxX = sb.width - w;
-    const maxY = Math.max(0, sb.height - h);
+    const minTx = -sx - bb0.minX;
+    const maxTx = sb.width + sx - bb0.maxX;
+    const minTy = -sy - bb0.minY;
+    const maxTy = sb.height + sy - bb0.maxY;
+
     return {
-      x: clamp(x, 0, maxX),
-      y: clamp(y, 0, maxY),
+      x: clamp(x, minTx, maxTx),
+      y: clamp(y, minTy, maxTy),
     };
   }
 

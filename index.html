@@ -11,6 +11,14 @@
       rel="stylesheet"
     />
     <link rel="stylesheet" href="./styles.css" />
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "https://unpkg.com/three@0.170.0/build/three.module.js",
+          "three/addons/": "https://unpkg.com/three@0.170.0/examples/jsm/"
+        }
+      }
+    </script>
   </head>
   <body>
     <main class="stage" aria-label="Portfolio landing">
@@ -25,107 +33,253 @@
         <section class="cards" aria-label="Highlights">
           <article
             class="card card--education sticky"
-            data-x="64"
-            data-y="540"
-            data-mobile-x="70.01725050756538"
-            data-mobile-y="121.55227661132812"
+            data-x="72"
+            data-y="538"
+            data-mobile-x="78"
+            data-mobile-y="292"
             data-stack-z="30"
             data-rot="0"
             tabindex="0"
             role="group"
             aria-label="Sticky note: Education"
           >
-            <p class="card__kicker">Education</p>
+            <a class="sticky-badge" href="./detail.html?tile=education" aria-label="Open project detail">
+              <span class="sticky-badge__circle">
+                <svg
+                  class="sticky-badge__icon"
+                  width="44"
+                  height="44"
+                  viewBox="0 0 44 44"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                  aria-hidden="true"
+                  focusable="false"
+                >
+                  <path
+                    d="M35 34H33V12.4141L10.707 34.707L9.29297 33.293L31.5859 11H10V9H35V34Z"
+                    fill="currentColor"
+                  />
+                </svg>
+              </span>
+            </a>
+            <p class="card__kicker">Subtitle</p>
             <h2 class="card__title">Redesign of a modular character rigging tool</h2>
           </article>
 
           <article
             class="card card--case-tilt sticky"
-            data-x="302.76"
-            data-y="542.76"
-            data-mobile-x="-25.226401836184643"
-            data-mobile-y="404.3085422485299"
+            data-x="348"
+            data-y="539"
+            data-mobile-x="8"
+            data-mobile-y="498"
             data-stack-z="20"
             data-rot="-15"
             tabindex="0"
             role="group"
-            aria-label="Sticky note: Case Study (tilted)"
+            aria-label="Sticky note: Designing a patented 3D tool"
           >
-            <p class="card__kicker">Case Study</p>
-            <h2 class="card__title">Redesign of a modular character rigging tool</h2>
+            <a class="sticky-badge" href="./detail.html?tile=case-tilt" aria-label="Open project detail">
+              <span class="sticky-badge__circle">
+                <svg
+                  class="sticky-badge__icon"
+                  width="44"
+                  height="44"
+                  viewBox="0 0 44 44"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                  aria-hidden="true"
+                  focusable="false"
+                >
+                  <path
+                    d="M35 34H33V12.4141L10.707 34.707L9.29297 33.293L31.5859 11H10V9H35V34Z"
+                    fill="currentColor"
+                  />
+                </svg>
+              </span>
+            </a>
+            <p class="card__kicker">2026</p>
+            <h2 class="card__title">Designing a patented 3d tool</h2>
           </article>
 
           <article
             class="card card--case sticky"
-            data-x="597"
-            data-y="645"
-            data-mobile-x="207.01725050756538"
-            data-mobile-y="297"
+            data-x="698"
+            data-y="643"
+            data-mobile-x="212"
+            data-mobile-y="418"
             data-stack-z="15"
             data-rot="0"
             tabindex="0"
             role="group"
             aria-label="Sticky note: Case Study"
           >
-            <p class="card__kicker">Case Study</p>
+            <a class="sticky-badge" href="./detail.html?tile=case" aria-label="Open project detail">
+              <span class="sticky-badge__circle">
+                <svg
+                  class="sticky-badge__icon"
+                  width="44"
+                  height="44"
+                  viewBox="0 0 44 44"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                  aria-hidden="true"
+                  focusable="false"
+                >
+                  <path
+                    d="M35 34H33V12.4141L10.707 34.707L9.29297 33.293L31.5859 11H10V9H35V34Z"
+                    fill="currentColor"
+                  />
+                </svg>
+              </span>
+            </a>
+            <p class="card__kicker">Subtitle</p>
             <h2 class="card__title">Redesign of a modular character rigging tool</h2>
           </article>
 
           <article
             class="card card--college sticky"
-            data-x="774"
-            data-y="422"
-            data-mobile-x="0"
-            data-mobile-y="30"
+            data-x="918"
+            data-y="405"
+            data-mobile-x="12"
+            data-mobile-y="198"
             data-stack-z="25"
             data-rot="10.53"
             tabindex="0"
             role="group"
             aria-label="Sticky note: College Projects"
           >
-            <p class="card__kicker">College Projects</p>
+            <a class="sticky-badge" href="./detail.html?tile=college" aria-label="Open project detail">
+              <span class="sticky-badge__circle">
+                <svg
+                  class="sticky-badge__icon"
+                  width="44"
+                  height="44"
+                  viewBox="0 0 44 44"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                  aria-hidden="true"
+                  focusable="false"
+                >
+                  <path
+                    d="M35 34H33V12.4141L10.707 34.707L9.29297 33.293L31.5859 11H10V9H35V34Z"
+                    fill="currentColor"
+                  />
+                </svg>
+              </span>
+            </a>
+            <p class="card__kicker">Subtitle</p>
             <h2 class="card__title">Redesign of a modular character rigging tool</h2>
           </article>
 
           <article
             class="card card--passions sticky"
-            data-x="1047.45"
-            data-y="268.45"
-            data-mobile-x="138.01725050756538"
-            data-mobile-y="115.01812631982204"
+            data-x="1148"
+            data-y="262"
+            data-mobile-x="148"
+            data-mobile-y="278"
             data-stack-z="35"
             data-rot="-6.4"
             tabindex="0"
             role="group"
             aria-label="Sticky note: Passions"
           >
-            <p class="card__kicker">Passions</p>
+            <a class="sticky-badge" href="./detail.html?tile=passions" aria-label="Open project detail">
+              <span class="sticky-badge__circle">
+                <svg
+                  class="sticky-badge__icon"
+                  width="44"
+                  height="44"
+                  viewBox="0 0 44 44"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                  aria-hidden="true"
+                  focusable="false"
+                >
+                  <path
+                    d="M35 34H33V12.4141L10.707 34.707L9.29297 33.293L31.5859 11H10V9H35V34Z"
+                    fill="currentColor"
+                  />
+                </svg>
+              </span>
+            </a>
+            <p class="card__kicker">Subtitle</p>
             <h2 class="card__title">Redesign of a modular character rigging tool</h2>
           </article>
 
           <article
             class="card card--instagram sticky"
-            data-x="942"
-            data-y="637"
-            data-mobile-x="152.01725050756538"
-            data-mobile-y="499.0000095336861"
+            data-x="1012"
+            data-y="630"
+            data-mobile-x="158"
+            data-mobile-y="558"
             data-stack-z="5"
             data-rot="-15"
             tabindex="0"
             role="group"
             aria-label="Sticky note: Instagram"
           >
-            <p class="card__kicker">Instagram</p>
+            <a class="sticky-badge" href="./detail.html?tile=instagram" aria-label="Open project detail">
+              <span class="sticky-badge__circle">
+                <svg
+                  class="sticky-badge__icon"
+                  width="44"
+                  height="44"
+                  viewBox="0 0 44 44"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                  aria-hidden="true"
+                  focusable="false"
+                >
+                  <path
+                    d="M35 34H33V12.4141L10.707 34.707L9.29297 33.293L31.5859 11H10V9H35V34Z"
+                    fill="currentColor"
+                  />
+                </svg>
+              </span>
+            </a>
+            <p class="card__kicker">Subtitle</p>
             <h2 class="card__title">Redesign of a modular character rigging tool</h2>
           </article>
         </section>
 
+        <div class="patent-cube" aria-hidden="true">
+          <div
+            class="patent-cube__viewport"
+            tabindex="-1"
+            role="application"
+            aria-label="3D cube preview: drag to rotate"
+          >
+            <div class="patent-cube__spin">
+              <div class="patent-cube__axis">
+                <div class="patent-cube__pivot">
+                  <div class="patent-cube__grid-floor" aria-hidden="true"></div>
+                  <div class="patent-cube__face patent-cube__face--front"></div>
+                  <div class="patent-cube__face patent-cube__face--back"></div>
+                  <div class="patent-cube__face patent-cube__face--right"></div>
+                  <div class="patent-cube__face patent-cube__face--left"></div>
+                  <div class="patent-cube__face patent-cube__face--top"></div>
+                  <div class="patent-cube__face patent-cube__face--bottom"></div>
+                </div>
+              </div>
+            </div>
+            <div
+              class="patent-cube__gltf"
+              id="patent-cube-gltf"
+              aria-hidden="true"
+            ></div>
+          </div>
+        </div>
+
         <footer class="footer">Copyright © 2026 Shivansh Rana</footer>
       </div>
     </main>
+    <script src="./cursor.js" defer></script>
     <script src="./scene-scale.js" defer></script>
     <script src="./sticky-notes.js" defer></script>
     <script src="./sticky-theme.js" defer></script>
+    <script src="./patent-cube.js" defer></script>
+    <script src="./detail-nav.js" defer></script>
+    <script type="module" src="./patent-gltf-embed.js"></script>
     <script src="./live-reload.js" defer></script>
   </body>
 </html>

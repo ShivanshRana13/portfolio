@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>GLTF viewer</title>
+    <link rel="stylesheet" href="./styles.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      .gltf-viewer-page {
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        padding: 1rem 1.25rem 2rem;
+        box-sizing: border-box;
+      }
+
+      .gltf-viewer-page__back {
+        margin: 0 0 0.75rem;
+      }
+
+      .gltf-viewer-page__back a {
+        color: inherit;
+        text-decoration: underline;
+        text-underline-offset: 3px;
+      }
+
+      #gltf-viewer {
+        flex: 1;
+        min-height: min(72vh, 720px);
+        width: 100%;
+        border-radius: 8px;
+        overflow: hidden;
+        background: #141414;
+      }
+
+      .gltf-viewer-status {
+        margin: 0.75rem 0 0;
+        font-size: 0.875rem;
+        color: color-mix(in srgb, CanvasText 72%, transparent);
+      }
+
+      .gltf-viewer-hint {
+        margin: 1rem 0 0;
+        font-size: 0.8125rem;
+        line-height: 1.45;
+        color: color-mix(in srgb, CanvasText 58%, transparent);
+        max-width: 42rem;
+      }
+
+      .gltf-viewer-hint code {
+        font-size: 0.9em;
+      }
+    </style>
+    <!-- Three.js ES modules (no npm install). Pin version for stable deploys. -->
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "https://unpkg.com/three@0.170.0/build/three.module.js",
+          "three/addons/": "https://unpkg.com/three@0.170.0/examples/jsm/"
+        }
+      }
+    </script>
+  </head>
+  <body>
+    <main class="gltf-viewer-page">
+      <p class="gltf-viewer-page__back"><a href="./index.html">← Back to portfolio</a></p>
+      <div id="gltf-viewer" role="img" aria-label="Three-dimensional model"></div>
+      <p id="gltf-viewer-status" class="gltf-viewer-status" aria-live="polite"></p>
+      <p class="gltf-viewer-hint">
+        If nothing loads after double-clicking this file, run
+        <code>python3 -m http.server 8765</code> in this folder and open
+        <code>http://localhost:8765/viewer.html</code>
+        — browsers block 3D assets from <code>file://</code>.
+      </p>
+    </main>
+    <script type="module" src="./viewer-entry.js"></script>
+  </body>
+</html>

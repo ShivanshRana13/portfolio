@@ -1,0 +1,214 @@
+/* Case / project detail — split view aligned with Figma node 5:86 */
+
+html,
+body.detail {
+  height: 100%;
+  margin: 0;
+}
+
+body.detail {
+  font-family: var(--font);
+  overflow-x: hidden;
+  overflow-y: auto;
+  background: #ffffff;
+}
+
+.detail-layout {
+  display: grid;
+  grid-template-columns: minmax(260px, 473fr) minmax(0, 967fr);
+  min-height: 100vh;
+  min-height: 100dvh;
+}
+
+.detail__left {
+  position: relative;
+  padding: 64px 48px 64px 64px;
+  background: var(--detail-left-bg);
+  color: var(--detail-left-ink);
+}
+
+/* Back control: 44px circle → mirrored arrow on hover (desktop). Touch: icon only, see hover: none */
+.detail__back {
+  position: relative;
+  display: block;
+  width: 44px;
+  height: 44px;
+  margin-bottom: 78px;
+  flex-shrink: 0;
+  text-decoration: none;
+  color: inherit;
+}
+
+.detail__back-circle {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background-color: currentColor;
+  opacity: 0.88;
+  transition:
+    opacity 280ms ease,
+    transform 340ms cubic-bezier(0.22, 1, 0.32, 1);
+}
+
+.detail__back-arrow {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transform: scaleX(-1) scale(0.88);
+  transition:
+    opacity 320ms ease,
+    transform 380ms cubic-bezier(0.22, 1, 0.32, 1);
+  pointer-events: none;
+}
+
+.detail__back-arrow svg {
+  display: block;
+  width: 44px;
+  height: 44px;
+}
+
+@media (hover: hover) {
+  .detail__back:hover .detail__back-circle {
+    opacity: 0;
+    transform: scale(0.45);
+  }
+
+  .detail__back:hover .detail__back-arrow {
+    opacity: 1;
+    transform: scaleX(-1) scale(1);
+  }
+}
+
+/* Phones / touch: no hover — hide circle, show mirrored arrow only */
+@media (hover: none) {
+  .detail__back-circle {
+    display: none;
+  }
+
+  .detail__back-arrow {
+    opacity: 1;
+    transform: scaleX(-1) scale(1);
+    transition: none;
+  }
+}
+
+.detail__back:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 4px;
+  border-radius: 4px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .detail__back-circle,
+  .detail__back-arrow {
+    transition-duration: 0.01ms;
+  }
+}
+
+.detail__title {
+  margin: 0;
+  font-size: clamp(28px, 4vw, 50px);
+  font-weight: 600;
+  line-height: 1.05;
+  max-width: 22rem;
+}
+
+.detail__year {
+  margin: 220px 0 0 0;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: normal;
+}
+
+.detail__right {
+  background: #ffffff;
+  padding: 64px clamp(24px, 5vw, 80px) 80px;
+  color: #000000;
+}
+
+.detail__lede,
+.detail__body {
+  margin: 0 auto;
+  max-width: 36rem;
+  font-size: 14px;
+  line-height: normal;
+}
+
+.detail__lede {
+  margin-bottom: 48px;
+}
+
+.detail__lede a,
+.detail__body a {
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.detail__media {
+  margin: 0 auto 48px;
+  max-width: 36.125rem;
+  min-height: min(408px, 50vh);
+  background: #0d0d0d;
+}
+
+.detail__body {
+  margin-top: 0;
+}
+
+/* Map each sticky palette to the left rail (same tokens as index selected state) */
+body.detail.detail--education {
+  --detail-left-bg: var(--sticky-selected-education-surface);
+  --detail-left-ink: var(--sticky-selected-education-ink);
+}
+
+body.detail.detail--case-tilt {
+  --detail-left-bg: var(--sticky-selected-case-tilt-surface);
+  --detail-left-ink: var(--sticky-selected-case-tilt-ink);
+}
+
+body.detail.detail--case {
+  --detail-left-bg: var(--sticky-selected-case-surface);
+  --detail-left-ink: var(--sticky-selected-case-ink);
+}
+
+body.detail.detail--college {
+  --detail-left-bg: var(--sticky-selected-college-surface);
+  --detail-left-ink: var(--sticky-selected-college-ink);
+}
+
+body.detail.detail--passions {
+  --detail-left-bg: var(--sticky-selected-passions-surface);
+  --detail-left-ink: var(--sticky-selected-passions-ink);
+}
+
+body.detail.detail--instagram {
+  --detail-left-bg: var(--sticky-selected-instagram-surface);
+  --detail-left-ink: var(--sticky-selected-instagram-ink);
+}
+
+@media (max-width: 900px) {
+  .detail-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .detail__left {
+    padding: 48px 24px 40px;
+    min-height: auto;
+  }
+
+  .detail__back {
+    margin-bottom: 40px;
+  }
+
+  .detail__year {
+    margin-top: 48px;
+  }
+
+  .detail__right {
+    padding-top: 48px;
+  }
+}
