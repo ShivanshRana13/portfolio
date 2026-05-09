@@ -533,6 +533,25 @@ body.theme-dark .scene.scene--patent-cube-active .patent-cube__viewport {
   font-weight: 600;
 }
 
+/*
+ * Dark canvas = a sticky is selected (see sticky-theme.js). Hide every other note so only
+ * the chosen tile stays visible.
+ */
+body.theme-dark .cards .sticky:not(.is-selected) {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition:
+    opacity 240ms ease,
+    visibility 240ms ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body.theme-dark .cards .sticky:not(.is-selected) {
+    transition-duration: 0.01ms;
+  }
+}
+
 @media (hover: hover) {
   /* Hover preview: all stickies share the same dark treatment. */
   .sticky:hover:not(.is-selected) {
