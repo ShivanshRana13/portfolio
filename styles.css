@@ -410,9 +410,9 @@ body.theme-dark .scene.scene--patent-cube-active .patent-cube__viewport {
   position: absolute;
   left: 50%;
   bottom: 100%;
-  /* Box fits 96px rainbow ring + mint circle without clipping ring pixels */
-  width: 96px;
-  height: 96px;
+  /* Box fits 92px ring layer + mint circle without clipping ring pixels */
+  width: 92px;
+  height: 92px;
   margin-bottom: 10px;
   display: flex;
   align-items: center;
@@ -442,8 +442,8 @@ body.theme-dark .scene.scene--patent-cube-active .patent-cube__viewport {
 }
 
 /*
- * Rainbow ring — no CSS mask (masked pseudos were rendering fully transparent in some builds).
- * Full conic disk sits under .sticky-badge__circle; mint (r=43px) covers the centre so only the 43–48px annulus shows.
+ * Rainbow ring — single radial mask (donut only; no mask-composite).
+ * Mint r=43px; 1px air gap 43→44; stroke 44→46px (see-through gap shows whatever is behind the badge).
  * https://www.figma.com/design/AzsPDKM5dJw3QhVHMA8Qod/P?node-id=28-58
  */
 .sticky.is-selected .sticky-badge::before {
@@ -451,8 +451,8 @@ body.theme-dark .scene.scene--patent-cube-active .patent-cube__viewport {
   position: absolute;
   left: 50%;
   top: 50%;
-  width: 96px;
-  height: 96px;
+  width: 92px;
+  height: 92px;
   margin: 0;
   border-radius: 50%;
   pointer-events: none;
@@ -482,6 +482,28 @@ body.theme-dark .scene.scene--patent-cube-active .patent-cube__viewport {
     #5f7bff 314deg,
     #42e8ff 360deg
   );
+  /* #fff stops: luminance-safe; hole to r=44 leaves 1px gap past mint (r=43), ring 44–46 */
+  -webkit-mask-image: radial-gradient(
+    circle at center,
+    transparent 44px,
+    #fff 44px,
+    #fff 46px,
+    transparent 46px
+  );
+  -webkit-mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  -webkit-mask-size: 100% 100%;
+  mask-image: radial-gradient(
+    circle at center,
+    transparent 44px,
+    #fff 44px,
+    #fff 46px,
+    transparent 46px
+  );
+  mask-mode: alpha;
+  mask-repeat: no-repeat;
+  mask-position: center;
+  mask-size: 100% 100%;
   animation: sticky-badge-rainbow-ring-spin 9s linear infinite;
 }
 
