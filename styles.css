@@ -484,22 +484,23 @@ body.theme-dark .scene.scene--patent-cube-active .patent-cube__viewport {
     #42e8ff 360deg
   );
   /* Mint disc r 43px; air gap 43→46; ring r 46→48 (mask paints nothing in the gap — scene shows through). */
+  /* Opaque stops use #fff so luminance-mode masks (some WebKit) still reveal — #000 reads as hidden there. */
   -webkit-mask-image:
     radial-gradient(
       circle at center,
       transparent 46px,
-      #000 46px,
-      #000 48px,
+      #fff 46px,
+      #fff 48px,
       transparent 48px
     ),
     conic-gradient(
       from -90deg at center,
-      #000 0deg,
-      #000 216deg,
+      #fff 0deg,
+      #fff 216deg,
       transparent 252deg,
       transparent 292deg,
-      #000 328deg,
-      #000 360deg
+      #fff 328deg,
+      #fff 360deg
     );
   -webkit-mask-repeat: no-repeat;
   -webkit-mask-position: center;
@@ -509,19 +510,20 @@ body.theme-dark .scene.scene--patent-cube-active .patent-cube__viewport {
     radial-gradient(
       circle at center,
       transparent 46px,
-      #000 46px,
-      #000 48px,
+      #fff 46px,
+      #fff 48px,
       transparent 48px
     ),
     conic-gradient(
       from -90deg at center,
-      #000 0deg,
-      #000 216deg,
+      #fff 0deg,
+      #fff 216deg,
       transparent 252deg,
       transparent 292deg,
-      #000 328deg,
-      #000 360deg
+      #fff 328deg,
+      #fff 360deg
     );
+  mask-mode: alpha, alpha;
   mask-repeat: no-repeat;
   mask-position: center;
   mask-size: 100% 100%, 100% 100%;
