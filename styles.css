@@ -410,7 +410,7 @@ body.theme-dark .scene.scene--patent-cube-active .patent-cube__viewport {
   position: absolute;
   left: 50%;
   bottom: 100%;
-  /* Box fits 92px ring layer + mint circle without clipping ring pixels */
+  /* Box fits rainbow layer + mint circle without clipping ring pixels */
   width: 92px;
   height: 92px;
   margin-bottom: 10px;
@@ -442,8 +442,9 @@ body.theme-dark .scene.scene--patent-cube-active .patent-cube__viewport {
 }
 
 /*
- * Rainbow ring — single radial mask (donut only; no mask-composite).
- * Mint r=43px; 1px air gap 43→44; stroke 44→46px (see-through gap shows whatever is behind the badge).
+ * Rainbow ring — fallback: no CSS masks (they vanish in some environments).
+ * ::before = full conic disk (92px → r=46); ::after = solid var(--bg) disk 88px (r=44) hides rainbow inside r=44.
+ * Mint circle r=43 covers centre; 43–44 reads as canvas (“gap”); stroke visible 44–46 (~2px).
  * https://www.figma.com/design/AzsPDKM5dJw3QhVHMA8Qod/P?node-id=28-58
  */
 .sticky.is-selected .sticky-badge::before {
@@ -482,29 +483,23 @@ body.theme-dark .scene.scene--patent-cube-active .patent-cube__viewport {
     #5f7bff 314deg,
     #42e8ff 360deg
   );
-  /* #fff stops: luminance-safe; hole to r=44 leaves 1px gap past mint (r=43), ring 44–46 */
-  -webkit-mask-image: radial-gradient(
-    circle at center,
-    transparent 44px,
-    #fff 44px,
-    #fff 46px,
-    transparent 46px
-  );
-  -webkit-mask-repeat: no-repeat;
-  -webkit-mask-position: center;
-  -webkit-mask-size: 100% 100%;
-  mask-image: radial-gradient(
-    circle at center,
-    transparent 44px,
-    #fff 44px,
-    #fff 46px,
-    transparent 46px
-  );
-  mask-mode: alpha;
-  mask-repeat: no-repeat;
-  mask-position: center;
-  mask-size: 100% 100%;
   animation: sticky-badge-rainbow-ring-spin 9s linear infinite;
+}
+
+/* Covers rainbow for r ≤ 44px so only the outer band shows; 43–44px reads as gap vs mint (r=43). */
+.sticky.is-selected .sticky-badge::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 88px;
+  height: 88px;
+  margin: 0;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 0;
+  background: var(--bg);
 }
 
 @keyframes sticky-badge-rainbow-ring-spin {
@@ -522,6 +517,10 @@ body.theme-dark .scene.scene--patent-cube-active .patent-cube__viewport {
 
   .sticky.is-selected .sticky-badge::before {
     animation: none;
+    transform: translate(-50%, -50%);
+  }
+
+  .sticky.is-selected .sticky-badge::after {
     transform: translate(-50%, -50%);
   }
 }
