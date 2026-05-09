@@ -238,17 +238,40 @@ function initStickyNotes() {
     };
   }
 
+  /** Patent (case-tilt) sticky sits above the rest on narrow viewports so it stays easy to spot. */
+  function applyStickyStackOrder() {
+    const narrow = window.innerWidth <= MOBILE_BREAKPOINT_PX;
+    const patentNote =
+      notes.find((n) => n.classList.contains("card--case-tilt")) ?? null;
+
+    let maxDeclared = 10;
+    for (const note of notes) {
+      const sz = getNumberAttr(note, "data-stack-z", NaN);
+      if (Number.isFinite(sz)) maxDeclared = Math.max(maxDeclared, sz);
+    }
+
+    topZ = 10;
+    const patentZ = narrow && patentNote !== null ? maxDeclared + 1 : null;
+
+    for (const note of notes) {
+      const stackZ = getNumberAttr(note, "data-stack-z", NaN);
+      let z = Number.isFinite(stackZ) ? stackZ : topZ;
+      if (patentZ !== null && note === patentNote) {
+        z = patentZ;
+      }
+      setZ(note, z);
+      topZ = Math.max(topZ, z + 1);
+    }
+  }
+
   for (const note of notes) {
     const x0 = getNumberAttr(note, "data-x", 0);
     const y0 = getNumberAttr(note, "data-y", 0);
     note.setAttribute("data-desktop-x", String(x0));
     note.setAttribute("data-desktop-y", String(y0));
-
-    const stackZ = getNumberAttr(note, "data-stack-z", NaN);
-    const baseZ = Number.isFinite(stackZ) ? stackZ : topZ;
-    setZ(note, baseZ);
-    topZ = Math.max(topZ, baseZ + 1);
   }
+
+  applyStickyStackOrder();
 
   layoutNotes();
 
@@ -256,6 +279,7 @@ function initStickyNotes() {
     if (resizeRaf !== null) cancelAnimationFrame(resizeRaf);
     resizeRaf = requestAnimationFrame(() => {
       resizeRaf = null;
+      applyStickyStackOrder();
       layoutNotes();
     });
   });
