@@ -427,6 +427,7 @@ body.theme-dark .scene.scene--patent-cube-active .patent-cube__viewport {
     transform 420ms cubic-bezier(0.33, 1.06, 0.44, 1),
     opacity 280ms ease;
   z-index: 2;
+  isolation: isolate;
 }
 
 .sticky.is-selected .sticky-badge {
@@ -438,11 +439,112 @@ body.theme-dark .scene.scene--patent-cube-active .patent-cube__viewport {
     opacity 240ms ease 45ms;
 }
 
+/*
+ * Rainbow ring — real air gap (transparent) past the 86px disc, then ~2px stroke.
+ * Wedge “shadow”: conic alpha mask (radial donut ∩ fade).
+ * https://www.figma.com/design/AzsPDKM5dJw3QhVHMA8Qod/P?node-id=28-58
+ */
+.sticky.is-selected .sticky-badge::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 96px;
+  height: 96px;
+  margin: 0;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 0;
+  transform: translate(-50%, -50%);
+  transform-origin: center center;
+  /*
+   * Saturated sweep through the former shadow arc so partial mask never muds to black.
+   */
+  background: conic-gradient(
+    from -90deg at center,
+    #42e8ff 0deg,
+    #5f7bff 26deg,
+    #9d7dff 52deg,
+    #ec4899 78deg,
+    #ff4757 102deg,
+    #ff5724 126deg,
+    #ffb020 150deg,
+    #fff176 172deg,
+    #c8e868 192deg,
+    #78c058 208deg,
+    #52c49a 220deg,
+    #44c8ce 232deg,
+    #4cb8ee 244deg,
+    #5ca6fc 256deg,
+    #6894fc 268deg,
+    #6e7cf4 280deg,
+    #6058d4 292deg,
+    #4a2c78 302deg,
+    #5f7bff 314deg,
+    #42e8ff 360deg
+  );
+  /* Mint disc r 43px; air gap 43→46; ring r 46→48 (mask paints nothing in the gap — scene shows through). */
+  -webkit-mask-image:
+    radial-gradient(
+      circle at center,
+      transparent 46px,
+      #000 46px,
+      #000 48px,
+      transparent 48px
+    ),
+    conic-gradient(
+      from -90deg at center,
+      #000 0deg,
+      #000 216deg,
+      transparent 252deg,
+      transparent 292deg,
+      #000 328deg,
+      #000 360deg
+    );
+  -webkit-mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  -webkit-mask-size: 100% 100%, 100% 100%;
+  -webkit-mask-composite: source-in;
+  mask-image:
+    radial-gradient(
+      circle at center,
+      transparent 46px,
+      #000 46px,
+      #000 48px,
+      transparent 48px
+    ),
+    conic-gradient(
+      from -90deg at center,
+      #000 0deg,
+      #000 216deg,
+      transparent 252deg,
+      transparent 292deg,
+      #000 328deg,
+      #000 360deg
+    );
+  mask-repeat: no-repeat;
+  mask-position: center;
+  mask-size: 100% 100%, 100% 100%;
+  mask-composite: intersect;
+  animation: sticky-badge-rainbow-ring-spin 9s linear infinite;
+}
+
+@keyframes sticky-badge-rainbow-ring-spin {
+  to {
+    transform: translate(-50%, -50%) rotate(360deg);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .sticky-badge,
   .sticky.is-selected .sticky-badge {
     transition-duration: 0.01ms;
     transition-delay: 0s;
+  }
+
+  .sticky.is-selected .sticky-badge::before {
+    animation: none;
+    transform: translate(-50%, -50%);
   }
 }
 
@@ -455,6 +557,8 @@ body.theme-dark .scene.scene--patent-cube-active .patent-cube__viewport {
   height: 86px;
   border-radius: 50%;
   flex-shrink: 0;
+  position: relative;
+  z-index: 1;
 }
 
 /* Same text colour as the sticky title/kicker (card already sets `color` when selected). */
