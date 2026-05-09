@@ -410,8 +410,9 @@ body.theme-dark .scene.scene--patent-cube-active .patent-cube__viewport {
   position: absolute;
   left: 50%;
   bottom: 100%;
-  width: 86px;
-  height: 86px;
+  /* Box fits 96px rainbow ring + mint circle without clipping ring pixels */
+  width: 96px;
+  height: 96px;
   margin-bottom: 10px;
   display: flex;
   align-items: center;
@@ -423,6 +424,7 @@ body.theme-dark .scene.scene--patent-cube-active .patent-cube__viewport {
   transform-origin: 50% 100%;
   opacity: 0;
   visibility: hidden;
+  overflow: visible;
   transition:
     transform 420ms cubic-bezier(0.33, 1.06, 0.44, 1),
     opacity 280ms ease;
@@ -440,8 +442,9 @@ body.theme-dark .scene.scene--patent-cube-active .patent-cube__viewport {
 }
 
 /*
- * Rainbow ring — real air gap (transparent) past the 86px disc, then ~2px stroke.
- * Wedge “shadow”: conic alpha mask (radial donut ∩ fade).
+ * Rainbow ring — real air gap past the 86px disc, then ~2px stroke.
+ * Single radial mask only (dual-layer mask-composite is unreliable in WebKit → invisible ring).
+ * Soft wedge uses darker hues in the conic gradient (no second mask).
  * https://www.figma.com/design/AzsPDKM5dJw3QhVHMA8Qod/P?node-id=28-58
  */
 .sticky.is-selected .sticky-badge::before {
@@ -457,9 +460,7 @@ body.theme-dark .scene.scene--patent-cube-active .patent-cube__viewport {
   z-index: 0;
   transform: translate(-50%, -50%);
   transform-origin: center center;
-  /*
-   * Saturated sweep through the former shadow arc so partial mask never muds to black.
-   */
+  /* Saturated sweep (same chrome as before); angular “dip” was mask-only — now uniform brightness around the ring. */
   background: conic-gradient(
     from -90deg at center,
     #42e8ff 0deg,
@@ -483,51 +484,28 @@ body.theme-dark .scene.scene--patent-cube-active .patent-cube__viewport {
     #5f7bff 314deg,
     #42e8ff 360deg
   );
-  /* Mint disc r 43px; air gap 43→46; ring r 46→48 (mask paints nothing in the gap — scene shows through). */
-  /* Opaque stops use #fff so luminance-mode masks (some WebKit) still reveal — #000 reads as hidden there. */
-  -webkit-mask-image:
-    radial-gradient(
-      circle at center,
-      transparent 46px,
-      #fff 46px,
-      #fff 48px,
-      transparent 48px
-    ),
-    conic-gradient(
-      from -90deg at center,
-      #fff 0deg,
-      #fff 216deg,
-      transparent 252deg,
-      transparent 292deg,
-      #fff 328deg,
-      #fff 360deg
-    );
+  /* Mint disc r 43px; air gap 43→46; ring r 46→48 — single radial mask (max compatibility). */
+  -webkit-mask-image: radial-gradient(
+    circle at center,
+    transparent 46px,
+    #fff 46px,
+    #fff 48px,
+    transparent 48px
+  );
   -webkit-mask-repeat: no-repeat;
   -webkit-mask-position: center;
-  -webkit-mask-size: 100% 100%, 100% 100%;
-  -webkit-mask-composite: source-in;
-  mask-image:
-    radial-gradient(
-      circle at center,
-      transparent 46px,
-      #fff 46px,
-      #fff 48px,
-      transparent 48px
-    ),
-    conic-gradient(
-      from -90deg at center,
-      #fff 0deg,
-      #fff 216deg,
-      transparent 252deg,
-      transparent 292deg,
-      #fff 328deg,
-      #fff 360deg
-    );
-  mask-mode: alpha, alpha;
+  -webkit-mask-size: 100% 100%;
+  mask-image: radial-gradient(
+    circle at center,
+    transparent 46px,
+    #fff 46px,
+    #fff 48px,
+    transparent 48px
+  );
+  mask-mode: alpha;
   mask-repeat: no-repeat;
   mask-position: center;
-  mask-size: 100% 100%, 100% 100%;
-  mask-composite: intersect;
+  mask-size: 100% 100%;
   animation: sticky-badge-rainbow-ring-spin 9s linear infinite;
 }
 
