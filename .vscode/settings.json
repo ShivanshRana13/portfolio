@@ -1,0 +1,10 @@
+{
+  "liveServer.settings.ignoreFiles": [
+    ".git/**",
+    ".cursor/**",
+    ".vscode/**",
+    "node_modules/**",
+    "**/*.glb",
+    "**/.DS_Store"
+  ]
+}

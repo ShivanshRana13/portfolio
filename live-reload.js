@@ -1,11 +1,12 @@
 (() => {
-  // Lightweight dev-only live reload (no dependencies).
-  // Connects to the local server SSE endpoint and reloads on change.
+  // Dev-only live reload for `server.py` (SSE at `/__live`). Off by default so the page
+  // does not reload when tooling touches `.js`/`.css`/`.html` in the repo.
+  // Enable: open http://127.0.0.1:5173/?devreload=1 (or add ?devreload=1 on any port).
   if (location.hostname !== "127.0.0.1" && location.hostname !== "localhost") return;
+  if (new URLSearchParams(location.search).get("devreload") !== "1") return;
 
   const es = new EventSource("/__live");
   es.addEventListener("reload", () => {
-    // If a stylesheet changed, a full reload is simplest for this page.
     location.reload();
   });
 })();

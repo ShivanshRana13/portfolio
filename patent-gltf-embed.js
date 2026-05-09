@@ -32,6 +32,9 @@ function tryStartPatentGltf() {
         container,
         statusElement: null,
         transparentBackground: true,
+        modelFilenames: ["cube.glb"],
+        companionModelFilenames: ["model.glb"],
+        enableZoom: false,
       });
     })
     .catch((err) => {
