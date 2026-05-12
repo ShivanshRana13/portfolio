@@ -1,4 +1,4 @@
-/* Case / project detail — split view aligned with Figma node 5:86 */
+/* Case / project detail — right rail copy + media per Figma node 32:64 */
 
 html,
 body.detail {
@@ -25,6 +25,19 @@ body.detail {
   padding: 64px 48px 64px 64px;
   background: var(--detail-left-bg);
   color: var(--detail-left-ink);
+}
+
+/* Desktop: title rail fills the viewport height and stays pinned while the page scrolls. */
+@media (min-width: 901px) {
+  .detail__left {
+    position: sticky;
+    top: 0;
+    align-self: start;
+    z-index: 1;
+    box-sizing: border-box;
+    min-height: 100vh;
+    min-height: 100dvh;
+  }
 }
 
 /* Back control: 44px circle → mirrored arrow on hover (desktop). Touch: icon only, see hover: none */
@@ -124,21 +137,22 @@ body.detail {
 }
 
 .detail__right {
+  --detail-rail-pad-x: clamp(24px, 5vw, 64px);
   background: #ffffff;
-  padding: 64px clamp(24px, 5vw, 80px) 80px;
+  padding: 64px var(--detail-rail-pad-x) 80px;
   color: #000000;
 }
 
 .detail__lede,
 .detail__body {
-  margin: 0 auto;
-  max-width: 36rem;
+  margin: 0;
+  max-width: 20.3125rem; /* 325px — Figma copy measure */
   font-size: 14px;
   line-height: normal;
 }
 
 .detail__lede {
-  margin-bottom: 48px;
+  margin-bottom: 32px;
 }
 
 .detail__lede a,
@@ -149,10 +163,24 @@ body.detail {
 }
 
 .detail__media {
-  margin: 0 auto 48px;
-  max-width: 36.125rem;
+  width: 100%;
+  max-width: 100%;
+  margin: 0 0 32px;
   min-height: min(408px, 50vh);
   background: #0d0d0d;
+}
+
+.detail__media--embed {
+  min-height: min(560px, 70vh);
+}
+
+.detail__media__frame {
+  display: block;
+  width: 100%;
+  height: min(72vh, 820px);
+  min-height: min(480px, 60vh);
+  border: 0;
+  background: #1e1e1e;
 }
 
 .detail__body {

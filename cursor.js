@@ -211,6 +211,58 @@
     document.addEventListener("pointermove", onPointerMove, { passive: true });
     document.documentElement.addEventListener("mouseleave", onPointerLeaveDoc);
 
+    /**
+     * Cross-origin iframes do not bubble pointer events to the parent, so the ring
+     * freezes at the last document position. Hide it while the pointer is inside
+     * marked iframes and snap it to the exit point on leave.
+     */
+    function wireEmbedCursorSuppression() {
+      const frames = document.querySelectorAll("iframe[data-cursor-suppress]");
+      frames.forEach((frame) => {
+        frame.addEventListener(
+          "pointerenter",
+          (e) => {
+            if (!(e instanceof PointerEvent)) {
+              return;
+            }
+            if (e.pointerType !== "mouse") {
+              return;
+            }
+            document.body.classList.add("cursor-ring--over-embed");
+            el.classList.remove("cursor-ring--visible");
+            el.classList.remove("cursor-ring--light");
+            if (rafId !== 0) {
+              window.cancelAnimationFrame(rafId);
+              rafId = 0;
+            }
+          },
+          { passive: true },
+        );
+        frame.addEventListener(
+          "pointerleave",
+          (e) => {
+            if (!(e instanceof PointerEvent)) {
+              return;
+            }
+            if (e.pointerType !== "mouse") {
+              return;
+            }
+            document.body.classList.remove("cursor-ring--over-embed");
+            targetX = e.clientX;
+            targetY = e.clientY;
+            x = targetX;
+            y = targetY;
+            applyTransform(x, y);
+            el.classList.add("cursor-ring--visible");
+            scheduleContrastUpdate(targetX, targetY);
+          },
+          { passive: true },
+        );
+      });
+    }
+
+    wireEmbedCursorSuppression();
+
     reduceMotionMq.addEventListener("change", () => {
       if (reduceMotionMq.matches === true && rafId !== 0) {
         window.cancelAnimationFrame(rafId);

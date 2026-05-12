@@ -173,6 +173,17 @@ body.has-custom-cursor * {
   cursor: none !important;
 }
 
+/* Figma (or other) embed: parent gets no pointermove inside iframe — hide ring until exit. */
+body.has-custom-cursor.cursor-ring--over-embed iframe[data-cursor-suppress] {
+  cursor: auto !important;
+}
+
+body.has-custom-cursor.cursor-ring--over-embed .cursor-ring {
+  opacity: 0 !important;
+  visibility: hidden !important;
+  transition: none !important;
+}
+
 .cursor-ring {
   position: fixed;
   left: 0;

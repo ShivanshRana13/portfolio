@@ -3,6 +3,18 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script>
+      (function () {
+        try {
+          var params = new URLSearchParams(window.location.search);
+          if (params.get("embed") === "1") {
+            document.documentElement.classList.add("gltf-viewer-embed");
+          }
+        } catch (e) {
+          /* ignore */
+        }
+      })();
+    </script>
     <title>GLTF viewer</title>
     <link rel="stylesheet" href="./styles.css?v=7" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -55,6 +67,47 @@
 
       .gltf-viewer-hint code {
         font-size: 0.9em;
+      }
+
+      /* Inline on detail page (?embed=1): chromeless, fill iframe */
+      html.gltf-viewer-embed,
+      html.gltf-viewer-embed body {
+        margin: 0;
+        height: 100%;
+        min-height: 100%;
+        background: #141414;
+      }
+
+      html.gltf-viewer-embed .gltf-viewer-page__back,
+      html.gltf-viewer-embed .gltf-viewer-hint {
+        display: none;
+      }
+
+      html.gltf-viewer-embed .gltf-viewer-page {
+        position: relative;
+        min-height: 100%;
+        padding: 0;
+        margin: 0;
+        box-sizing: border-box;
+      }
+
+      html.gltf-viewer-embed #gltf-viewer {
+        flex: 1 1 auto;
+        min-height: 100%;
+        min-height: 100dvh;
+        border-radius: 0;
+      }
+
+      html.gltf-viewer-embed .gltf-viewer-status {
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        margin: 0;
+        padding: 0.5rem 0.75rem;
+        font-size: 0.75rem;
+        background: rgba(0, 0, 0, 0.55);
+        color: #e8e8e8;
       }
     </style>
     <!-- Three.js ES modules (no npm install). Pin version for stable deploys. -->
