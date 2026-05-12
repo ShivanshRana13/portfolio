@@ -22,7 +22,7 @@ body.detail {
 
 .detail__left {
   position: relative;
-  padding: 64px 48px 64px 64px;
+  padding: 64px;
   background: var(--detail-left-bg);
   color: var(--detail-left-ink);
 }
@@ -170,15 +170,25 @@ body.detail {
   background: #0d0d0d;
 }
 
-.detail__media--embed {
-  min-height: min(560px, 70vh);
+/*
+ * Figma embed: black box defines the viewport; iframe must fill it edge-to-edge.
+ * Grid 1×1 + min-height gives the iframe a definite block percentage base (avoids
+ * “short iframe + empty black bars” on deploy vs local).
+ */
+.detail__media.detail__media--embed {
+  display: grid;
+  grid-template: minmax(0, 1fr) / minmax(0, 1fr);
+  width: 100%;
+  min-height: clamp(440px, 68vh, 900px);
 }
 
-.detail__media__frame {
-  display: block;
+.detail__media.detail__media--embed .detail__media__frame {
+  grid-row: 1;
+  grid-column: 1;
   width: 100%;
-  height: min(72vh, 820px);
-  min-height: min(480px, 60vh);
+  height: 100%;
+  min-width: 0;
+  min-height: 0;
   border: 0;
   background: #1e1e1e;
 }

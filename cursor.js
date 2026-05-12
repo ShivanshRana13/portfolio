@@ -211,10 +211,37 @@
     document.addEventListener("pointermove", onPointerMove, { passive: true });
     document.documentElement.addEventListener("mouseleave", onPointerLeaveDoc);
 
+    function hideRingOverEmbed() {
+      document.body.classList.add("cursor-ring--over-embed");
+      el.classList.remove("cursor-ring--visible");
+      el.classList.remove("cursor-ring--light");
+      if (rafId !== 0) {
+        window.cancelAnimationFrame(rafId);
+        rafId = 0;
+      }
+    }
+
+    function showRingAfterEmbed(e) {
+      document.body.classList.remove("cursor-ring--over-embed");
+      if (!(e instanceof PointerEvent)) {
+        return;
+      }
+      if (e.pointerType !== "mouse") {
+        return;
+      }
+      targetX = e.clientX;
+      targetY = e.clientY;
+      x = targetX;
+      y = targetY;
+      applyTransform(x, y);
+      el.classList.add("cursor-ring--visible");
+      scheduleContrastUpdate(targetX, targetY);
+    }
+
     /**
      * Cross-origin iframes do not bubble pointer events to the parent, so the ring
      * freezes at the last document position. Hide it while the pointer is inside
-     * marked iframes and snap it to the exit point on leave.
+     * marked embeds and snap it to the exit point on leave.
      */
     function wireEmbedCursorSuppression() {
       const frames = document.querySelectorAll("iframe[data-cursor-suppress]");
@@ -222,39 +249,47 @@
         frame.addEventListener(
           "pointerenter",
           (e) => {
-            if (!(e instanceof PointerEvent)) {
+            if (!(e instanceof PointerEvent) || e.pointerType !== "mouse") {
               return;
             }
-            if (e.pointerType !== "mouse") {
+            hideRingOverEmbed();
+          },
+          { passive: true },
+        );
+        frame.addEventListener(
+          "pointerdown",
+          (e) => {
+            if (!(e instanceof PointerEvent) || e.pointerType !== "mouse") {
               return;
             }
-            document.body.classList.add("cursor-ring--over-embed");
-            el.classList.remove("cursor-ring--visible");
-            el.classList.remove("cursor-ring--light");
-            if (rafId !== 0) {
-              window.cancelAnimationFrame(rafId);
-              rafId = 0;
-            }
+            hideRingOverEmbed();
           },
           { passive: true },
         );
         frame.addEventListener(
           "pointerleave",
           (e) => {
-            if (!(e instanceof PointerEvent)) {
+            showRingAfterEmbed(e);
+          },
+          { passive: true },
+        );
+      });
+
+      document.querySelectorAll(".detail__media--embed").forEach((wrap) => {
+        wrap.addEventListener(
+          "pointerenter",
+          (e) => {
+            if (!(e instanceof PointerEvent) || e.pointerType !== "mouse") {
               return;
             }
-            if (e.pointerType !== "mouse") {
-              return;
-            }
-            document.body.classList.remove("cursor-ring--over-embed");
-            targetX = e.clientX;
-            targetY = e.clientY;
-            x = targetX;
-            y = targetY;
-            applyTransform(x, y);
-            el.classList.add("cursor-ring--visible");
-            scheduleContrastUpdate(targetX, targetY);
+            hideRingOverEmbed();
+          },
+          { passive: true },
+        );
+        wrap.addEventListener(
+          "pointerleave",
+          (e) => {
+            showRingAfterEmbed(e);
           },
           { passive: true },
         );
