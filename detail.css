@@ -22,9 +22,21 @@ body.detail {
 
 .detail__left {
   position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-sizing: border-box;
   padding: 64px;
   background: #ffffff;
-  color: #000000;
+  color: #120704;
+}
+
+.detail__left-top {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 32px;
+  width: 100%;
 }
 
 /* Desktop: title rail fills the viewport height and stays pinned while the page scrolls. */
@@ -46,7 +58,7 @@ body.detail {
   display: block;
   width: 44px;
   height: 44px;
-  margin-bottom: 78px;
+  margin-bottom: 0;
   flex-shrink: 0;
   text-decoration: none;
   color: inherit;
@@ -123,16 +135,17 @@ body.detail {
 
 .detail__title {
   margin: 0;
-  font-size: clamp(28px, 4vw, 50px);
+  max-width: 100%;
+  font-size: clamp(28px, 5vw, 50px);
   font-weight: 600;
-  line-height: 1.05;
-  max-width: 22rem;
+  line-height: normal;
 }
 
-.detail__year {
-  margin: 220px 0 0 0;
+.detail__meta {
+  margin: 0;
+  width: 100%;
   font-size: 14px;
-  font-weight: 400;
+  font-weight: 500;
   line-height: normal;
 }
 
@@ -202,12 +215,12 @@ body.detail {
     min-height: auto;
   }
 
-  .detail__back {
-    margin-bottom: 40px;
+  .detail__left-top {
+    gap: 24px;
   }
 
-  .detail__year {
-    margin-top: 48px;
+  .detail__back {
+    margin-bottom: 0;
   }
 
   .detail__right {

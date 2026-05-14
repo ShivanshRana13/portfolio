@@ -1,28 +1,28 @@
-/** Per-tile titles + fallback body copy for the detail page (expand anytime). */
+/** Per-tile left-rail copy for the detail page (Figma node 73:2227 layout). */
 const TILE_COPY = {
   education: {
     title: "Redesign of a modular character rigging tool",
-    year: "2026",
+    meta: "Case study | 2026",
   },
   "case-tilt": {
-    title: "Designing a patented 3d tool",
-    year: "2026",
+    title: "Designing a patent pending intuitive manipulator for future generation of 3d tools",
+    meta: "Autodesk - Project Falcon | 2026",
   },
   case: {
     title: "Redesign of a modular character rigging tool",
-    year: "2026",
+    meta: "Case study | 2026",
   },
   college: {
     title: "Redesign of a modular character rigging tool",
-    year: "2026",
+    meta: "College projects | 2026",
   },
   passions: {
     title: "Redesign of a modular character rigging tool",
-    year: "2026",
+    meta: "Passions | 2026",
   },
   instagram: {
     title: "Redesign of a modular character rigging tool",
-    year: "2026",
+    meta: "Instagram | 2026",
   },
 };
 
@@ -37,13 +37,13 @@ function initDetailPage() {
 
   const meta = TILE_COPY[tile];
   const titleEl = document.getElementById("detail-title");
-  const yearEl = document.getElementById("detail-year");
+  const metaEl = document.getElementById("detail-meta");
   if (titleEl && meta) {
     titleEl.textContent = meta.title;
     document.title = `${meta.title} · Portfolio`;
   }
-  if (yearEl && meta && meta.year) {
-    yearEl.textContent = meta.year;
+  if (metaEl && meta && meta.meta) {
+    metaEl.textContent = meta.meta;
   }
 }
 
