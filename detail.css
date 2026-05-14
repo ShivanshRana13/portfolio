@@ -316,7 +316,8 @@ body.detail {
   .detail__left {
     padding-top: 48px;
     padding-right: max(24px, env(safe-area-inset-right, 0px));
-    padding-bottom: max(40px, env(safe-area-inset-bottom, 0px));
+    /* Space to the body column is controlled by `.detail__right` padding-top (64px total). */
+    padding-bottom: 0;
     padding-left: max(24px, env(safe-area-inset-left, 0px));
     min-height: auto;
   }
@@ -334,7 +335,8 @@ body.detail {
   }
 
   .detail__right {
-    padding-top: 48px;
+    /* 64px total from subtitle (`.detail__meta`) to first body line — was ~88px+ with left pb + right pt. */
+    padding-top: 64px;
     padding-right: max(24px, env(safe-area-inset-right, 0px));
     padding-bottom: max(80px, env(safe-area-inset-bottom, 0px));
     padding-left: max(24px, env(safe-area-inset-left, 0px));
