@@ -65,7 +65,7 @@ function getDetailScrollY() {
 }
 
 /**
- * While the page scrolls, shrink the sticky title from the hero clamp (up to 55px)
+ * While the page scrolls, shrink the sticky title from the hero clamp (up to 34px)
  * down to 21px (Fibonacci) so hierarchy stays on the golden scale.
  *
  * On narrow viewports (stacked layout, matches `detail.css` max-width: 900px),
@@ -85,7 +85,7 @@ function initTitleScrollShrink() {
   /** Aligned with `.detail-layout` single-column breakpoint in `detail.css`. */
   const narrowLayoutMq = window.matchMedia("(max-width: 900px)");
 
-  let maxPx = 55;
+  let maxPx = 34;
   let scrollRangePx = 200;
   let rafId = 0;
 
@@ -97,7 +97,7 @@ function initTitleScrollShrink() {
   function measureTitleMaxPx() {
     clearTitleScrollVars();
     const px = parseFloat(window.getComputedStyle(titleEl).fontSize);
-    maxPx = Number.isFinite(px) && px > TITLE_MIN_PX ? px : 55;
+    maxPx = Number.isFinite(px) && px > TITLE_MIN_PX ? px : 34;
     /* Shorter band = visible shrink as soon as the user scrolls a few pixels. */
     scrollRangePx = Math.min(280, Math.max(140, Math.round(window.innerHeight * 0.22)));
   }

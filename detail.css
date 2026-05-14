@@ -13,12 +13,12 @@ body.detail {
   background: #ffffff;
   /*
    * Golden (Fibonacci) type scale — consecutive steps ≈ φ (1.618).
-   * 13 → 21 → 34 → 55 px
+   * 13 → 21 → 34 → 55 px (hero title uses 21–34, one step below 34–55)
    */
   --detail-fs-body: 13px;
   --detail-fs-section: 21px;
-  --detail-fs-title-min: 34px;
-  --detail-fs-title-max: 55px;
+  --detail-fs-title-min: 21px;
+  --detail-fs-title-max: 34px;
   --detail-fs-title-shrunk: 21px;
 }
 
