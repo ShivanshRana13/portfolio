@@ -136,6 +136,7 @@ body.detail {
   .detail__title {
     font-size: clamp(28px, 5vw, 50px) !important;
     font-weight: 600 !important;
+    transition: none !important;
   }
 }
 
@@ -145,6 +146,9 @@ body.detail {
   font-size: var(--detail-title-fs, clamp(28px, 5vw, 50px));
   font-weight: var(--detail-title-fw, 600);
   line-height: normal;
+  transition:
+    font-size 0.14s ease-out,
+    font-weight 0.14s ease-out;
 }
 
 .detail__meta {

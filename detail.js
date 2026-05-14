@@ -33,11 +33,6 @@ const TITLE_MIN_PX = 14;
 const TITLE_MIN_WEIGHT = 400;
 const TITLE_MAX_WEIGHT = 600;
 
-function easeOutCubic(t) {
-  const x = 1 - t;
-  return 1 - x * x * x;
-}
-
 function initDetailPage() {
   const params = new URLSearchParams(window.location.search);
   let tile = params.get("tile") || "education";
@@ -58,6 +53,20 @@ function initDetailPage() {
 }
 
 /**
+ * With `overflow-y: auto` on `body`, scroll offset is often on `document.body` or
+ * `document.documentElement`, not `window.scrollY`. Use the max of all sources.
+ */
+function getDetailScrollY() {
+  const w = window.scrollY || window.pageYOffset || 0;
+  const root = document.documentElement;
+  const b = document.body;
+  const r = root !== null && typeof root.scrollTop === "number" ? root.scrollTop : 0;
+  const bodyTop = b !== null && typeof b.scrollTop === "number" ? b.scrollTop : 0;
+  const y = Math.max(w, r, bodyTop);
+  return y < 0 ? 0 : y;
+}
+
+/**
  * While the page scrolls, shrink the sticky title from hero size down to the
  * right-rail body size (14px / 400) so it does not compete visually while reading.
  */
@@ -74,7 +83,7 @@ function initTitleScrollShrink() {
   const reduceMotionMq = window.matchMedia("(prefers-reduced-motion: reduce)");
 
   let maxPx = 50;
-  let scrollRangePx = 320;
+  let scrollRangePx = 200;
   let rafId = 0;
 
   function measureTitleMaxPx() {
@@ -82,7 +91,8 @@ function initTitleScrollShrink() {
     document.body.style.removeProperty("--detail-title-fw");
     const px = parseFloat(window.getComputedStyle(titleEl).fontSize);
     maxPx = Number.isFinite(px) && px > TITLE_MIN_PX ? px : 50;
-    scrollRangePx = Math.min(420, Math.max(220, Math.round(window.innerHeight * 0.42)));
+    /* Shorter band = visible shrink as soon as the user scrolls a few pixels. */
+    scrollRangePx = Math.min(280, Math.max(140, Math.round(window.innerHeight * 0.22)));
   }
 
   function applyScrollDrivenTitle() {
@@ -91,12 +101,12 @@ function initTitleScrollShrink() {
       document.body.style.removeProperty("--detail-title-fw");
       return;
     }
-    const y = window.scrollY || document.documentElement.scrollTop || 0;
+    const y = getDetailScrollY();
     const tRaw = scrollRangePx <= 0 ? 1 : y / scrollRangePx;
     const t = tRaw <= 0 ? 0 : tRaw >= 1 ? 1 : tRaw;
-    const e = easeOutCubic(t);
-    const fs = maxPx - (maxPx - TITLE_MIN_PX) * e;
-    const fw = Math.round(TITLE_MAX_WEIGHT - (TITLE_MAX_WEIGHT - TITLE_MIN_WEIGHT) * e);
+    /* Linear = first scroll pixel maps immediately to size change (CSS transition smooths). */
+    const fs = maxPx - (maxPx - TITLE_MIN_PX) * t;
+    const fw = Math.round(TITLE_MAX_WEIGHT - (TITLE_MAX_WEIGHT - TITLE_MIN_WEIGHT) * t);
     document.body.style.setProperty("--detail-title-fs", `${fs}px`);
     document.body.style.setProperty("--detail-title-fw", String(fw));
   }
@@ -111,18 +121,31 @@ function initTitleScrollShrink() {
     });
   }
 
-  measureTitleMaxPx();
-  applyScrollDrivenTitle();
+  function bindScrollTargets() {
+    window.addEventListener("scroll", onScroll, { passive: true, capture: true });
+    document.addEventListener("scroll", onScroll, { passive: true, capture: true });
+    document.documentElement.addEventListener("scroll", onScroll, { passive: true });
+    if (document.body !== null) {
+      document.body.addEventListener("scroll", onScroll, { passive: true });
+    }
+  }
 
-  window.addEventListener("scroll", onScroll, { passive: true });
+  function scheduleMeasureAndApply() {
+    window.requestAnimationFrame(() => {
+      measureTitleMaxPx();
+      applyScrollDrivenTitle();
+    });
+  }
+
+  scheduleMeasureAndApply();
+  bindScrollTargets();
+
   window.addEventListener("resize", () => {
-    measureTitleMaxPx();
-    applyScrollDrivenTitle();
+    scheduleMeasureAndApply();
   });
 
   reduceMotionMq.addEventListener("change", () => {
-    measureTitleMaxPx();
-    applyScrollDrivenTitle();
+    scheduleMeasureAndApply();
   });
 }
 
