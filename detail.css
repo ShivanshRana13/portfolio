@@ -170,7 +170,7 @@ body.detail {
   background: #0d0d0d;
 }
 
-/* Raster export of Figma frame 70:637 — scales with rail, no iframe / no Figma account. */
+/* Raster export of Figma frame 70:637 — 1× + 2× PNG, see detail.html srcset. */
 .detail__media.detail__media--static {
   min-height: 0;
   line-height: 0;
