@@ -155,6 +155,13 @@ body.detail {
   }
 }
 
+@media (prefers-reduced-motion: reduce) and (max-width: 900px) {
+  .detail__title {
+    /* Same cap as desktop hero when clamp hits max (5vw is tiny on narrow viewports). */
+    font-size: var(--detail-fs-title-max) !important;
+  }
+}
+
 .detail__title {
   margin: 0;
   max-width: 100%;
@@ -305,9 +312,10 @@ body.detail {
   /*
    * Narrow layout: title size is fixed (no scroll-driven --detail-title-fs).
    * Matches `narrowLayoutMq` in `detail.js`.
+   * Use the desktop clamp *max* — 5vw on narrow screens only reaches 21px otherwise.
    */
   .detail__title {
-    font-size: clamp(var(--detail-fs-title-min), 5vw, var(--detail-fs-title-max));
+    font-size: var(--detail-fs-title-max);
     font-weight: 600;
     transition: none;
     overflow-wrap: anywhere;
