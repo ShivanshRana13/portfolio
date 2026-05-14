@@ -1,4 +1,4 @@
-/* Case / project detail — right rail copy + media per Figma node 32:64 */
+/* Case / project detail — right rail + static media (Figma node 70:637 export) */
 
 html,
 body.detail {
@@ -170,27 +170,16 @@ body.detail {
   background: #0d0d0d;
 }
 
-/*
- * Figma embed: black box defines the viewport; iframe must fill it edge-to-edge.
- * Grid 1×1 + min-height gives the iframe a definite block percentage base (avoids
- * “short iframe + empty black bars” on deploy vs local).
- */
-.detail__media.detail__media--embed {
-  display: grid;
-  grid-template: minmax(0, 1fr) / minmax(0, 1fr);
-  width: 100%;
-  min-height: clamp(440px, 68vh, 900px);
+/* Raster export of Figma frame 70:637 — scales with rail, no iframe / no Figma account. */
+.detail__media.detail__media--static {
+  min-height: 0;
+  line-height: 0;
 }
 
-.detail__media.detail__media--embed .detail__media__frame {
-  grid-row: 1;
-  grid-column: 1;
+.detail__media.detail__media--static .detail__media__img {
+  display: block;
   width: 100%;
-  height: 100%;
-  min-width: 0;
-  min-height: 0;
-  border: 0;
-  background: #1e1e1e;
+  height: auto;
 }
 
 .detail__body {

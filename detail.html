@@ -10,8 +10,8 @@
       href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="./styles.css?v=9" />
-    <link rel="stylesheet" href="./detail.css?v=9" />
+    <link rel="stylesheet" href="./styles.css?v=10" />
+    <link rel="stylesheet" href="./detail.css?v=10" />
   </head>
   <body class="detail">
     <script>
@@ -52,16 +52,20 @@
           <a href="https://www.autodesk.com" target="_blank" rel="noreferrer">Autodesk</a>. He’s
           passionate about integrating seamless micro interactions with traditional design patterns.
         </p>
-        <div class="detail__media detail__media--embed" aria-label="Figma — content box frame">
-          <iframe
-            class="detail__media__frame"
-            data-cursor-suppress="true"
-            title="Figma — content box (case study)"
-            src="https://embed.figma.com/design/AzsPDKM5dJw3QhVHMA8Qod/P?embed-host=portfolio&amp;node-id=70-631&amp;mode=dev&amp;footer=false&amp;page-selector=false&amp;hide-ui=1&amp;theme=dark"
+        <!-- Static export of Figma node 70:637 — no embed / no login (see assets/detail/). -->
+        <div
+          class="detail__media detail__media--static"
+          aria-label="Gizmo concepts: Mini Gizmo, Move and Rotate, Scale — light and dark themes"
+        >
+          <img
+            class="detail__media__img"
+            src="./assets/detail/gizmo-content-70-637.png"
+            width="839"
+            height="824"
+            alt="Three columns of 3D cubes with transformation gizmos labelled Mini Gizmo, Move and Rotate, and Scale. Shown on light grey and dark charcoal backgrounds."
             loading="lazy"
-            referrerpolicy="strict-origin-when-cross-origin"
-            allow="fullscreen"
-          ></iframe>
+            decoding="async"
+          />
         </div>
         <p class="detail__body">
           Add case study copy, images, and embeds here for this project. This section mirrors the
