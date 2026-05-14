@@ -28,10 +28,8 @@ const TILE_COPY = {
 
 const ALLOWED_TILES = Object.keys(TILE_COPY);
 
-/** Matches .detail__lede / .detail__body (right column body copy). */
-const TITLE_MIN_PX = 14;
-const TITLE_MIN_WEIGHT = 400;
-const TITLE_MAX_WEIGHT = 600;
+/** Fully scrolled title: 24px — smaller than hero but not body copy (14px). */
+const TITLE_MIN_PX = 24;
 
 function initDetailPage() {
   const params = new URLSearchParams(window.location.search);
@@ -67,8 +65,11 @@ function getDetailScrollY() {
 }
 
 /**
- * While the page scrolls, shrink the sticky title from hero size down to the
- * right-rail body size (14px / 400) so it does not compete visually while reading.
+ * While the page scrolls, shrink the sticky title from hero size down to 24px
+ * so it stays readable as a heading without matching body text.
+ *
+ * On narrow viewports (stacked layout, matches `detail.css` max-width: 900px),
+ * scroll does not change title size — typography stays fixed for mobile.
  */
 function initTitleScrollShrink() {
   if (!document.body.classList.contains("detail")) {
@@ -81,14 +82,20 @@ function initTitleScrollShrink() {
   }
 
   const reduceMotionMq = window.matchMedia("(prefers-reduced-motion: reduce)");
+  /** Aligned with `.detail-layout` single-column breakpoint in `detail.css`. */
+  const narrowLayoutMq = window.matchMedia("(max-width: 900px)");
 
   let maxPx = 50;
   let scrollRangePx = 200;
   let rafId = 0;
 
-  function measureTitleMaxPx() {
+  function clearTitleScrollVars() {
     document.body.style.removeProperty("--detail-title-fs");
     document.body.style.removeProperty("--detail-title-fw");
+  }
+
+  function measureTitleMaxPx() {
+    clearTitleScrollVars();
     const px = parseFloat(window.getComputedStyle(titleEl).fontSize);
     maxPx = Number.isFinite(px) && px > TITLE_MIN_PX ? px : 50;
     /* Shorter band = visible shrink as soon as the user scrolls a few pixels. */
@@ -96,9 +103,8 @@ function initTitleScrollShrink() {
   }
 
   function applyScrollDrivenTitle() {
-    if (reduceMotionMq.matches === true) {
-      document.body.style.removeProperty("--detail-title-fs");
-      document.body.style.removeProperty("--detail-title-fw");
+    if (reduceMotionMq.matches === true || narrowLayoutMq.matches === true) {
+      clearTitleScrollVars();
       return;
     }
     const y = getDetailScrollY();
@@ -106,9 +112,7 @@ function initTitleScrollShrink() {
     const t = tRaw <= 0 ? 0 : tRaw >= 1 ? 1 : tRaw;
     /* Linear = first scroll pixel maps immediately to size change (CSS transition smooths). */
     const fs = maxPx - (maxPx - TITLE_MIN_PX) * t;
-    const fw = Math.round(TITLE_MAX_WEIGHT - (TITLE_MAX_WEIGHT - TITLE_MIN_WEIGHT) * t);
     document.body.style.setProperty("--detail-title-fs", `${fs}px`);
-    document.body.style.setProperty("--detail-title-fw", String(fw));
   }
 
   function onScroll() {
@@ -145,6 +149,10 @@ function initTitleScrollShrink() {
   });
 
   reduceMotionMq.addEventListener("change", () => {
+    scheduleMeasureAndApply();
+  });
+
+  narrowLayoutMq.addEventListener("change", () => {
     scheduleMeasureAndApply();
   });
 }

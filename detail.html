@@ -2,16 +2,19 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+    />
     <title>Project · Portfolio</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
       rel="stylesheet"
     />
     <link rel="stylesheet" href="./styles.css?v=10" />
-    <link rel="stylesheet" href="./detail.css?v=17" />
+    <link rel="stylesheet" href="./detail.css?v=20" />
   </head>
   <body class="detail">
     <script>
@@ -51,11 +54,58 @@
       </aside>
       <main class="detail__right">
         <p class="detail__lede">
-          Shivansh Rana is a product designer, with 6+ years experience building visual experiences.
-          Currently he’s designing tools for entertainment industry at
-          <a href="https://www.autodesk.com" target="_blank" rel="noreferrer">Autodesk</a>. He’s
-          passionate about integrating seamless micro interactions with traditional design patterns.
+          Gizmos are visual aids in 3D software that allow users to manipulate objects. They
+          commonly include move, rotate, and scale functions, which provide intuitive and precise
+          control over object transformations. To learn more,
+          <a href="https://www.youtube.com/watch?v=vfeYIsGbjyY" target="_blank" rel="noopener noreferrer">watch</a>
+          this short tutorial video online.
         </p>
+
+        <section class="detail__section" aria-labelledby="detail-problem-heading">
+          <h2 class="detail__section-heading" id="detail-problem-heading">The Problem</h2>
+          <p class="detail__section-body">
+            Gizmos are visual aids in 3D software that allow users to manipulate objects. They
+            commonly include move, rotate, and scale functions, which provide intuitive and precise
+            control over object transformations. To learn more,
+            <a href="https://www.youtube.com/watch?v=vfeYIsGbjyY" target="_blank" rel="noopener noreferrer">watch</a>
+            this short tutorial video online.
+          </p>
+        </section>
+
+        <div class="detail__split" role="group" aria-label="Case study image pair">
+          <div class="detail__split-cell">
+            <img
+              src="./assets/detail/case-falcon-70-632.png"
+              width="416"
+              height="408"
+              alt="3D cube with transform manipulators on a light canvas, left panel of the pair."
+              loading="lazy"
+              decoding="async"
+            />
+          </div>
+          <div class="detail__split-cell">
+            <img
+              src="./assets/detail/case-falcon-70-633.png"
+              width="416"
+              height="408"
+              alt="3D cube with transform manipulators on a light canvas, right panel of the pair."
+              loading="lazy"
+              decoding="async"
+            />
+          </div>
+        </div>
+
+        <section class="detail__section" aria-labelledby="detail-design-heading">
+          <h2 class="detail__section-heading" id="detail-design-heading">The Design</h2>
+          <p class="detail__section-body">
+            Gizmos are visual aids in 3D software that allow users to manipulate objects. They
+            commonly include move, rotate, and scale functions, which provide intuitive and precise
+            control over object transformations. To learn more,
+            <a href="https://www.youtube.com/watch?v=vfeYIsGbjyY" target="_blank" rel="noopener noreferrer">watch</a>
+            this short tutorial video online.
+          </p>
+        </section>
+
         <!--
           Max width 839px (Figma) so wide monitors do not upscale the bitmap.
           WebP q98 first; PNG fallback. sizes capped so srcset matches layout width.
@@ -90,13 +140,28 @@
             />
           </picture>
         </div>
+
         <p class="detail__body">
-          Add case study copy, images, and embeds here for this project. This section mirrors the
-          structure from your layout (intro, media block, supporting text).
+          Gizmos are visual aids in 3D software that allow users to manipulate objects. They commonly
+          include move, rotate, and scale functions, which provide intuitive and precise control over
+          object transformations. To learn more,
+          <a href="https://www.youtube.com/watch?v=vfeYIsGbjyY" target="_blank" rel="noopener noreferrer">watch</a>
+          this short tutorial video online.
         </p>
+
+        <figure class="detail__figure">
+          <img
+            src="./assets/detail/case-falcon-70-746.png"
+            width="839"
+            height="408"
+            alt="Wide diagram of a 3D cube with grouped transform manipulators on a light background."
+            loading="lazy"
+            decoding="async"
+          />
+        </figure>
       </main>
     </div>
     <script src="./cursor.js" defer></script>
-    <script src="./detail.js" defer></script>
+    <script src="./detail.js?v=4" defer></script>
   </body>
 </html>

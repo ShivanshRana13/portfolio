@@ -62,6 +62,8 @@ body.detail {
   flex-shrink: 0;
   text-decoration: none;
   color: inherit;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .detail__back-circle {
@@ -109,6 +111,10 @@ body.detail {
 
 /* Phones / touch: no hover — hide circle, show mirrored arrow only */
 @media (hover: none) {
+  .detail__back:active {
+    opacity: 0.88;
+  }
+
   .detail__back-circle {
     display: none;
   }
@@ -161,34 +167,88 @@ body.detail {
 
 .detail__right {
   --detail-rail-pad-x: clamp(24px, 5vw, 64px);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 32px;
   background: #ffffff;
   padding: 64px var(--detail-rail-pad-x) 80px;
   color: #000000;
 }
 
 .detail__lede,
-.detail__body {
+.detail__body,
+.detail__section-body {
   margin: 0;
-  max-width: 20.3125rem; /* 325px — Figma copy measure */
+  max-width: 32.8125rem; /* 525px — Figma frame 70:626 copy width */
   font-size: 14px;
   line-height: normal;
-}
-
-.detail__lede {
-  margin-bottom: 32px;
+  color: rgba(0, 0, 0, 0.8);
 }
 
 .detail__lede a,
-.detail__body a {
+.detail__body a,
+.detail__section-body a {
   color: inherit;
   text-decoration: underline;
   text-underline-offset: 2px;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0.08);
+}
+
+.detail__section {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: flex-start;
+  max-width: 32.8125rem;
+}
+
+.detail__section-heading {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 700;
+  line-height: normal;
+  color: #000000;
+}
+
+.detail__split {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  gap: 8px;
+  max-width: 839px;
+  width: 100%;
+}
+
+.detail__split-cell {
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+.detail__split-cell img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.detail__figure {
+  margin: 0;
+  max-width: 839px;
+  width: 100%;
+  line-height: 0;
+}
+
+.detail__figure img {
+  display: block;
+  width: 100%;
+  height: auto;
 }
 
 .detail__media {
   width: 100%;
   max-width: 100%;
-  margin: 0 0 32px;
+  margin: 0;
   min-height: min(408px, 50vh);
   background: #0d0d0d;
 }
@@ -215,18 +275,46 @@ body.detail {
   margin-top: 0;
 }
 
+@media (max-width: 520px) {
+  .detail__split {
+    flex-direction: column;
+  }
+
+  .detail__split-cell {
+    flex-basis: auto;
+  }
+}
+
 @media (max-width: 900px) {
   .detail-layout {
     grid-template-columns: 1fr;
   }
 
+  /*
+   * Narrow layout: title size is fixed (no scroll-driven --detail-title-fs).
+   * Matches `narrowLayoutMq` in `detail.js`.
+   */
+  .detail__title {
+    font-size: clamp(28px, 5vw, 50px);
+    font-weight: 600;
+    transition: none;
+    overflow-wrap: anywhere;
+  }
+
   .detail__left {
-    padding: 48px 24px 40px;
+    padding-top: 48px;
+    padding-right: max(24px, env(safe-area-inset-right, 0px));
+    padding-bottom: max(40px, env(safe-area-inset-bottom, 0px));
+    padding-left: max(24px, env(safe-area-inset-left, 0px));
     min-height: auto;
   }
 
   .detail__left-top {
     gap: 24px;
+  }
+
+  .detail__meta {
+    margin-top: 24px;
   }
 
   .detail__back {
@@ -235,5 +323,8 @@ body.detail {
 
   .detail__right {
     padding-top: 48px;
+    padding-right: max(24px, env(safe-area-inset-right, 0px));
+    padding-bottom: max(80px, env(safe-area-inset-bottom, 0px));
+    padding-left: max(24px, env(safe-area-inset-left, 0px));
   }
 }
