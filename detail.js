@@ -28,8 +28,8 @@ const TILE_COPY = {
 
 const ALLOWED_TILES = Object.keys(TILE_COPY);
 
-/** Fully scrolled title: 24px — smaller than hero but not body copy (14px). */
-const TITLE_MIN_PX = 24;
+/** Fully scrolled title: 21px (Fibonacci / φ step with section labels). */
+const TITLE_MIN_PX = 21;
 
 function initDetailPage() {
   const params = new URLSearchParams(window.location.search);
@@ -65,8 +65,8 @@ function getDetailScrollY() {
 }
 
 /**
- * While the page scrolls, shrink the sticky title from hero size down to 24px
- * so it stays readable as a heading without matching body text.
+ * While the page scrolls, shrink the sticky title from the hero clamp (up to 55px)
+ * down to 21px (Fibonacci) so hierarchy stays on the golden scale.
  *
  * On narrow viewports (stacked layout, matches `detail.css` max-width: 900px),
  * scroll does not change title size — typography stays fixed for mobile.
@@ -85,7 +85,7 @@ function initTitleScrollShrink() {
   /** Aligned with `.detail-layout` single-column breakpoint in `detail.css`. */
   const narrowLayoutMq = window.matchMedia("(max-width: 900px)");
 
-  let maxPx = 50;
+  let maxPx = 55;
   let scrollRangePx = 200;
   let rafId = 0;
 
@@ -97,7 +97,7 @@ function initTitleScrollShrink() {
   function measureTitleMaxPx() {
     clearTitleScrollVars();
     const px = parseFloat(window.getComputedStyle(titleEl).fontSize);
-    maxPx = Number.isFinite(px) && px > TITLE_MIN_PX ? px : 50;
+    maxPx = Number.isFinite(px) && px > TITLE_MIN_PX ? px : 55;
     /* Shorter band = visible shrink as soon as the user scrolls a few pixels. */
     scrollRangePx = Math.min(280, Math.max(140, Math.round(window.innerHeight * 0.22)));
   }

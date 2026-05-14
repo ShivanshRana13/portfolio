@@ -11,6 +11,15 @@ body.detail {
   overflow-x: hidden;
   overflow-y: auto;
   background: #ffffff;
+  /*
+   * Golden (Fibonacci) type scale — consecutive steps ≈ φ (1.618).
+   * 13 → 21 → 34 → 55 px
+   */
+  --detail-fs-body: 13px;
+  --detail-fs-section: 21px;
+  --detail-fs-title-min: 34px;
+  --detail-fs-title-max: 55px;
+  --detail-fs-title-shrunk: 21px;
 }
 
 .detail-layout {
@@ -138,9 +147,9 @@ body.detail {
     transition-duration: 0.01ms;
   }
 
-  /* Scroll-driven title shrink disabled — keep static hero typography. */
+  /* Scroll-driven title shrink disabled — φ-scale static hero. */
   .detail__title {
-    font-size: clamp(28px, 5vw, 50px) !important;
+    font-size: clamp(var(--detail-fs-title-min), 5vw, var(--detail-fs-title-max)) !important;
     font-weight: 600 !important;
     transition: none !important;
   }
@@ -149,7 +158,10 @@ body.detail {
 .detail__title {
   margin: 0;
   max-width: 100%;
-  font-size: var(--detail-title-fs, clamp(28px, 5vw, 50px));
+  font-size: var(
+    --detail-title-fs,
+    clamp(var(--detail-fs-title-min), 5vw, var(--detail-fs-title-max))
+  );
   font-weight: var(--detail-title-fw, 600);
   line-height: normal;
   transition:
@@ -160,7 +172,7 @@ body.detail {
 .detail__meta {
   margin: 0;
   width: 100%;
-  font-size: 14px;
+  font-size: var(--detail-fs-body);
   font-weight: 500;
   line-height: normal;
 }
@@ -181,7 +193,7 @@ body.detail {
 .detail__section-body {
   margin: 0;
   max-width: 32.8125rem; /* 525px — Figma frame 70:626 copy width */
-  font-size: 14px;
+  font-size: var(--detail-fs-body);
   line-height: normal;
   color: rgba(0, 0, 0, 0.8);
 }
@@ -206,7 +218,7 @@ body.detail {
 
 .detail__section-heading {
   margin: 0;
-  font-size: 14px;
+  font-size: var(--detail-fs-section);
   font-weight: 700;
   line-height: normal;
   color: #000000;
@@ -295,7 +307,7 @@ body.detail {
    * Matches `narrowLayoutMq` in `detail.js`.
    */
   .detail__title {
-    font-size: clamp(28px, 5vw, 50px);
+    font-size: clamp(var(--detail-fs-title-min), 5vw, var(--detail-fs-title-max));
     font-weight: 600;
     transition: none;
     overflow-wrap: anywhere;
