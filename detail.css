@@ -131,13 +131,19 @@ body.detail {
   .detail__back-arrow {
     transition-duration: 0.01ms;
   }
+
+  /* Scroll-driven title shrink disabled — keep static hero typography. */
+  .detail__title {
+    font-size: clamp(28px, 5vw, 50px) !important;
+    font-weight: 600 !important;
+  }
 }
 
 .detail__title {
   margin: 0;
   max-width: 100%;
-  font-size: clamp(28px, 5vw, 50px);
-  font-weight: 600;
+  font-size: var(--detail-title-fs, clamp(28px, 5vw, 50px));
+  font-weight: var(--detail-title-fw, 600);
   line-height: normal;
 }
 
