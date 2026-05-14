@@ -1,10 +1,12 @@
 #!/usr/bin/env python3
-"""Regenerate detail-page gizmo raster assets from the 1× PNG (Figma export).
+"""Regenerate detail-page gizmo rasters from the 1× PNG (Figma export).
 
 Requires: pip install --user Pillow
 
-Outputs:
-  assets/detail/gizmo-content-70-637@4x.webp — 4× (3356×3296), WebP q=92 for laptop / HiDPI.
+Writes:
+  gizmo-content-70-637@2x.png   — 2× lossless PNG (Lanczos)
+  gizmo-content-70-637@2x.webp  — 2× WebP quality 98
+  gizmo-content-70-637@1x.webp  — 1× WebP quality 98
 
 Run from repo root: python3 scripts/export-detail-gizmo.py
 """
@@ -16,8 +18,10 @@ from pathlib import Path
 from PIL import Image
 
 ROOT = Path(__file__).resolve().parents[1]
-SRC = ROOT / "assets" / "detail" / "gizmo-content-70-637.png"
-OUT_WEBP = ROOT / "assets" / "detail" / "gizmo-content-70-637@4x.webp"
+DIR = ROOT / "assets" / "detail"
+SRC = DIR / "gizmo-content-70-637.png"
+WEBP_Q = 98
+WEBP_METHOD = 6
 
 
 def main() -> None:
@@ -25,17 +29,34 @@ def main() -> None:
         raise SystemExit(f"Missing source image: {SRC}")
     im = Image.open(SRC).convert("RGBA")
     w, h = im.size
-    w4, h4 = w * 4, h * 4
-    up = im.resize((w4, h4), Image.Resampling.LANCZOS)
-    OUT_WEBP.parent.mkdir(parents=True, exist_ok=True)
-    up.save(
-        OUT_WEBP,
+    w2, h2 = w * 2, h * 2
+    two = im.resize((w2, h2), Image.Resampling.LANCZOS)
+
+    DIR.mkdir(parents=True, exist_ok=True)
+
+    out_png = DIR / "gizmo-content-70-637@2x.png"
+    two.save(out_png, format="PNG", compress_level=9, optimize=True)
+
+    out_2w = DIR / "gizmo-content-70-637@2x.webp"
+    two.save(
+        out_2w,
         format="WEBP",
-        quality=92,
-        method=6,
+        quality=WEBP_Q,
+        method=WEBP_METHOD,
         lossless=False,
     )
-    print("Wrote", OUT_WEBP, f"({OUT_WEBP.stat().st_size} bytes)")
+
+    out_1w = DIR / "gizmo-content-70-637@1x.webp"
+    im.save(
+        out_1w,
+        format="WEBP",
+        quality=WEBP_Q,
+        method=WEBP_METHOD,
+        lossless=False,
+    )
+
+    for p in (out_png, out_2w, out_1w):
+        print("Wrote", p.name, p.stat().st_size, "bytes")
 
 
 if __name__ == "__main__":

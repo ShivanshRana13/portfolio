@@ -170,8 +170,13 @@ body.detail {
   background: #0d0d0d;
 }
 
-/* Raster export of Figma frame 70:637 — picture: 4× WebP (laptop 2dppx+); img: 1×/2× PNG srcset. */
+/*
+ * Figma frame 70:637 — cap at design width (839px) so ultra-wide layouts do not
+ * upscale the bitmap (avoids blur). WebP + PNG in markup; see detail.html.
+ */
 .detail__media.detail__media--static {
+  max-width: 839px;
+  width: 100%;
   min-height: 0;
   line-height: 0;
 }

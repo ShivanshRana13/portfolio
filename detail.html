@@ -11,7 +11,7 @@
       rel="stylesheet"
     />
     <link rel="stylesheet" href="./styles.css?v=10" />
-    <link rel="stylesheet" href="./detail.css?v=12" />
+    <link rel="stylesheet" href="./detail.css?v=13" />
   </head>
   <body class="detail">
     <script>
@@ -53,8 +53,8 @@
           passionate about integrating seamless micro interactions with traditional design patterns.
         </p>
         <!--
-          ≥1024px + 2dppx: 4× WebP (~70KB, Lanczos + q92). Else: 2×/1× PNG srcset only.
-          No WebP on large screen → img srcset still serves 2×/1×.
+          Max width 839px (Figma) so wide monitors do not upscale the bitmap.
+          WebP q98 first; PNG fallback. sizes capped so srcset matches layout width.
         -->
         <div
           class="detail__media detail__media--static"
@@ -63,17 +63,20 @@
           <picture>
             <source
               type="image/webp"
-              media="(min-width: 1024px) and (-webkit-min-device-pixel-ratio: 2), (min-width: 1024px) and (min-resolution: 2dppx)"
-              srcset="./assets/detail/gizmo-content-70-637@4x.webp"
+              srcset="
+                ./assets/detail/gizmo-content-70-637@2x.webp 1678w,
+                ./assets/detail/gizmo-content-70-637@1x.webp  839w
+              "
+              sizes="min(100vw, 839px)"
             />
             <img
               class="detail__media__img"
               src="./assets/detail/gizmo-content-70-637.png"
               srcset="
                 ./assets/detail/gizmo-content-70-637@2x.png 1678w,
-                ./assets/detail/gizmo-content-70-637.png     839w
+                ./assets/detail/gizmo-content-70-637.png    839w
               "
-              sizes="(min-width: 901px) 45vw, 100vw"
+              sizes="min(100vw, 839px)"
               width="839"
               height="824"
               alt="Three columns of 3D cubes with transformation gizmos labelled Mini Gizmo, Move and Rotate, and Scale. Shown on light grey and dark charcoal backgrounds."
