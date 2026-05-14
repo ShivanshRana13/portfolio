@@ -23,8 +23,8 @@ body.detail {
 .detail__left {
   position: relative;
   padding: 64px;
-  background: var(--detail-left-bg);
-  color: var(--detail-left-ink);
+  background: #ffffff;
+  color: #000000;
 }
 
 /* Desktop: title rail fills the viewport height and stays pinned while the page scrolls. */
@@ -190,37 +190,6 @@ body.detail {
 
 .detail__body {
   margin-top: 0;
-}
-
-/* Map each sticky palette to the left rail (same tokens as index selected state) */
-body.detail.detail--education {
-  --detail-left-bg: var(--sticky-selected-education-surface);
-  --detail-left-ink: var(--sticky-selected-education-ink);
-}
-
-body.detail.detail--case-tilt {
-  --detail-left-bg: var(--sticky-selected-case-tilt-surface);
-  --detail-left-ink: var(--sticky-selected-case-tilt-ink);
-}
-
-body.detail.detail--case {
-  --detail-left-bg: var(--sticky-selected-case-surface);
-  --detail-left-ink: var(--sticky-selected-case-ink);
-}
-
-body.detail.detail--college {
-  --detail-left-bg: var(--sticky-selected-college-surface);
-  --detail-left-ink: var(--sticky-selected-college-ink);
-}
-
-body.detail.detail--passions {
-  --detail-left-bg: var(--sticky-selected-passions-surface);
-  --detail-left-ink: var(--sticky-selected-passions-ink);
-}
-
-body.detail.detail--instagram {
-  --detail-left-bg: var(--sticky-selected-instagram-surface);
-  --detail-left-ink: var(--sticky-selected-instagram-ink);
 }
 
 @media (max-width: 900px) {
