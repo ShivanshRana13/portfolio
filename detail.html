@@ -11,7 +11,7 @@
       rel="stylesheet"
     />
     <link rel="stylesheet" href="./styles.css?v=10" />
-    <link rel="stylesheet" href="./detail.css?v=11" />
+    <link rel="stylesheet" href="./detail.css?v=12" />
   </head>
   <body class="detail">
     <script>
@@ -52,26 +52,36 @@
           <a href="https://www.autodesk.com" target="_blank" rel="noreferrer">Autodesk</a>. He’s
           passionate about integrating seamless micro interactions with traditional design patterns.
         </p>
-        <!-- 1× Figma export (~31KB) + 2× for retina (~165KB); browser picks via srcset. -->
+        <!--
+          ≥1024px + 2dppx: 4× WebP (~70KB, Lanczos + q92). Else: 2×/1× PNG srcset only.
+          No WebP on large screen → img srcset still serves 2×/1×.
+        -->
         <div
           class="detail__media detail__media--static"
           aria-label="Gizmo concepts: Mini Gizmo, Move and Rotate, Scale — light and dark themes"
         >
-          <img
-            class="detail__media__img"
-            src="./assets/detail/gizmo-content-70-637.png"
-            srcset="
-              ./assets/detail/gizmo-content-70-637@2x.png 1678w,
-              ./assets/detail/gizmo-content-70-637.png     839w
-            "
-            sizes="(min-width: 901px) 45vw, 100vw"
-            width="839"
-            height="824"
-            alt="Three columns of 3D cubes with transformation gizmos labelled Mini Gizmo, Move and Rotate, and Scale. Shown on light grey and dark charcoal backgrounds."
-            loading="lazy"
-            decoding="async"
-            fetchpriority="low"
-          />
+          <picture>
+            <source
+              type="image/webp"
+              media="(min-width: 1024px) and (-webkit-min-device-pixel-ratio: 2), (min-width: 1024px) and (min-resolution: 2dppx)"
+              srcset="./assets/detail/gizmo-content-70-637@4x.webp"
+            />
+            <img
+              class="detail__media__img"
+              src="./assets/detail/gizmo-content-70-637.png"
+              srcset="
+                ./assets/detail/gizmo-content-70-637@2x.png 1678w,
+                ./assets/detail/gizmo-content-70-637.png     839w
+              "
+              sizes="(min-width: 901px) 45vw, 100vw"
+              width="839"
+              height="824"
+              alt="Three columns of 3D cubes with transformation gizmos labelled Mini Gizmo, Move and Rotate, and Scale. Shown on light grey and dark charcoal backgrounds."
+              loading="lazy"
+              decoding="async"
+              fetchpriority="low"
+            />
+          </picture>
         </div>
         <p class="detail__body">
           Add case study copy, images, and embeds here for this project. This section mirrors the

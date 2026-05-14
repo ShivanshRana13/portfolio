@@ -170,12 +170,13 @@ body.detail {
   background: #0d0d0d;
 }
 
-/* Raster export of Figma frame 70:637 — 1× + 2× PNG, see detail.html srcset. */
+/* Raster export of Figma frame 70:637 — picture: 4× WebP (laptop 2dppx+); img: 1×/2× PNG srcset. */
 .detail__media.detail__media--static {
   min-height: 0;
   line-height: 0;
 }
 
+.detail__media.detail__media--static picture,
 .detail__media.detail__media--static .detail__media__img {
   display: block;
   width: 100%;
