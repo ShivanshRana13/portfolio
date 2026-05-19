@@ -85,8 +85,44 @@ function bindDetailScroll(onScroll) {
   }
 }
 
+/** Pixels from the bottom treated as “scroll complete” for the scroll-up control. */
+const SCROLL_END_THRESHOLD_PX = 4;
+
 /**
- * Figma 97:2081 — bar width = fraction of page still below the fold (full at top, shrinks on scroll).
+ * Scroll back to the first fold (top of the detail page / hero rail).
+ * `body.detail` is the scroll container (`overflow-y: auto`); set every root to 0.
+ */
+function scrollDetailToTop() {
+  const reduceMotionMq = window.matchMedia("(prefers-reduced-motion: reduce)");
+  const behavior = reduceMotionMq.matches === true ? "auto" : "smooth";
+  const scrollOpts = { top: 0, left: 0, behavior: behavior };
+
+  const firstFold =
+    document.querySelector(".detail__left-top") ||
+    document.querySelector(".detail-layout");
+  if (firstFold !== null) {
+    firstFold.scrollIntoView({ behavior: behavior, block: "start", inline: "nearest" });
+  }
+
+  const roots = [document.scrollingElement, document.documentElement, document.body];
+  for (let i = 0; i < roots.length; i += 1) {
+    const el = roots[i];
+    if (el === null) {
+      continue;
+    }
+    if (typeof el.scrollTo === "function") {
+      el.scrollTo(scrollOpts);
+    } else {
+      el.scrollTop = 0;
+      el.scrollLeft = 0;
+    }
+  }
+
+  window.scrollTo(scrollOpts);
+}
+
+/**
+ * Figma 97:2081 — bar width = unread portion; at end → Figma 102:2105 scroll-up pill (desktop + mobile).
  */
 function initScrollLevelIndicator() {
   const noop = function () {};
@@ -96,12 +132,19 @@ function initScrollLevelIndicator() {
   }
 
   const wrapper = document.getElementById("detail-scroll-level");
+  const track = document.getElementById("detail-scroll-track");
+  const scrollUpBtn = document.getElementById("detail-scroll-up");
   if (wrapper === null) {
     return noop;
   }
 
   const narrowLayoutMq = window.matchMedia("(max-width: 900px)");
   const visibleClass = "detail__scroll-level--visible";
+  const completeClass = "detail__scroll-level--complete";
+
+  if (scrollUpBtn !== null) {
+    scrollUpBtn.addEventListener("click", scrollDetailToTop);
+  }
 
   function apply() {
     const maxScroll = getDetailMaxScrollPx();
@@ -112,9 +155,34 @@ function initScrollLevelIndicator() {
       remaining = 1 - scrolled;
     }
 
+    const atEnd =
+      maxScroll > 0.5 && maxScroll - y <= SCROLL_END_THRESHOLD_PX;
+
     wrapper.style.setProperty("--detail-scroll-remaining", remaining.toFixed(4));
-    const pct = Math.max(0, Math.min(100, Math.round(remaining * 100)));
-    wrapper.setAttribute("aria-valuenow", String(pct));
+    wrapper.classList.toggle(completeClass, atEnd);
+
+    if (scrollUpBtn !== null) {
+      scrollUpBtn.hidden = !atEnd;
+    }
+
+    if (track !== null) {
+      track.setAttribute("aria-hidden", atEnd ? "true" : "false");
+    }
+
+    if (atEnd) {
+      wrapper.removeAttribute("role");
+      wrapper.removeAttribute("aria-valuemin");
+      wrapper.removeAttribute("aria-valuemax");
+      wrapper.removeAttribute("aria-valuenow");
+      wrapper.removeAttribute("aria-label");
+    } else {
+      const pct = Math.max(0, Math.min(100, Math.round(remaining * 100)));
+      wrapper.setAttribute("role", "progressbar");
+      wrapper.setAttribute("aria-valuemin", "0");
+      wrapper.setAttribute("aria-valuemax", "100");
+      wrapper.setAttribute("aria-valuenow", String(pct));
+      wrapper.setAttribute("aria-label", "How much content is left to scroll");
+    }
 
     if (narrowLayoutMq.matches === true) {
       const hasScrolled = y > 0;

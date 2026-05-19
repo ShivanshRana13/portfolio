@@ -247,6 +247,55 @@ body.detail {
   transition: width 0.12s ease-out;
 }
 
+/* Figma 102:2105 — shown when the page is scrolled to the end. */
+.detail__scroll-up {
+  display: none;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 8px 12px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 43px;
+  background-color: #ffffff;
+  color: #000000;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: normal;
+  cursor: pointer;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0.08);
+}
+
+.detail__scroll-up-icon {
+  display: flex;
+  flex-shrink: 0;
+  width: 16px;
+  height: 16px;
+  align-items: center;
+  justify-content: center;
+}
+
+.detail__scroll-up-icon svg {
+  display: block;
+  width: 16px;
+  height: 16px;
+}
+
+.detail__scroll-up-label {
+  flex-shrink: 0;
+}
+
+.detail__scroll-level--complete .detail__scroll-track {
+  display: none;
+}
+
+.detail__scroll-level--complete .detail__scroll-up {
+  display: inline-flex;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .detail__scroll-bar {
     transition: none;
@@ -421,9 +470,18 @@ body.detail {
     height: 4px;
   }
 
-  .detail__scroll-level.detail__scroll-level--visible {
+  .detail__scroll-level.detail__scroll-level--visible,
+  .detail__scroll-level.detail__scroll-level--complete {
     opacity: 1;
     visibility: visible;
+    pointer-events: auto;
+  }
+
+  /* Complete state uses the button pill (102:2105), not the progress pill wrapper. */
+  .detail__scroll-level.detail__scroll-level--complete {
+    padding: 0;
+    background: transparent;
+    border: none;
   }
 
   /*

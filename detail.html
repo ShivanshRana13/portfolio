@@ -14,7 +14,7 @@
       rel="stylesheet"
     />
     <link rel="stylesheet" href="./styles.css?v=10" />
-    <link rel="stylesheet" href="./detail.css?v=54" />
+    <link rel="stylesheet" href="./detail.css?v=55" />
   </head>
   <body class="detail">
     <script>
@@ -61,9 +61,25 @@
             aria-valuenow="100"
             aria-label="How much content is left to scroll"
           >
-            <div class="detail__scroll-shell">
-              <div class="detail__scroll-bar"></div>
+            <div class="detail__scroll-track" id="detail-scroll-track">
+              <div class="detail__scroll-shell">
+                <div class="detail__scroll-bar"></div>
+              </div>
             </div>
+            <button
+              type="button"
+              class="detail__scroll-up"
+              id="detail-scroll-up"
+              aria-label="Scroll up"
+              hidden
+            >
+              <span class="detail__scroll-up-icon" aria-hidden="true">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" focusable="false">
+                  <path d="M8 14V2M14 7L8 2L2 7" stroke="currentColor" stroke-width="1" />
+                </svg>
+              </span>
+              <span class="detail__scroll-up-label">Scroll up</span>
+            </button>
           </div>
         </div>
       </aside>
@@ -177,6 +193,6 @@
       </main>
     </div>
     <script src="./cursor.js" defer></script>
-    <script src="./detail.js?v=12" defer></script>
+    <script src="./detail.js?v=14" defer></script>
   </body>
 </html>
