@@ -51,8 +51,7 @@ function initDetailPage() {
 }
 
 /**
- * With `overflow-y: auto` on `body`, scroll offset is often on `document.body` or
- * `document.documentElement`, not `window.scrollY`. Use the max of all sources.
+ * Scroll offset — body is the scroll container on the detail page.
  */
 function getDetailScrollY() {
   const w = window.scrollY || window.pageYOffset || 0;
@@ -60,7 +59,9 @@ function getDetailScrollY() {
   const b = document.body;
   const r = root !== null && typeof root.scrollTop === "number" ? root.scrollTop : 0;
   const bodyTop = b !== null && typeof b.scrollTop === "number" ? b.scrollTop : 0;
-  const y = Math.max(w, r, bodyTop);
+  const se = document.scrollingElement;
+  const seTop = se !== null && typeof se.scrollTop === "number" ? se.scrollTop : 0;
+  const y = Math.max(w, r, bodyTop, seTop);
   return y < 0 ? 0 : y;
 }
 
@@ -75,22 +76,32 @@ function getDetailMaxScrollPx() {
   return Math.max(0, sh - vh);
 }
 
+function bindDetailScroll(onScroll) {
+  window.addEventListener("scroll", onScroll, { passive: true, capture: true });
+  document.addEventListener("scroll", onScroll, { passive: true, capture: true });
+  document.documentElement.addEventListener("scroll", onScroll, { passive: true });
+  if (document.body !== null) {
+    document.body.addEventListener("scroll", onScroll, { passive: true });
+  }
+}
+
 /**
- * Desktop: rail pill (Figma 84:105). Mobile: fixed bottom pill (Figma 97:2081) once user scrolls.
+ * Figma 97:2081 — bar width = fraction of page still below the fold (full at top, shrinks on scroll).
  */
 function initScrollLevelIndicator() {
+  const noop = function () {};
+
   if (!document.body.classList.contains("detail")) {
-    return;
+    return noop;
   }
 
   const wrapper = document.getElementById("detail-scroll-level");
   if (wrapper === null) {
-    return;
+    return noop;
   }
 
   const narrowLayoutMq = window.matchMedia("(max-width: 900px)");
   const visibleClass = "detail__scroll-level--visible";
-  let rafId = 0;
 
   function apply() {
     const maxScroll = getDetailMaxScrollPx();
@@ -115,65 +126,30 @@ function initScrollLevelIndicator() {
     }
   }
 
-  function onScroll() {
-    if (rafId !== 0) {
-      return;
-    }
-    rafId = window.requestAnimationFrame(() => {
-      rafId = 0;
-      apply();
-    });
-  }
-
-  function bindScrollTargets() {
-    window.addEventListener("scroll", onScroll, { passive: true, capture: true });
-    document.addEventListener("scroll", onScroll, { passive: true, capture: true });
-    document.documentElement.addEventListener("scroll", onScroll, { passive: true });
-    if (document.body !== null) {
-      document.body.addEventListener("scroll", onScroll, { passive: true });
-    }
-  }
-
-  function scheduleApply() {
-    window.requestAnimationFrame(apply);
-  }
-
-  bindScrollTargets();
-  window.addEventListener("resize", scheduleApply);
-  window.addEventListener("orientationchange", scheduleApply);
-  if (window.visualViewport !== undefined && window.visualViewport !== null) {
-    window.visualViewport.addEventListener("resize", scheduleApply);
-  }
-
-  narrowLayoutMq.addEventListener("change", scheduleApply);
-
-  scheduleApply();
+  return apply;
 }
 
 /**
  * While the page scrolls, shrink the sticky title from the hero clamp (up to 34px)
  * down to 21px (Fibonacci) so hierarchy stays on the golden scale.
- *
- * On narrow viewports (stacked layout, matches `detail.css` max-width: 900px),
- * scroll does not change title size — typography stays fixed for mobile.
  */
 function initTitleScrollShrink() {
+  const noop = function () {};
+
   if (!document.body.classList.contains("detail")) {
-    return;
+    return noop;
   }
 
   const titleEl = document.getElementById("detail-title");
   if (titleEl === null) {
-    return;
+    return noop;
   }
 
   const reduceMotionMq = window.matchMedia("(prefers-reduced-motion: reduce)");
-  /** Aligned with `.detail-layout` single-column breakpoint in `detail.css`. */
   const narrowLayoutMq = window.matchMedia("(max-width: 900px)");
 
   let maxPx = 34;
   let scrollRangePx = 200;
-  let rafId = 0;
 
   function clearTitleScrollVars() {
     document.body.style.removeProperty("--detail-title-fs");
@@ -184,11 +160,10 @@ function initTitleScrollShrink() {
     clearTitleScrollVars();
     const px = parseFloat(window.getComputedStyle(titleEl).fontSize);
     maxPx = Number.isFinite(px) && px > TITLE_MIN_PX ? px : 34;
-    /* Shorter band = visible shrink as soon as the user scrolls a few pixels. */
     scrollRangePx = Math.min(280, Math.max(140, Math.round(window.innerHeight * 0.22)));
   }
 
-  function applyScrollDrivenTitle() {
+  function apply() {
     if (reduceMotionMq.matches === true || narrowLayoutMq.matches === true) {
       clearTitleScrollVars();
       return;
@@ -196,9 +171,37 @@ function initTitleScrollShrink() {
     const y = getDetailScrollY();
     const tRaw = scrollRangePx <= 0 ? 1 : y / scrollRangePx;
     const t = tRaw <= 0 ? 0 : tRaw >= 1 ? 1 : tRaw;
-    /* Linear = first scroll pixel maps immediately to size change (CSS transition smooths). */
     const fs = maxPx - (maxPx - TITLE_MIN_PX) * t;
     document.body.style.setProperty("--detail-title-fs", `${fs}px`);
+  }
+
+  function scheduleMeasureAndApply() {
+    window.requestAnimationFrame(() => {
+      measureTitleMaxPx();
+      apply();
+    });
+  }
+
+  scheduleMeasureAndApply();
+  reduceMotionMq.addEventListener("change", scheduleMeasureAndApply);
+  narrowLayoutMq.addEventListener("change", scheduleMeasureAndApply);
+  window.addEventListener("resize", scheduleMeasureAndApply);
+
+  return apply;
+}
+
+function initDetailScroll() {
+  if (!document.body.classList.contains("detail")) {
+    return;
+  }
+
+  const applyScrollLevel = initScrollLevelIndicator();
+  const applyTitle = initTitleScrollShrink();
+  let rafId = 0;
+
+  function onScrollFrame() {
+    applyScrollLevel();
+    applyTitle();
   }
 
   function onScroll() {
@@ -207,46 +210,29 @@ function initTitleScrollShrink() {
     }
     rafId = window.requestAnimationFrame(() => {
       rafId = 0;
-      applyScrollDrivenTitle();
+      onScrollFrame();
     });
   }
 
-  function bindScrollTargets() {
-    window.addEventListener("scroll", onScroll, { passive: true, capture: true });
-    document.addEventListener("scroll", onScroll, { passive: true, capture: true });
-    document.documentElement.addEventListener("scroll", onScroll, { passive: true });
-    if (document.body !== null) {
-      document.body.addEventListener("scroll", onScroll, { passive: true });
-    }
-  }
-
-  function scheduleMeasureAndApply() {
-    window.requestAnimationFrame(() => {
-      measureTitleMaxPx();
-      applyScrollDrivenTitle();
-    });
-  }
-
-  scheduleMeasureAndApply();
-  bindScrollTargets();
-
+  bindDetailScroll(onScroll);
   window.addEventListener("resize", () => {
-    scheduleMeasureAndApply();
+    window.requestAnimationFrame(onScrollFrame);
   });
+  window.addEventListener("orientationchange", () => {
+    window.requestAnimationFrame(onScrollFrame);
+  });
+  if (window.visualViewport !== undefined && window.visualViewport !== null) {
+    window.visualViewport.addEventListener("resize", () => {
+      window.requestAnimationFrame(onScrollFrame);
+    });
+  }
 
-  reduceMotionMq.addEventListener("change", () => {
-    scheduleMeasureAndApply();
-  });
-
-  narrowLayoutMq.addEventListener("change", () => {
-    scheduleMeasureAndApply();
-  });
+  window.requestAnimationFrame(onScrollFrame);
 }
 
 function boot() {
   initDetailPage();
-  initTitleScrollShrink();
-  initScrollLevelIndicator();
+  initDetailScroll();
 }
 
 if (document.readyState === "loading") {
