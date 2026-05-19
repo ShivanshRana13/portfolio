@@ -64,6 +64,92 @@ function getDetailScrollY() {
   return y < 0 ? 0 : y;
 }
 
+function getDetailMaxScrollPx() {
+  const el = document.documentElement;
+  const b = document.body;
+  const sh = Math.max(el.scrollHeight, b.scrollHeight);
+  const vh =
+    window.visualViewport !== undefined && typeof window.visualViewport.height === "number"
+      ? window.visualViewport.height
+      : window.innerHeight;
+  return Math.max(0, sh - vh);
+}
+
+/**
+ * Desktop: rail pill (Figma 84:105). Mobile: fixed bottom pill (Figma 97:2081) once user scrolls.
+ */
+function initScrollLevelIndicator() {
+  if (!document.body.classList.contains("detail")) {
+    return;
+  }
+
+  const wrapper = document.getElementById("detail-scroll-level");
+  if (wrapper === null) {
+    return;
+  }
+
+  const narrowLayoutMq = window.matchMedia("(max-width: 900px)");
+  const visibleClass = "detail__scroll-level--visible";
+  let rafId = 0;
+
+  function apply() {
+    const maxScroll = getDetailMaxScrollPx();
+    const y = getDetailScrollY();
+    let remaining = 1;
+    if (maxScroll > 0.5) {
+      const scrolled = Math.min(1, Math.max(0, y / maxScroll));
+      remaining = 1 - scrolled;
+    }
+
+    wrapper.style.setProperty("--detail-scroll-remaining", remaining.toFixed(4));
+    const pct = Math.max(0, Math.min(100, Math.round(remaining * 100)));
+    wrapper.setAttribute("aria-valuenow", String(pct));
+
+    if (narrowLayoutMq.matches === true) {
+      const hasScrolled = y > 0;
+      wrapper.classList.toggle(visibleClass, hasScrolled);
+      wrapper.setAttribute("aria-hidden", hasScrolled ? "false" : "true");
+    } else {
+      wrapper.classList.remove(visibleClass);
+      wrapper.removeAttribute("aria-hidden");
+    }
+  }
+
+  function onScroll() {
+    if (rafId !== 0) {
+      return;
+    }
+    rafId = window.requestAnimationFrame(() => {
+      rafId = 0;
+      apply();
+    });
+  }
+
+  function bindScrollTargets() {
+    window.addEventListener("scroll", onScroll, { passive: true, capture: true });
+    document.addEventListener("scroll", onScroll, { passive: true, capture: true });
+    document.documentElement.addEventListener("scroll", onScroll, { passive: true });
+    if (document.body !== null) {
+      document.body.addEventListener("scroll", onScroll, { passive: true });
+    }
+  }
+
+  function scheduleApply() {
+    window.requestAnimationFrame(apply);
+  }
+
+  bindScrollTargets();
+  window.addEventListener("resize", scheduleApply);
+  window.addEventListener("orientationchange", scheduleApply);
+  if (window.visualViewport !== undefined && window.visualViewport !== null) {
+    window.visualViewport.addEventListener("resize", scheduleApply);
+  }
+
+  narrowLayoutMq.addEventListener("change", scheduleApply);
+
+  scheduleApply();
+}
+
 /**
  * While the page scrolls, shrink the sticky title from the hero clamp (up to 34px)
  * down to 21px (Fibonacci) so hierarchy stays on the golden scale.
@@ -160,6 +246,7 @@ function initTitleScrollShrink() {
 function boot() {
   initDetailPage();
   initTitleScrollShrink();
+  initScrollLevelIndicator();
 }
 
 if (document.readyState === "loading") {

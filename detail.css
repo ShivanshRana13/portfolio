@@ -44,7 +44,7 @@ body.detail {
   position: relative;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: flex-start;
   box-sizing: border-box;
   padding: 64px;
   background: #ffffff;
@@ -57,6 +57,7 @@ body.detail {
   align-items: flex-start;
   gap: 32px;
   width: 100%;
+  flex-shrink: 0;
 }
 
 /* Desktop: title rail fills the viewport height and stays pinned while the page scrolls. */
@@ -72,7 +73,7 @@ body.detail {
   }
 }
 
-/* Back control: 44px circle → mirrored arrow on hover (desktop). Touch: icon only, see hover: none */
+/* Back: arrow visible by default; hover reveals black circle behind + white icon. */
 .detail__back {
   position: relative;
   display: block;
@@ -89,26 +90,27 @@ body.detail {
 .detail__back-circle {
   position: absolute;
   inset: 0;
+  z-index: 0;
   border-radius: 50%;
-  background-color: currentColor;
-  opacity: 0.88;
+  background-color: #000000;
+  opacity: 0;
+  transform: scale(0.88);
   transition:
     opacity 280ms ease,
     transform 340ms cubic-bezier(0.22, 1, 0.32, 1);
 }
 
 .detail__back-arrow {
-  position: absolute;
-  inset: 0;
+  position: relative;
+  z-index: 1;
   display: flex;
   align-items: center;
   justify-content: center;
-  opacity: 0;
-  transform: scaleX(-1) scale(0.88);
+  transform: scaleX(-1);
+  color: inherit;
   transition:
-    opacity 320ms ease,
-    transform 380ms cubic-bezier(0.22, 1, 0.32, 1);
-  pointer-events: none;
+    color 280ms ease,
+    transform 340ms cubic-bezier(0.22, 1, 0.32, 1);
 }
 
 .detail__back-arrow svg {
@@ -118,31 +120,27 @@ body.detail {
 }
 
 @media (hover: hover) {
-  .detail__back:hover .detail__back-circle {
-    opacity: 0;
-    transform: scale(0.45);
+  .detail__back:hover .detail__back-circle,
+  .detail__back:focus-visible .detail__back-circle {
+    opacity: 1;
+    transform: scale(1);
   }
 
-  .detail__back:hover .detail__back-arrow {
-    opacity: 1;
-    transform: scaleX(-1) scale(1);
+  .detail__back:hover,
+  .detail__back:focus-visible {
+    color: #ffffff;
+  }
+
+  .detail__back:hover .detail__back-arrow,
+  .detail__back:focus-visible .detail__back-arrow {
+    transform: scaleX(-1) scale(0.72);
   }
 }
 
-/* Phones / touch: no hover — hide circle, show mirrored arrow only */
+/* Touch: no hover — arrow only, no circle. */
 @media (hover: none) {
-  .detail__back:active {
-    opacity: 0.88;
-  }
-
   .detail__back-circle {
     display: none;
-  }
-
-  .detail__back-arrow {
-    opacity: 1;
-    transform: scaleX(-1) scale(1);
-    transition: none;
   }
 }
 
@@ -193,6 +191,69 @@ body.detail {
   font-size: var(--detail-fs-body);
   font-weight: 500;
   line-height: normal;
+  flex-shrink: 0;
+}
+
+.detail__left-bottom {
+  flex-shrink: 0;
+  margin-top: auto;
+}
+
+/*
+ * Scroll level — outer pill + inner track; bar width = unread portion of the page.
+ */
+.detail__scroll-level {
+  --detail-scroll-remaining: 1;
+  flex-shrink: 0;
+  box-sizing: border-box;
+  width: auto;
+  height: auto;
+  align-self: flex-start;
+  padding: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 999px;
+}
+
+.detail__scroll-shell {
+  box-sizing: border-box;
+  width: 44px;
+  height: 2px;
+  flex-shrink: 0;
+  border: none;
+  border-radius: 999px;
+  box-shadow: inset 0 0 0 1px #000000;
+  overflow: hidden;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  align-items: stretch;
+}
+
+.detail__scroll-bar {
+  box-sizing: border-box;
+  height: 100%;
+  width: calc(var(--detail-scroll-remaining) * 100%);
+  min-width: 0;
+  border-radius: 999px;
+  background-color: #000000;
+  transform-origin: 100% 50%;
+  transition: width 0.12s ease-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .detail__scroll-bar {
+    transition: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) and (max-width: 900px) {
+  .detail__scroll-level {
+    transition: none;
+  }
 }
 
 .detail__right {
@@ -321,6 +382,42 @@ body.detail {
   }
 
   /*
+   * Mobile scroll pill (Figma 97:2081) — fixed, bottom center, 24px from edge; shown on scroll.
+   */
+  .detail__left-bottom {
+    position: fixed;
+    left: 50%;
+    right: auto;
+    bottom: max(24px, env(safe-area-inset-bottom, 0px));
+    z-index: 50;
+    margin-top: 0;
+    transform: translateX(-50%);
+    pointer-events: none;
+  }
+
+  .detail__scroll-level {
+    padding: 12px;
+    align-self: center;
+    opacity: 0;
+    visibility: hidden;
+    transition:
+      opacity 0.2s ease,
+      visibility 0.2s ease;
+  }
+
+  .detail__scroll-level.detail__scroll-level--visible {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  .detail__scroll-shell {
+    width: 84px;
+    height: 4px;
+    border: 1px solid #000000;
+    box-shadow: none;
+  }
+
+  /*
    * Narrow layout: title size is fixed (no scroll-driven --detail-title-fs).
    * Matches `narrowLayoutMq` in `detail.js`.
    * Use the desktop clamp *max* — 5vw on narrow screens only reaches 21px otherwise.
@@ -343,10 +440,6 @@ body.detail {
 
   .detail__left-top {
     gap: 24px;
-  }
-
-  .detail__meta {
-    margin-top: 24px;
   }
 
   .detail__back {
