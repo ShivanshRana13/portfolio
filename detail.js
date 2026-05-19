@@ -200,14 +200,9 @@ function initScrollLevelIndicator() {
       wrapper.setAttribute("aria-label", "How much content is left to scroll");
     }
 
-    if (narrowLayoutMq.matches === true) {
-      const hasScrolled = y > 0;
-      wrapper.classList.toggle(visibleClass, hasScrolled);
-      wrapper.setAttribute("aria-hidden", hasScrolled ? "false" : "true");
-    } else {
-      wrapper.classList.remove(visibleClass);
-      wrapper.removeAttribute("aria-hidden");
-    }
+    const hasScrolled = y > 0;
+    wrapper.classList.toggle(visibleClass, hasScrolled);
+    wrapper.setAttribute("aria-hidden", hasScrolled ? "false" : "true");
   }
 
   return apply;

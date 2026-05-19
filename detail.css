@@ -340,6 +340,27 @@ body.detail {
     height: 32px;
     min-height: 32px;
     width: max-content;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition:
+      opacity 0.2s ease,
+      visibility 0.2s ease;
+  }
+
+  .detail__scroll-level:not(.detail__scroll-level--visible):not(.detail__scroll-level--complete) {
+    height: 0;
+    min-height: 0;
+    overflow: hidden;
+  }
+
+  .detail__scroll-level.detail__scroll-level--visible,
+  .detail__scroll-level.detail__scroll-level--complete {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+    height: 32px;
+    min-height: 32px;
   }
 
   .detail__scroll-track,
@@ -385,6 +406,12 @@ body.detail {
 @media (prefers-reduced-motion: reduce) {
   .detail__scroll-bar {
     transition: none;
+  }
+
+  @media (min-width: 901px) {
+    .detail__scroll-level {
+      transition: none;
+    }
   }
 }
 
