@@ -380,7 +380,8 @@ body.theme-dark .scene.scene--patent-cube-active .patent-cube__viewport {
   pointer-events: auto;
   background: var(--sticky-surface);
   color: var(--sticky-ink);
-  border: 1px solid var(--sticky-border);
+  border: 2px solid var(--sticky-border);
+  border-radius: 8px;
   padding: 20px;
   user-select: none;
   touch-action: none;
