@@ -203,6 +203,11 @@ body.detail {
   width: 100%;
 }
 
+/* Desktop: pass-through wrapper; mobile fixes height in @media (max-width: 900px). */
+.detail__scroll-slot {
+  display: contents;
+}
+
 /*
  * Scroll indicator — desktop: track only, left-aligned (no outer pill).
  * Mobile pill: Figma 97:2081 in @media (max-width: 900px).
@@ -499,6 +504,17 @@ body.detail {
     align-items: center;
     transform: translateX(-50%);
     pointer-events: none;
+  }
+
+  /* Outer slot: fixed 32px tall; pill inside keeps its own 12px padding (Figma 97:2081). */
+  .detail__scroll-slot {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    height: 32px;
+    min-height: 32px;
+    width: max-content;
   }
 
   .detail__scroll-level {
