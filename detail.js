@@ -34,6 +34,11 @@ const TITLE_MIN_PX = 21;
 /** Mobile scrolled title — Figma 105:188 “scroll”. */
 const MOBILE_TITLE_MIN_PX = 14;
 
+/** Downward movement (one frame) in pinned header → hide back immediately. */
+const MOBILE_SCROLL_DOWN_PX = 2;
+/** Cumulative upward movement before revealing back (Figma 105:203 “scroll up”). */
+const MOBILE_SCROLL_REVEAL_PX = 6;
+
 function initDetailPage() {
   const params = new URLSearchParams(window.location.search);
   let tile = params.get("tile") || "education";
@@ -233,6 +238,9 @@ function initTitleScrollShrink() {
 
   let maxPx = 34;
   let lastScrollY = 0;
+  let mobileBarMode = MOBILE_HEADER_LANDING;
+  let wasPastTitleSection = false;
+  let mobileScrollUpCarryPx = 0;
 
   function getFirstFoldPx() {
     if (
@@ -256,6 +264,15 @@ function initTitleScrollShrink() {
       MOBILE_HEADER_SCROLL,
       MOBILE_HEADER_SCROLL_UP
     );
+  }
+
+  /** Only swap mobile header class when mode changes — avoids replaying CSS transitions every scroll tick. */
+  function setMobileHeaderMode(nextMode) {
+    if (document.body.classList.contains(nextMode) === true) {
+      return;
+    }
+    clearMobileHeaderModes();
+    document.body.classList.add(nextMode);
   }
 
   function getMobileTitleSectionHeightPx() {
@@ -283,8 +300,9 @@ function initTitleScrollShrink() {
 
   function applyMobile() {
     if (titleSectionEl === null) {
-      clearMobileHeaderModes();
-      document.body.classList.add(MOBILE_HEADER_LANDING);
+      wasPastTitleSection = false;
+      mobileBarMode = MOBILE_HEADER_LANDING;
+      setMobileHeaderMode(MOBILE_HEADER_LANDING);
       clearTitleScrollVars();
       document.body.style.removeProperty("--detail-mobile-header-spacer");
       return;
@@ -293,31 +311,44 @@ function initTitleScrollShrink() {
     const y = getDetailScrollY();
     const titleSectionH = getMobileTitleSectionHeightPx();
     const pastTitleSection = titleSectionH > 0 && y > titleSectionH;
-    let scrollDir = "none";
-    if (y > lastScrollY + 0.5) {
-      scrollDir = "down";
-    } else if (y < lastScrollY - 0.5) {
-      scrollDir = "up";
-    }
-    lastScrollY = y;
-
-    clearMobileHeaderModes();
 
     if (pastTitleSection !== true) {
-      document.body.classList.add(MOBILE_HEADER_LANDING);
+      wasPastTitleSection = false;
+      mobileScrollUpCarryPx = 0;
+      mobileBarMode = MOBILE_HEADER_LANDING;
+      setMobileHeaderMode(MOBILE_HEADER_LANDING);
       clearTitleScrollVars();
       document.body.style.removeProperty("--detail-mobile-header-spacer");
+      lastScrollY = y;
       return;
     }
 
     document.body.style.setProperty("--detail-title-fs", `${MOBILE_TITLE_MIN_PX}px`);
     document.body.style.setProperty("--detail-mobile-header-spacer", `${titleSectionH}px`);
 
-    if (scrollDir === "up") {
-      document.body.classList.add(MOBILE_HEADER_SCROLL_UP);
-    } else {
-      document.body.classList.add(MOBILE_HEADER_SCROLL);
+    if (wasPastTitleSection === false) {
+      wasPastTitleSection = true;
+      mobileScrollUpCarryPx = 0;
+      mobileBarMode = MOBILE_HEADER_SCROLL;
+      lastScrollY = y;
+      setMobileHeaderMode(mobileBarMode);
+      return;
     }
+
+    const deltaY = y - lastScrollY;
+    lastScrollY = y;
+
+    if (deltaY > MOBILE_SCROLL_DOWN_PX) {
+      mobileScrollUpCarryPx = 0;
+      mobileBarMode = MOBILE_HEADER_SCROLL;
+    } else if (deltaY < 0) {
+      mobileScrollUpCarryPx += -deltaY;
+      if (mobileScrollUpCarryPx >= MOBILE_SCROLL_REVEAL_PX) {
+        mobileBarMode = MOBILE_HEADER_SCROLL_UP;
+      }
+    }
+
+    setMobileHeaderMode(mobileBarMode);
   }
 
   function applyDesktop() {
@@ -335,12 +366,12 @@ function initTitleScrollShrink() {
   }
 
   function apply() {
-    clearMobileHeaderModes();
-
     if (reduceMotionMq.matches === true) {
       clearTitleScrollVars();
       if (narrowLayoutMq.matches === true) {
-        document.body.classList.add(MOBILE_HEADER_LANDING);
+        setMobileHeaderMode(MOBILE_HEADER_LANDING);
+      } else {
+        clearMobileHeaderModes();
       }
       return;
     }
@@ -350,12 +381,16 @@ function initTitleScrollShrink() {
       return;
     }
 
+    clearMobileHeaderModes();
     applyDesktop();
   }
 
   function scheduleMeasureAndApply() {
     window.requestAnimationFrame(() => {
       lastScrollY = getDetailScrollY();
+      mobileBarMode = MOBILE_HEADER_LANDING;
+      wasPastTitleSection = false;
+      mobileScrollUpCarryPx = 0;
       measureTitleMaxPx();
       apply();
     });

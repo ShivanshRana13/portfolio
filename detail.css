@@ -624,43 +624,70 @@ body.detail {
     display: block;
   }
 
-  /* Scroll — 14px title only, back hidden. */
-  body.detail--mobile-scroll .detail__back {
-    display: none;
-  }
-
-  body.detail--mobile-scroll .detail__header-row {
-    gap: 0;
-  }
-
-  body.detail--mobile-scroll .detail__meta {
-    display: none;
-  }
-
-  /* Scroll up — back + title row, underlined meta. */
+  body.detail--mobile-scroll .detail__header-row,
   body.detail--mobile-scroll-up .detail__header-row {
     flex-direction: row;
     align-items: center;
-    gap: 16px;
+    gap: 0;
   }
 
-  body.detail--mobile-scroll-up .detail__back {
-    display: block;
-    flex-shrink: 0;
-  }
-
+  body.detail--mobile-scroll .detail__title,
   body.detail--mobile-scroll-up .detail__title {
     flex: 1 1 0;
     min-width: 0;
   }
 
+  body.detail--mobile-scroll .detail__meta,
   body.detail--mobile-scroll-up .detail__meta {
+    display: none;
+  }
+
+  /*
+   * Pinned-header back (`.detail__header-row .detail__back`) — not the bottom scroll-up pill.
+   * Scroll-down: 0 width; scroll-up: 44px + 16px margin pushes title right (300ms).
+   */
+  body.detail--mobile-scroll .detail__header-row .detail__back,
+  body.detail--mobile-scroll-up .detail__header-row .detail__back {
     display: block;
-    font-size: 14px;
-    font-weight: 500;
-    text-decoration: underline;
-    text-underline-offset: 2px;
-    color: #120704;
+    flex-shrink: 0;
+    box-sizing: border-box;
+    width: 44px;
+    min-width: 0;
+    height: 44px;
+    overflow: hidden;
+    opacity: 1;
+    margin-right: 16px;
+    pointer-events: auto;
+    transition:
+      width 300ms ease,
+      margin-right 300ms ease,
+      opacity 300ms ease;
+  }
+
+  body.detail--mobile-scroll .detail__header-row .detail__back {
+    width: 0;
+    margin-right: 0;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  body.detail--mobile-scroll-up .detail__header-row .detail__back {
+    width: 44px;
+    margin-right: 16px;
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  body.detail--mobile-scroll .detail__header-row .detail__back-arrow {
+    transform: scaleX(-1);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    body.detail--mobile-scroll .detail__header-row .detail__back,
+    body.detail--mobile-scroll-up .detail__header-row .detail__back {
+      transition-duration: 0.01ms;
+    }
+
   }
 
   .detail__left {
