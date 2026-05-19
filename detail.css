@@ -60,6 +60,23 @@ body.detail {
   flex-shrink: 0;
 }
 
+.detail__header-row {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 32px;
+  width: 100%;
+}
+
+.detail__header-rule {
+  display: none;
+  width: 100%;
+  height: 0;
+  margin: 0;
+  border: none;
+  border-top: 1px solid rgba(0, 0, 0, 0.12);
+}
+
 /* Desktop: title rail fills the viewport height and stays pinned while the page scrolls. */
 @media (min-width: 901px) {
   .detail__left {
@@ -165,9 +182,13 @@ body.detail {
 }
 
 @media (prefers-reduced-motion: reduce) and (max-width: 900px) {
-  .detail__title {
-    /* Same cap as desktop hero when clamp hits max (5vw is tiny on narrow viewports). */
+  body.detail--mobile-landing .detail__title {
     font-size: var(--detail-fs-title-max) !important;
+  }
+
+  body.detail--mobile-scroll .detail__title,
+  body.detail--mobile-scroll-up .detail__title {
+    font-size: 14px !important;
   }
 }
 
@@ -552,15 +573,94 @@ body.detail {
   }
 
   /*
-   * Narrow layout: title size is fixed (no scroll-driven --detail-title-fs).
-   * Matches `narrowLayoutMq` in `detail.js`.
-   * Use the desktop clamp *max* — 5vw on narrow screens only reaches 21px otherwise.
+   * Mobile header — Figma 105:221: “scroll” (105:188) / “scroll up” (105:203).
    */
+  .detail__header-row {
+    gap: 24px;
+  }
+
   .detail__title {
-    font-size: var(--detail-fs-title-max);
+    font-size: var(--detail-title-fs, var(--detail-fs-title-max));
     font-weight: 600;
+    color: #120704;
     transition: none;
     overflow-wrap: anywhere;
+  }
+
+  body.detail--mobile-scroll .detail__left,
+  body.detail--mobile-scroll-up .detail__left {
+    padding-top: 0;
+  }
+
+  body.detail--mobile-scroll .detail__left::before,
+  body.detail--mobile-scroll-up .detail__left::before {
+    content: "";
+    display: block;
+    height: var(--detail-mobile-header-spacer, 0);
+  }
+
+  body.detail--mobile-scroll .detail__left-top,
+  body.detail--mobile-scroll-up .detail__left-top {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 40;
+    box-sizing: border-box;
+    padding-top: max(16px, env(safe-area-inset-top, 0px));
+    padding-right: max(24px, env(safe-area-inset-right, 0px));
+    padding-bottom: 16px;
+    padding-left: max(24px, env(safe-area-inset-left, 0px));
+    background-color: #ffffff;
+  }
+
+  body.detail--mobile-scroll .detail__title,
+  body.detail--mobile-scroll-up .detail__title {
+    font-size: 14px;
+  }
+
+  body.detail--mobile-scroll .detail__header-rule,
+  body.detail--mobile-scroll-up .detail__header-rule {
+    display: block;
+  }
+
+  /* Scroll — 14px title only, back hidden. */
+  body.detail--mobile-scroll .detail__back {
+    display: none;
+  }
+
+  body.detail--mobile-scroll .detail__header-row {
+    gap: 0;
+  }
+
+  body.detail--mobile-scroll .detail__meta {
+    display: none;
+  }
+
+  /* Scroll up — back + title row, underlined meta. */
+  body.detail--mobile-scroll-up .detail__header-row {
+    flex-direction: row;
+    align-items: center;
+    gap: 16px;
+  }
+
+  body.detail--mobile-scroll-up .detail__back {
+    display: block;
+    flex-shrink: 0;
+  }
+
+  body.detail--mobile-scroll-up .detail__title {
+    flex: 1 1 0;
+    min-width: 0;
+  }
+
+  body.detail--mobile-scroll-up .detail__meta {
+    display: block;
+    font-size: 14px;
+    font-weight: 500;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    color: #120704;
   }
 
   .detail__left {

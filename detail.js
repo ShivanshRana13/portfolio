@@ -28,8 +28,11 @@ const TILE_COPY = {
 
 const ALLOWED_TILES = Object.keys(TILE_COPY);
 
-/** Fully scrolled title: 21px (Fibonacci / φ step with section labels). */
+/** Desktop scrolled title: 21px (Fibonacci / φ step with section labels). */
 const TITLE_MIN_PX = 21;
+
+/** Mobile scrolled title — Figma 105:188 “scroll”. */
+const MOBILE_TITLE_MIN_PX = 14;
 
 function initDetailPage() {
   const params = new URLSearchParams(window.location.search);
@@ -204,9 +207,13 @@ function initScrollLevelIndicator() {
   return apply;
 }
 
+const MOBILE_HEADER_LANDING = "detail--mobile-landing";
+const MOBILE_HEADER_SCROLL = "detail--mobile-scroll";
+const MOBILE_HEADER_SCROLL_UP = "detail--mobile-scroll-up";
+
 /**
- * While the page scrolls, shrink the sticky title from the hero clamp (up to 34px)
- * down to 21px (Fibonacci) so hierarchy stays on the golden scale.
+ * Desktop: hero title stays at max until 50% of the first fold, then shrinks gradually to 21px by 100%.
+ * Mobile: landing → scroll (105:188) → scroll-up (105:203) on upward scroll past title section.
  */
 function initTitleScrollShrink() {
   const noop = function () {};
@@ -216,6 +223,7 @@ function initTitleScrollShrink() {
   }
 
   const titleEl = document.getElementById("detail-title");
+  const titleSectionEl = document.querySelector(".detail__left-top");
   if (titleEl === null) {
     return noop;
   }
@@ -224,34 +232,130 @@ function initTitleScrollShrink() {
   const narrowLayoutMq = window.matchMedia("(max-width: 900px)");
 
   let maxPx = 34;
-  let scrollRangePx = 200;
+  let lastScrollY = 0;
+
+  function getFirstFoldPx() {
+    if (
+      window.visualViewport !== undefined &&
+      window.visualViewport !== null &&
+      typeof window.visualViewport.height === "number"
+    ) {
+      return window.visualViewport.height;
+    }
+    return window.innerHeight;
+  }
 
   function clearTitleScrollVars() {
     document.body.style.removeProperty("--detail-title-fs");
     document.body.style.removeProperty("--detail-title-fw");
   }
 
-  function measureTitleMaxPx() {
-    clearTitleScrollVars();
-    const px = parseFloat(window.getComputedStyle(titleEl).fontSize);
-    maxPx = Number.isFinite(px) && px > TITLE_MIN_PX ? px : 34;
-    scrollRangePx = Math.min(280, Math.max(140, Math.round(window.innerHeight * 0.22)));
+  function clearMobileHeaderModes() {
+    document.body.classList.remove(
+      MOBILE_HEADER_LANDING,
+      MOBILE_HEADER_SCROLL,
+      MOBILE_HEADER_SCROLL_UP
+    );
   }
 
-  function apply() {
-    if (reduceMotionMq.matches === true || narrowLayoutMq.matches === true) {
+  function getMobileTitleSectionHeightPx() {
+    if (titleSectionEl === null) {
+      return 0;
+    }
+    return titleSectionEl.offsetHeight;
+  }
+
+  function measureTitleMaxPx() {
+    const wasMobileModes = narrowLayoutMq.matches === true;
+    if (wasMobileModes) {
+      clearMobileHeaderModes();
+      document.body.classList.add(MOBILE_HEADER_LANDING);
+    } else {
       clearTitleScrollVars();
+    }
+    const px = parseFloat(window.getComputedStyle(titleEl).fontSize);
+    const fallback = 34;
+    maxPx = Number.isFinite(px) && px > TITLE_MIN_PX ? px : fallback;
+    if (wasMobileModes) {
+      clearMobileHeaderModes();
+    }
+  }
+
+  function applyMobile() {
+    if (titleSectionEl === null) {
+      clearMobileHeaderModes();
+      document.body.classList.add(MOBILE_HEADER_LANDING);
+      clearTitleScrollVars();
+      document.body.style.removeProperty("--detail-mobile-header-spacer");
       return;
     }
+
     const y = getDetailScrollY();
-    const tRaw = scrollRangePx <= 0 ? 1 : y / scrollRangePx;
-    const t = tRaw <= 0 ? 0 : tRaw >= 1 ? 1 : tRaw;
+    const titleSectionH = getMobileTitleSectionHeightPx();
+    const pastTitleSection = titleSectionH > 0 && y > titleSectionH;
+    let scrollDir = "none";
+    if (y > lastScrollY + 0.5) {
+      scrollDir = "down";
+    } else if (y < lastScrollY - 0.5) {
+      scrollDir = "up";
+    }
+    lastScrollY = y;
+
+    clearMobileHeaderModes();
+
+    if (pastTitleSection !== true) {
+      document.body.classList.add(MOBILE_HEADER_LANDING);
+      clearTitleScrollVars();
+      document.body.style.removeProperty("--detail-mobile-header-spacer");
+      return;
+    }
+
+    document.body.style.setProperty("--detail-title-fs", `${MOBILE_TITLE_MIN_PX}px`);
+    document.body.style.setProperty("--detail-mobile-header-spacer", `${titleSectionH}px`);
+
+    if (scrollDir === "up") {
+      document.body.classList.add(MOBILE_HEADER_SCROLL_UP);
+    } else {
+      document.body.classList.add(MOBILE_HEADER_SCROLL);
+    }
+  }
+
+  function applyDesktop() {
+    const y = getDetailScrollY();
+    const firstFoldPx = getFirstFoldPx();
+    const shrinkStartPx = firstFoldPx * 0.5;
+    const shrinkRangePx = firstFoldPx - shrinkStartPx;
+    let t = 0;
+    if (y > shrinkStartPx && shrinkRangePx > 0) {
+      const tRaw = (y - shrinkStartPx) / shrinkRangePx;
+      t = tRaw <= 0 ? 0 : tRaw >= 1 ? 1 : tRaw;
+    }
     const fs = maxPx - (maxPx - TITLE_MIN_PX) * t;
     document.body.style.setProperty("--detail-title-fs", `${fs}px`);
   }
 
+  function apply() {
+    clearMobileHeaderModes();
+
+    if (reduceMotionMq.matches === true) {
+      clearTitleScrollVars();
+      if (narrowLayoutMq.matches === true) {
+        document.body.classList.add(MOBILE_HEADER_LANDING);
+      }
+      return;
+    }
+
+    if (narrowLayoutMq.matches === true) {
+      applyMobile();
+      return;
+    }
+
+    applyDesktop();
+  }
+
   function scheduleMeasureAndApply() {
     window.requestAnimationFrame(() => {
+      lastScrollY = getDetailScrollY();
       measureTitleMaxPx();
       apply();
     });
