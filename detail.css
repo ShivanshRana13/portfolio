@@ -296,6 +296,57 @@ body.detail {
   display: inline-flex;
 }
 
+/*
+ * Desktop: fixed 32px height; track width matches scroll-up button (grid sizes from button).
+ */
+@media (min-width: 901px) {
+  .detail__scroll-level {
+    display: grid;
+    height: 32px;
+    min-height: 32px;
+    width: max-content;
+  }
+
+  .detail__scroll-track,
+  .detail__scroll-up {
+    grid-area: 1 / 1;
+    align-self: center;
+    justify-self: start;
+  }
+
+  .detail__scroll-track {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    visibility: visible;
+    pointer-events: none;
+  }
+
+  .detail__scroll-shell {
+    width: 100%;
+  }
+
+  .detail__scroll-up,
+  .detail__scroll-up[hidden] {
+    display: inline-flex;
+    visibility: hidden;
+    pointer-events: none;
+    box-sizing: border-box;
+    height: 32px;
+  }
+
+  .detail__scroll-level--complete .detail__scroll-track {
+    display: flex;
+    visibility: hidden;
+  }
+
+  .detail__scroll-level--complete .detail__scroll-up {
+    visibility: visible;
+    pointer-events: auto;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .detail__scroll-bar {
     transition: none;

@@ -162,7 +162,14 @@ function initScrollLevelIndicator() {
     wrapper.classList.toggle(completeClass, atEnd);
 
     if (scrollUpBtn !== null) {
-      scrollUpBtn.hidden = !atEnd;
+      if (narrowLayoutMq.matches === true) {
+        scrollUpBtn.hidden = !atEnd;
+        scrollUpBtn.removeAttribute("tabindex");
+      } else {
+        scrollUpBtn.hidden = false;
+        scrollUpBtn.setAttribute("aria-hidden", atEnd ? "false" : "true");
+        scrollUpBtn.tabIndex = atEnd ? 0 : -1;
+      }
     }
 
     if (track !== null) {
