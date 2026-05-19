@@ -650,7 +650,13 @@ body.detail {
     font-weight: 600;
     line-height: normal;
     color: #120704;
-    overflow-wrap: anywhere;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    overflow-wrap: break-word;
   }
 
   .detail__mini-title .detail__header-rule {
