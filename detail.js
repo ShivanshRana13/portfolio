@@ -31,9 +31,6 @@ const ALLOWED_TILES = Object.keys(TILE_COPY);
 /** Desktop scrolled title: 21px (Fibonacci / φ step with section labels). */
 const TITLE_MIN_PX = 21;
 
-/** Mini title section — Figma 105:203. */
-const MOBILE_TITLE_MIN_PX = 14;
-
 /** Downward movement (one frame) past title → hide mini title section. */
 const MOBILE_MINI_TITLE_HIDE_DOWN_PX = 2;
 /** Cumulative upward movement before revealing mini title section. */
@@ -49,9 +46,13 @@ function initDetailPage() {
   const meta = TILE_COPY[tile];
   const titleEl = document.getElementById("detail-title");
   const metaEl = document.getElementById("detail-meta");
+  const miniTitleTextEl = document.getElementById("detail-mini-title-text");
   if (titleEl && meta) {
     titleEl.textContent = meta.title;
     document.title = `${meta.title} · Portfolio`;
+    if (miniTitleTextEl !== null) {
+      miniTitleTextEl.textContent = meta.title;
+    }
   }
   if (metaEl && meta && meta.meta) {
     metaEl.textContent = meta.meta;
@@ -228,6 +229,7 @@ function initTitleScrollShrink() {
 
   const titleEl = document.getElementById("detail-title");
   const titleSectionEl = document.querySelector(".detail__left-top");
+  const miniTitleEl = document.getElementById("detail-mini-title");
   if (titleEl === null) {
     return noop;
   }
@@ -268,6 +270,11 @@ function initTitleScrollShrink() {
     }
     clearMobileHeaderModes();
     document.body.classList.add(nextMode);
+    if (miniTitleEl !== null) {
+      const showMini = nextMode === MOBILE_HEADER_MINI_TITLE;
+      miniTitleEl.hidden = !showMini;
+      miniTitleEl.setAttribute("aria-hidden", showMini ? "false" : "true");
+    }
   }
 
   function getMobileTitleSectionHeightPx() {
@@ -293,18 +300,12 @@ function initTitleScrollShrink() {
     }
   }
 
-  function clearMiniTitleSection() {
-    clearTitleScrollVars();
-    document.body.style.removeProperty("--detail-mini-title-section-spacer");
-  }
-
   function applyMobile() {
     if (titleSectionEl === null) {
       wasPastTitleSection = false;
       miniTitleRevealCarryPx = 0;
       mobileHeaderMode = MOBILE_HEADER_LANDING;
       setMobileHeaderMode(MOBILE_HEADER_LANDING);
-      clearMiniTitleSection();
       return;
     }
 
@@ -317,7 +318,6 @@ function initTitleScrollShrink() {
       miniTitleRevealCarryPx = 0;
       mobileHeaderMode = MOBILE_HEADER_LANDING;
       setMobileHeaderMode(MOBILE_HEADER_LANDING);
-      clearMiniTitleSection();
       lastScrollY = y;
       return;
     }
@@ -330,7 +330,6 @@ function initTitleScrollShrink() {
       miniTitleRevealCarryPx = 0;
       mobileHeaderMode = MOBILE_HEADER_LANDING;
       setMobileHeaderMode(mobileHeaderMode);
-      clearMiniTitleSection();
       return;
     }
 
@@ -342,13 +341,6 @@ function initTitleScrollShrink() {
       if (miniTitleRevealCarryPx >= MOBILE_MINI_TITLE_REVEAL_UP_PX) {
         mobileHeaderMode = MOBILE_HEADER_MINI_TITLE;
       }
-    }
-
-    if (mobileHeaderMode === MOBILE_HEADER_MINI_TITLE) {
-      document.body.style.setProperty("--detail-title-fs", `${MOBILE_TITLE_MIN_PX}px`);
-      document.body.style.setProperty("--detail-mini-title-section-spacer", `${titleSectionH}px`);
-    } else {
-      clearMiniTitleSection();
     }
 
     setMobileHeaderMode(mobileHeaderMode);
