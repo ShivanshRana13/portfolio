@@ -186,9 +186,22 @@ body.detail {
     font-size: var(--detail-fs-title-max) !important;
   }
 
-  body.detail--mobile-scroll .detail__title,
-  body.detail--mobile-scroll-up .detail__title {
+  body.detail--mobile-mini-title .detail__title {
     font-size: 14px !important;
+  }
+
+  body.detail--mobile-mini-title .detail__left-top {
+    animation: none;
+  }
+}
+
+@keyframes detail-mini-title-slide-in {
+  from {
+    transform: translateY(-100%);
+  }
+
+  to {
+    transform: translateY(0);
   }
 }
 
@@ -573,7 +586,7 @@ body.detail {
   }
 
   /*
-   * Mobile header — Figma 105:221: “scroll” (105:188) / “scroll up” (105:203).
+   * Mobile mini title section — Figma 105:203; shown only while scrolling up past title.
    */
   .detail__header-row {
     gap: 24px;
@@ -587,20 +600,17 @@ body.detail {
     overflow-wrap: anywhere;
   }
 
-  body.detail--mobile-scroll .detail__left,
-  body.detail--mobile-scroll-up .detail__left {
+  body.detail--mobile-mini-title .detail__left {
     padding-top: 0;
   }
 
-  body.detail--mobile-scroll .detail__left::before,
-  body.detail--mobile-scroll-up .detail__left::before {
+  body.detail--mobile-mini-title .detail__left::before {
     content: "";
     display: block;
-    height: var(--detail-mobile-header-spacer, 0);
+    height: var(--detail-mini-title-section-spacer, 0);
   }
 
-  body.detail--mobile-scroll .detail__left-top,
-  body.detail--mobile-scroll-up .detail__left-top {
+  body.detail--mobile-mini-title .detail__left-top {
     position: fixed;
     top: 0;
     left: 0;
@@ -609,85 +619,42 @@ body.detail {
     box-sizing: border-box;
     padding-top: max(16px, env(safe-area-inset-top, 0px));
     padding-right: max(24px, env(safe-area-inset-right, 0px));
-    padding-bottom: 16px;
+    padding-bottom: 0;
     padding-left: max(24px, env(safe-area-inset-left, 0px));
     background-color: #ffffff;
+    animation: detail-mini-title-slide-in 320ms cubic-bezier(0.22, 1, 0.32, 1) forwards;
   }
 
-  body.detail--mobile-scroll .detail__title,
-  body.detail--mobile-scroll-up .detail__title {
+  body.detail--mobile-mini-title .detail__title {
     font-size: 14px;
-  }
-
-  body.detail--mobile-scroll .detail__header-rule,
-  body.detail--mobile-scroll-up .detail__header-rule {
-    display: block;
-  }
-
-  body.detail--mobile-scroll .detail__header-row,
-  body.detail--mobile-scroll-up .detail__header-row {
-    flex-direction: row;
-    align-items: center;
-    gap: 0;
-  }
-
-  body.detail--mobile-scroll .detail__title,
-  body.detail--mobile-scroll-up .detail__title {
     flex: 1 1 0;
     min-width: 0;
   }
 
-  body.detail--mobile-scroll .detail__meta,
-  body.detail--mobile-scroll-up .detail__meta {
+  body.detail--mobile-mini-title .detail__header-rule {
+    display: block;
+  }
+
+  body.detail--mobile-mini-title .detail__header-row {
+    flex-direction: row;
+    align-items: center;
+    gap: 16px;
+  }
+
+  body.detail--mobile-mini-title .detail__meta {
     display: none;
   }
 
-  /*
-   * Pinned-header back (`.detail__header-row .detail__back`) — not the bottom scroll-up pill.
-   * Scroll-down: 0 width; scroll-up: 44px + 16px margin pushes title right (300ms).
-   */
-  body.detail--mobile-scroll .detail__header-row .detail__back,
-  body.detail--mobile-scroll-up .detail__header-row .detail__back {
+  body.detail--mobile-mini-title .detail__header-row .detail__back {
     display: block;
     flex-shrink: 0;
-    box-sizing: border-box;
     width: 44px;
-    min-width: 0;
     height: 44px;
-    overflow: hidden;
-    opacity: 1;
-    margin-right: 16px;
-    pointer-events: auto;
-    transition:
-      width 300ms ease,
-      margin-right 300ms ease,
-      opacity 300ms ease;
-  }
-
-  body.detail--mobile-scroll .detail__header-row .detail__back {
-    width: 0;
     margin-right: 0;
-    opacity: 0;
-    pointer-events: none;
   }
 
-  body.detail--mobile-scroll-up .detail__header-row .detail__back {
-    width: 44px;
-    margin-right: 16px;
-    opacity: 1;
-    pointer-events: auto;
-  }
-
-  body.detail--mobile-scroll .detail__header-row .detail__back-arrow {
+  body.detail--mobile-mini-title .detail__header-row .detail__back-arrow {
     transform: scaleX(-1);
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    body.detail--mobile-scroll .detail__header-row .detail__back,
-    body.detail--mobile-scroll-up .detail__header-row .detail__back {
-      transition-duration: 0.01ms;
-    }
-
   }
 
   .detail__left {
