@@ -1,4 +1,5 @@
 import * as THREE from "three";
+import { MOUSE, TOUCH } from "three";
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 
@@ -447,6 +448,8 @@ function loadGltfFirstSuccess(loader, urls, onLoad, onAllFailed) {
  *   transparentBackground?: boolean;
  *   modelFilenames?: string[];
  *   enableZoom?: boolean;
+ *   enablePan?: boolean;
+ *   frameNavigation?: boolean;
  *   brightGizmo?: boolean;
  *   companionModelFilenames?: string[];
  * }} options
@@ -462,6 +465,8 @@ export function initGltfViewer(options) {
   const transparentBackground = options.transparentBackground === true;
   const modelFilenames = options.modelFilenames;
   const enableZoom = options.enableZoom !== false;
+  const enablePan = options.enablePan !== false;
+  const frameNavigation = options.frameNavigation === true;
   const brightGizmo = options.brightGizmo === true;
   const companionModelFilenames = Array.isArray(options.companionModelFilenames)
     ? options.companionModelFilenames.filter(
@@ -512,7 +517,19 @@ export function initGltfViewer(options) {
   const controls = new OrbitControls(camera, renderer.domElement);
   controls.enableDamping = true;
   controls.dampingFactor = 0.06;
-  controls.enableZoom = enableZoom;
+  controls.enableZoom = frameNavigation === true ? true : enableZoom;
+  controls.enablePan = frameNavigation === true ? true : enablePan;
+  if (frameNavigation === true) {
+    controls.mouseButtons = {
+      LEFT: MOUSE.ROTATE,
+      MIDDLE: MOUSE.PAN,
+      RIGHT: MOUSE.PAN,
+    };
+    controls.touches = {
+      ONE: TOUCH.ROTATE,
+      TWO: TOUCH.DOLLY_PAN,
+    };
+  }
 
   if (brightGizmo === true) {
     scene.add(new THREE.AmbientLight(0xffffff, 1));
@@ -550,6 +567,10 @@ export function initGltfViewer(options) {
   scene.add(contentRoot);
 
   const applyReadyStatus = () => {
+    if (frameNavigation === true) {
+      setStatus("Drag to orbit · scroll/pinch to zoom · middle-drag to pan");
+      return;
+    }
     setStatus(
       enableZoom === false
         ? "Drag to orbit"
