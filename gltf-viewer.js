@@ -321,6 +321,21 @@ function resolveSelectableCubeFromObject(object, mainCubeRef, topCubeRef) {
 }
 
 /**
+ * iOS Safari can still treat two-finger gestures as page zoom unless touch
+ * defaults are cancelled on the interactive surface (touch-action alone is not always enough).
+ */
+function preventBrowserTouchGestures(domElement) {
+  if (!(domElement instanceof HTMLElement)) return;
+  const block = (event) => {
+    if (event.cancelable === true) {
+      event.preventDefault();
+    }
+  };
+  domElement.addEventListener("touchstart", block, { passive: false });
+  domElement.addEventListener("touchmove", block, { passive: false });
+}
+
+/**
  * Tap a cube to move the gizmo pivot to its center (short click, not orbit drag).
  */
 function initCubeGizmoSelection(options) {
@@ -345,15 +360,21 @@ function initCubeGizmoSelection(options) {
   const raycaster = new THREE.Raycaster();
   let pointerDownX = 0;
   let pointerDownY = 0;
+  let activePointers = 0;
 
   const onPointerDown = (event) => {
     if (!(event instanceof PointerEvent)) return;
+    activePointers += 1;
+    if (event.isPrimary === false) return;
     pointerDownX = event.clientX;
     pointerDownY = event.clientY;
   };
 
   const onPointerUp = (event) => {
     if (!(event instanceof PointerEvent)) return;
+    activePointers = Math.max(0, activePointers - 1);
+    if (event.isPrimary === false) return;
+    if (activePointers > 0) return;
     if (event.pointerType === "mouse" && event.button !== 0) return;
     const moved = Math.hypot(
       event.clientX - pointerDownX,
@@ -385,6 +406,7 @@ function initCubeGizmoSelection(options) {
 
   domElement.addEventListener("pointerdown", onPointerDown);
   domElement.addEventListener("pointerup", onPointerUp);
+  domElement.addEventListener("pointercancel", onPointerUp);
 }
 
 /**
@@ -450,6 +472,7 @@ function loadGltfFirstSuccess(loader, urls, onLoad, onAllFailed) {
  *   enableZoom?: boolean;
  *   enablePan?: boolean;
  *   frameNavigation?: boolean;
+ *   controlElement?: HTMLElement;
  *   brightGizmo?: boolean;
  *   companionModelFilenames?: string[];
  * }} options
@@ -512,14 +535,23 @@ export function initGltfViewer(options) {
         ? 0.72
         : 0.65;
   renderer.domElement.style.display = "block";
+  renderer.domElement.style.width = "100%";
+  renderer.domElement.style.height = "100%";
   container.appendChild(renderer.domElement);
 
-  const controls = new OrbitControls(camera, renderer.domElement);
+  const controlElement =
+    options.controlElement instanceof HTMLElement
+      ? options.controlElement
+      : renderer.domElement;
+
+  const controls = new OrbitControls(camera, controlElement);
   controls.enableDamping = true;
   controls.dampingFactor = 0.06;
   controls.enableZoom = frameNavigation === true ? true : enableZoom;
   controls.enablePan = frameNavigation === true ? true : enablePan;
   if (frameNavigation === true) {
+    controlElement.style.touchAction = "none";
+    preventBrowserTouchGestures(controlElement);
     controls.mouseButtons = {
       LEFT: MOUSE.ROTATE,
       MIDDLE: MOUSE.PAN,
@@ -527,8 +559,9 @@ export function initGltfViewer(options) {
     };
     controls.touches = {
       ONE: TOUCH.ROTATE,
-      TWO: TOUCH.DOLLY_PAN,
+      TWO: TOUCH.DOLLY_ROTATE,
     };
+    controls.zoomSpeed = 1.15;
   }
 
   if (brightGizmo === true) {
@@ -642,7 +675,7 @@ export function initGltfViewer(options) {
           companionCubeRef = root;
           companionGizmoRef = gizmoRoot;
           initCubeGizmoSelection({
-            domElement: renderer.domElement,
+            domElement: controlElement,
             camera,
             rig: contentRoot,
             gizmoRoot,

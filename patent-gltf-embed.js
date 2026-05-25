@@ -25,11 +25,13 @@ function tryStartPatentGltf() {
   if (!(container instanceof HTMLElement)) {
     return;
   }
+  const viewport = container.closest(".patent-cube__viewport");
 
   import("./gltf-viewer.js")
     .then(({ initGltfViewer }) => {
       initGltfViewer({
         container,
+        controlElement: viewport instanceof HTMLElement ? viewport : container,
         statusElement: null,
         transparentBackground: true,
         modelFilenames: ["cube.glb"],

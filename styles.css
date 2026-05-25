@@ -325,6 +325,18 @@ body.theme-dark .scene.scene--patent-cube-active .patent-cube__viewport {
   pointer-events: auto;
 }
 
+/*
+ * Selected sticky can overlap the 3D frame on some viewports — let pinch/drag reach the canvas
+ * while keeping the detail badge link tappable.
+ */
+body.theme-dark .scene.scene--patent-cube-active .cards .sticky.is-selected {
+  pointer-events: none;
+}
+
+body.theme-dark .scene.scene--patent-cube-active .cards .sticky.is-selected .sticky-badge {
+  pointer-events: auto;
+}
+
 .patent-cube__viewport:focus-visible {
   outline: 2px solid color-mix(in srgb, var(--sticky-selected-case-tilt-surface) 75%, #ffffff);
   outline-offset: 4px;
