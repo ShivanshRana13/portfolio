@@ -353,9 +353,7 @@ body.theme-dark .scene.scene--patent-cube-active .patent-cube__viewport {
   margin: 0;
   font-size: 34px;
   line-height: normal;
-  transition:
-    opacity 240ms ease,
-    visibility 240ms ease;
+  color: #000000;
 }
 
 /* Laptop / smaller screens: hero stays top-left with 32px inset. */
@@ -622,6 +620,7 @@ body.theme-dark .intro {
   opacity: 0;
   visibility: hidden;
   pointer-events: none;
+  transition: none;
 }
 
 body.theme-dark .cards .sticky:not(.is-selected) {
@@ -634,7 +633,6 @@ body.theme-dark .cards .sticky:not(.is-selected) {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  body.theme-dark .intro,
   body.theme-dark .cards .sticky:not(.is-selected) {
     transition-duration: 0.01ms;
   }
