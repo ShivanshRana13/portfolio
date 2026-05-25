@@ -61,12 +61,14 @@ function initStickyTheme() {
     const target = e.target;
     if (!(target instanceof Element)) return;
 
-    // Click outside stickies clears selection + returns to light canvas.
-    if (!target.closest(".sticky") && !target.closest(".patent-cube")) {
-      for (const el of stickies) el.classList.remove("is-selected");
-      body.classList.remove("theme-dark");
-      syncScenePatentCube();
-    }
+    // Keep selection when interacting with a sticky or the 3D frame.
+    if (target.closest(".sticky") !== null) return;
+    if (target.closest(".patent-cube") !== null) return;
+
+    // Empty canvas / background — clear selection and return to light mode.
+    for (const el of stickies) el.classList.remove("is-selected");
+    body.classList.remove("theme-dark");
+    syncScenePatentCube();
   });
 
   // Escape clears selection (nice UX for keyboard users).
