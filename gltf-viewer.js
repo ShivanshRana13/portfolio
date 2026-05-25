@@ -7,6 +7,18 @@ const GIZMO_ORBIT_FLIP_STEP_RAD = THREE.MathUtils.degToRad(120);
 const _worldYAxis = new THREE.Vector3(0, 1, 0);
 const _gizmoFlipYawQuat = new THREE.Quaternion();
 const _viewerFitTmpBox = new THREE.Box3();
+const _pickPointerNdc = new THREE.Vector2();
+const _cubePivotWorld = new THREE.Vector3();
+
+function isDescendantOf(node, ancestor) {
+  if (ancestor === null || ancestor === undefined) return false;
+  let p = node;
+  while (p) {
+    if (p === ancestor) return true;
+    p = p.parent;
+  }
+  return false;
+}
 
 /** True if this node or any ancestor is omitted from camera-fit / pivot bounds (e.g. floor grid). */
 function subtreeExcludedFromViewerFit(node) {
@@ -21,11 +33,20 @@ function subtreeExcludedFromViewerFit(node) {
 /**
  * World-space bounds for framing and pivots. Skips objects tagged `userData.excludeFromViewerFit`
  * so helpers like {@link THREE.GridHelper} do not affect camera distance or orbit centers.
+ * @param {{ excludeSubtree?: THREE.Object3D | null }} [options]
  */
-function setBoxFromObjectForViewerFit(box, root) {
+function setBoxFromObjectForViewerFit(box, root, options = {}) {
+  const excludeSubtree = options.excludeSubtree ?? null;
   box.makeEmpty();
   root.updateMatrixWorld(true);
   root.traverse((node) => {
+    if (
+      excludeSubtree !== null &&
+      node !== root &&
+      isDescendantOf(node, excludeSubtree) === true
+    ) {
+      return;
+    }
     if (subtreeExcludedFromViewerFit(node)) return;
     const drawable =
       node.isMesh === true ||
@@ -235,15 +256,134 @@ function addSubtleAlignedFloorGrid(cubeRoot, boundsRoot) {
   cubeRoot.add(grid);
 }
 
+/** Clone the primary cube at `scaleFactor` size and stack it on the parent’s top face (world +Y). */
+function stackScaledCubeCloneOnTop(parentCube, scaleFactor = 0.5) {
+  parentCube.updateMatrixWorld(true);
+  const mainWorld = new THREE.Box3();
+  setBoxFromObjectForViewerFit(mainWorld, parentCube);
+  if (mainWorld.isEmpty()) return null;
+
+  const mainWorldSize = mainWorld.getSize(new THREE.Vector3());
+  const topHalfHeight = mainWorldSize.y * scaleFactor * 0.5;
+  const stackCenterWorld = new THREE.Vector3(
+    (mainWorld.min.x + mainWorld.max.x) * 0.5,
+    mainWorld.max.y + topHalfHeight,
+    (mainWorld.min.z + mainWorld.max.z) * 0.5,
+  );
+
+  const topCube = parentCube.clone(true);
+  topCube.name = "portfolio-cube-stack";
+  topCube.position.set(0, 0, 0);
+  topCube.quaternion.identity();
+  topCube.scale.set(scaleFactor, scaleFactor, scaleFactor);
+  parentCube.worldToLocal(stackCenterWorld);
+  topCube.position.copy(stackCenterWorld);
+
+  parentCube.add(topCube);
+  return topCube;
+}
+
+/** Move the manipulator gizmo to a cube’s bounding-box center (rig local space). */
+function moveManipulatorToCubePivot(
+  gizmoRoot,
+  rig,
+  cubeObject,
+  excludeSubtree = null,
+) {
+  const box = new THREE.Box3();
+  setBoxFromObjectForViewerFit(box, cubeObject, { excludeSubtree });
+  if (box.isEmpty()) return;
+  _cubePivotWorld.copy(box.getCenter(new THREE.Vector3()));
+  rig.worldToLocal(_cubePivotWorld);
+  gizmoRoot.position.copy(_cubePivotWorld);
+}
+
 /** Parent gizmo under the cube rig at the cube bbox center (local space). */
-function parentManipulatorToRig(gizmoRoot, cubeRoot, rig) {
-  cubeRoot.updateMatrixWorld(true);
-  const b = new THREE.Box3();
-  setBoxFromObjectForViewerFit(b, cubeRoot);
-  const pivotWorld = b.getCenter(new THREE.Vector3());
-  rig.worldToLocal(pivotWorld);
-  gizmoRoot.position.copy(pivotWorld);
+function parentManipulatorToRig(
+  gizmoRoot,
+  cubeRoot,
+  rig,
+  excludeSubtree = null,
+) {
   rig.add(gizmoRoot);
+  moveManipulatorToCubePivot(gizmoRoot, rig, cubeRoot, excludeSubtree);
+}
+
+function resolveSelectableCubeFromObject(object, mainCubeRef, topCubeRef) {
+  let node = object;
+  while (node) {
+    if (topCubeRef !== null && node === topCubeRef) return topCubeRef;
+    if (mainCubeRef !== null && node === mainCubeRef) return mainCubeRef;
+    node = node.parent;
+  }
+  return null;
+}
+
+/**
+ * Tap a cube to move the gizmo pivot to its center (short click, not orbit drag).
+ */
+function initCubeGizmoSelection(options) {
+  const {
+    domElement,
+    camera,
+    rig,
+    gizmoRoot,
+    mainCubeRef,
+    topCubeRef,
+  } = options;
+  if (
+    !(domElement instanceof HTMLElement) ||
+    !(camera instanceof THREE.Camera) ||
+    !(rig instanceof THREE.Object3D) ||
+    !(gizmoRoot instanceof THREE.Object3D) ||
+    !(mainCubeRef instanceof THREE.Object3D)
+  ) {
+    return;
+  }
+
+  const raycaster = new THREE.Raycaster();
+  let pointerDownX = 0;
+  let pointerDownY = 0;
+
+  const onPointerDown = (event) => {
+    if (!(event instanceof PointerEvent)) return;
+    pointerDownX = event.clientX;
+    pointerDownY = event.clientY;
+  };
+
+  const onPointerUp = (event) => {
+    if (!(event instanceof PointerEvent)) return;
+    if (event.pointerType === "mouse" && event.button !== 0) return;
+    const moved = Math.hypot(
+      event.clientX - pointerDownX,
+      event.clientY - pointerDownY,
+    );
+    if (moved > 6) return;
+
+    const rect = domElement.getBoundingClientRect();
+    if (rect.width < 1 || rect.height < 1) return;
+    _pickPointerNdc.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+    _pickPointerNdc.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
+    raycaster.setFromCamera(_pickPointerNdc, camera);
+    const hits = raycaster.intersectObject(mainCubeRef, true);
+    if (hits.length === 0) return;
+
+    const picked = resolveSelectableCubeFromObject(
+      hits[0].object,
+      mainCubeRef,
+      topCubeRef,
+    );
+    if (picked === null) return;
+
+    const excludeSubtree =
+      picked === mainCubeRef && topCubeRef instanceof THREE.Object3D
+        ? topCubeRef
+        : null;
+    moveManipulatorToCubePivot(gizmoRoot, rig, picked, excludeSubtree);
+  };
+
+  domElement.addEventListener("pointerdown", onPointerDown);
+  domElement.addEventListener("pointerup", onPointerUp);
 }
 
 /**
@@ -419,6 +559,8 @@ export function initGltfViewer(options) {
 
   let companionCubeRef = null;
   let companionGizmoRef = null;
+  let mainCubeRef = null;
+  let topCubeRef = null;
   let orbitAzimuthAccum = 0;
   let lastOrbitAzimuth = 0;
   let orbitAzimuthSamplingReady = false;
@@ -474,8 +616,18 @@ export function initGltfViewer(options) {
           applyBrightGizmoMaterials(gizmoRoot, THREE);
           applyManipulatorDepthOverlay(gizmoRoot);
           parentManipulatorToRig(gizmoRoot, root, contentRoot);
+          topCubeRef = stackScaledCubeCloneOnTop(root, 0.5);
+          mainCubeRef = root;
           companionCubeRef = root;
           companionGizmoRef = gizmoRoot;
+          initCubeGizmoSelection({
+            domElement: renderer.domElement,
+            camera,
+            rig: contentRoot,
+            gizmoRoot,
+            mainCubeRef: root,
+            topCubeRef,
+          });
           orbitAzimuthAccum = 0;
           orbitAzimuthSamplingReady = false;
           gizmoFlipParity = 0;
