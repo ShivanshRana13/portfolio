@@ -413,16 +413,29 @@ function initCubeGizmoSelection(options) {
  * @param {THREE.Object3D} obj Bounds used for camera distance / fit.
  * @param {THREE.Vector3 | null | undefined} orbitPivotWorld If set, orbit target + look-at pivot (e.g. cube center only).
  * @param {number} [frameFill=0.3] Target fraction of frame height occupied by the model (higher = closer).
+ * @param {number} [zoomInFactor=1] Values &gt; 1 move the camera closer (e.g. 1.6 = 60% more zoom).
+ * @param {THREE.Box3 | null | undefined} [fitBox] Optional precomputed world bounds (skips re-traverse).
  */
-function frameObject(obj, camera, controls, orbitPivotWorld, frameFill = 0.3) {
-  const box = new THREE.Box3();
-  setBoxFromObjectForViewerFit(box, obj);
+function frameObject(
+  obj,
+  camera,
+  controls,
+  orbitPivotWorld,
+  frameFill = 0.3,
+  zoomInFactor = 1,
+  fitBox = null,
+) {
+  const box = fitBox instanceof THREE.Box3 ? fitBox : new THREE.Box3();
+  if (!(fitBox instanceof THREE.Box3)) {
+    setBoxFromObjectForViewerFit(box, obj);
+  }
   const center = box.getCenter(new THREE.Vector3());
   const size = box.getSize(new THREE.Vector3());
   const maxDim = Math.max(size.x, size.y, size.z, 1e-6);
   const fitDist =
     maxDim / (2 * Math.tan((camera.fov * Math.PI) / 180 / 2));
-  const cameraDist = fitDist / frameFill;
+  const safeZoom = Math.max(zoomInFactor, 1e-6);
+  const cameraDist = fitDist / frameFill / safeZoom;
   const dir = new THREE.Vector3(1.2, 0.85, 1.4).normalize();
   const pivot =
     orbitPivotWorld instanceof THREE.Vector3
@@ -473,6 +486,7 @@ function loadGltfFirstSuccess(loader, urls, onLoad, onAllFailed) {
  *   frameNavigation?: boolean;
  *   controlElement?: HTMLElement;
  *   frameFill?: number;
+ *   zoomInFactor?: number;
  *   brightGizmo?: boolean;
  *   companionModelFilenames?: string[];
  * }} options
@@ -494,6 +508,12 @@ export function initGltfViewer(options) {
     typeof options.frameFill === "number" && options.frameFill > 0
       ? options.frameFill
       : 0.3;
+  const zoomInFactor =
+    typeof options.zoomInFactor === "number" && options.zoomInFactor > 0
+      ? options.zoomInFactor
+      : frameNavigation === true
+        ? 1.6
+        : 1;
   const brightGizmo = options.brightGizmo === true;
   const companionModelFilenames = Array.isArray(options.companionModelFilenames)
     ? options.companionModelFilenames.filter(
@@ -638,7 +658,7 @@ export function initGltfViewer(options) {
       }
 
       if (companionModelFilenames.length === 0) {
-        frameObject(contentRoot, camera, controls, undefined, frameFill);
+        frameObject(contentRoot, camera, controls, undefined, frameFill, zoomInFactor);
         applyReadyStatus();
         return;
       }
@@ -696,12 +716,20 @@ export function initGltfViewer(options) {
           const cubeFitBox = new THREE.Box3();
           setBoxFromObjectForViewerFit(cubeFitBox, root);
           const cubeOrbitPivot = cubeFitBox.getCenter(new THREE.Vector3());
-          frameObject(root, camera, controls, cubeOrbitPivot, frameFill);
+          frameObject(
+            root,
+            camera,
+            controls,
+            cubeOrbitPivot,
+            frameFill,
+            zoomInFactor,
+            cubeFitBox,
+          );
           applyReadyStatus();
         },
         () => {
           console.warn("[Portfolio 3D] Companion GLB failed:", companionName);
-          frameObject(contentRoot, camera, controls, undefined, frameFill);
+          frameObject(contentRoot, camera, controls, undefined, frameFill, zoomInFactor);
           applyReadyStatus();
         },
       );
