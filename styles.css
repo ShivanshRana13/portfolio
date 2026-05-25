@@ -381,7 +381,6 @@ body.theme-dark .scene.scene--patent-cube-active .patent-cube__viewport {
   background: var(--sticky-surface);
   color: var(--sticky-ink);
   border: 2px solid var(--sticky-border);
-  border-radius: 8px;
   padding: 20px;
   user-select: none;
   touch-action: none;
