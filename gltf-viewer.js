@@ -412,8 +412,9 @@ function initCubeGizmoSelection(options) {
 /**
  * @param {THREE.Object3D} obj Bounds used for camera distance / fit.
  * @param {THREE.Vector3 | null | undefined} orbitPivotWorld If set, orbit target + look-at pivot (e.g. cube center only).
+ * @param {number} [frameFill=0.3] Target fraction of frame height occupied by the model (higher = closer).
  */
-function frameObject(obj, camera, controls, orbitPivotWorld) {
+function frameObject(obj, camera, controls, orbitPivotWorld, frameFill = 0.3) {
   const box = new THREE.Box3();
   setBoxFromObjectForViewerFit(box, obj);
   const center = box.getCenter(new THREE.Vector3());
@@ -421,9 +422,7 @@ function frameObject(obj, camera, controls, orbitPivotWorld) {
   const maxDim = Math.max(size.x, size.y, size.z, 1e-6);
   const fitDist =
     maxDim / (2 * Math.tan((camera.fov * Math.PI) / 180 / 2));
-  /** Vertical extent ≈ `fitDist / distance`; 0.3 → model uses ~30% of frame height by default. */
-  const defaultFrameFill = 0.3;
-  const cameraDist = fitDist / defaultFrameFill;
+  const cameraDist = fitDist / frameFill;
   const dir = new THREE.Vector3(1.2, 0.85, 1.4).normalize();
   const pivot =
     orbitPivotWorld instanceof THREE.Vector3
@@ -473,6 +472,7 @@ function loadGltfFirstSuccess(loader, urls, onLoad, onAllFailed) {
  *   enablePan?: boolean;
  *   frameNavigation?: boolean;
  *   controlElement?: HTMLElement;
+ *   frameFill?: number;
  *   brightGizmo?: boolean;
  *   companionModelFilenames?: string[];
  * }} options
@@ -490,6 +490,10 @@ export function initGltfViewer(options) {
   const enableZoom = options.enableZoom !== false;
   const enablePan = options.enablePan !== false;
   const frameNavigation = options.frameNavigation === true;
+  const frameFill =
+    typeof options.frameFill === "number" && options.frameFill > 0
+      ? options.frameFill
+      : 0.3;
   const brightGizmo = options.brightGizmo === true;
   const companionModelFilenames = Array.isArray(options.companionModelFilenames)
     ? options.companionModelFilenames.filter(
@@ -634,7 +638,7 @@ export function initGltfViewer(options) {
       }
 
       if (companionModelFilenames.length === 0) {
-        frameObject(contentRoot, camera, controls);
+        frameObject(contentRoot, camera, controls, undefined, frameFill);
         applyReadyStatus();
         return;
       }
@@ -691,12 +695,12 @@ export function initGltfViewer(options) {
           const cubeFitBox = new THREE.Box3();
           setBoxFromObjectForViewerFit(cubeFitBox, root);
           const cubeOrbitPivot = cubeFitBox.getCenter(new THREE.Vector3());
-          frameObject(contentRoot, camera, controls, cubeOrbitPivot);
+          frameObject(contentRoot, camera, controls, cubeOrbitPivot, frameFill);
           applyReadyStatus();
         },
         () => {
           console.warn("[Portfolio 3D] Companion GLB failed:", companionName);
-          frameObject(contentRoot, camera, controls);
+          frameObject(contentRoot, camera, controls, undefined, frameFill);
           applyReadyStatus();
         },
       );

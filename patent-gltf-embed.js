@@ -37,6 +37,8 @@ function tryStartPatentGltf() {
         modelFilenames: ["cube.glb"],
         companionModelFilenames: ["model.glb"],
         frameNavigation: true,
+        /* 60% closer than the 0.3 default — cubes fill more of the interactive frame. */
+        frameFill: 0.48,
       });
     })
     .catch((err) => {
