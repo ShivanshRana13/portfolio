@@ -341,26 +341,25 @@ body.theme-dark .scene.scene--patent-cube-active .patent-cube__viewport {
 }
 
 .intro {
+  --intro-pad-start: 168px;
+  --intro-pad-top: max(16px, env(safe-area-inset-top, 0px));
+  --intro-pad-end: max(16px, env(safe-area-inset-right, 0px));
   position: absolute;
-  left: 168px;
-  top: calc(50% - 51px);
-  width: 325px;
+  left: var(--intro-pad-start);
+  top: var(--intro-pad-top);
+  right: var(--intro-pad-end);
+  width: auto;
+  max-width: 456px;
   margin: 0;
-  font-size: 14px;
+  font-size: 40px;
   line-height: normal;
 }
 
-/* Laptop / smaller screens: ease the bio upward as width decreases (desktop stays vertically centered). */
+/* Laptop / smaller screens: keep horizontal inset; hero stays top-left. */
 @media (max-width: 1160px) and (min-width: 641px) {
   .intro {
-    left: clamp(20px, 6vw, 168px);
-    width: min(20.3125rem, calc(100vw - 48px));
-    /* Starts identical to the desktop center at 1160px wide, then rises as width decreases. */
-    top: clamp(
-      72px,
-      calc((50% - 51px) - (1160px - 100vw) * 0.11),
-      calc(50% - 51px)
-    );
+    --intro-pad-start: clamp(20px, 6vw, 168px);
+    max-width: min(456px, calc(100vw - 48px));
   }
 }
 
@@ -795,12 +794,14 @@ body.theme-dark .card--instagram.sticky.is-selected {
   /* Same layering idea as desktop: bio sits under the sticky pile so notes can overlap it. */
   .intro {
     --intro-pad-start: max(16px, env(safe-area-inset-left, 0px));
+    --intro-pad-top: max(16px, env(safe-area-inset-top, 0px));
+    --intro-pad-end: max(16px, env(safe-area-inset-right, 0px));
     position: absolute;
     left: var(--intro-pad-start);
-    right: max(16px, env(safe-area-inset-right, 0px));
-    top: var(--intro-pad-start);
+    right: var(--intro-pad-end);
+    top: var(--intro-pad-top);
     width: auto;
-    max-width: 20.3125rem;
+    max-width: 456px;
     margin: 0;
     z-index: 1;
   }
