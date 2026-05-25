@@ -188,50 +188,8 @@ function applyGreyPrimaryModelMaterials(root, THREEref) {
 }
 
 /**
- * Soft alpha falloff toward the grid square edge so lines blend into the canvas before hard clips.
- * Patches {@link THREE.LineBasicMaterial} (GridHelper) via `onBeforeCompile`; halfExtent is geometry half-width in local XZ.
- */
-function attachFloorGridEdgeFade(material, halfExtentLocal, opacity) {
-  material.transparent = true;
-  material.opacity = opacity;
-  material.depthWrite = false;
-  material.toneMapped = false;
-  material.onBeforeCompile = (shader) => {
-    shader.uniforms.uGridHalfExtent = { value: halfExtentLocal };
-    shader.vertexShader = shader.vertexShader
-      .replace(
-        "#include <common>",
-        `#include <common>
-varying vec3 vGridLocalXZ;
-`,
-      )
-      .replace(
-        "#include <begin_vertex>",
-        `#include <begin_vertex>
-vGridLocalXZ = vec3( transformed.x, 0.0, transformed.z );
-`,
-      );
-    shader.fragmentShader = shader.fragmentShader
-      .replace(
-        "#include <common>",
-        `#include <common>
-varying vec3 vGridLocalXZ;
-uniform float uGridHalfExtent;
-`,
-      )
-      .replace(
-        "#include <opaque_fragment>",
-        `float gridCheb = max( abs( vGridLocalXZ.x ), abs( vGridLocalXZ.z ) ) / max( uGridHalfExtent, 1e-5 );
-float edgeFade = 1.0 - smoothstep( 0.34, 0.992, gridCheb );
-diffuseColor.a *= edgeFade;
-#include <opaque_fragment>`,
-      );
-  };
-  material.needsUpdate = true;
-}
-
-/**
  * Floor grid in the cube’s local XZ plane, slightly below the mesh AABB — follows cube orientation & orbit.
+ * Edge fade is handled in CSS on `.patent-cube__viewport` / `.patent-cube__gltf`, not on the grid material.
  * @param {THREE.Object3D} cubeRoot Grid is parented here so it rotates with the cube.
  * @param {THREE.Object3D} boundsRoot World bounds for size/placement (e.g. content root = cube + gizmo); omitting uses cubeRoot only.
  */
@@ -265,7 +223,13 @@ function addSubtleAlignedFloorGrid(cubeRoot, boundsRoot) {
   bottomCenterWorld.applyMatrix4(inv);
   grid.position.copy(bottomCenterWorld);
 
-  attachFloorGridEdgeFade(grid.material, gridWorldSize * 0.5, 0.58);
+  const gridMat = grid.material;
+  if (gridMat !== null && gridMat !== undefined) {
+    gridMat.transparent = true;
+    gridMat.opacity = 0.58;
+    gridMat.depthWrite = false;
+    gridMat.toneMapped = false;
+  }
 
   grid.renderOrder = -50;
   cubeRoot.add(grid);

@@ -287,27 +287,12 @@ body.theme-dark .scene.scene--patent-cube-active .patent-cube {
   border-radius: 12px;
   overflow: hidden;
   isolation: isolate;
+  background: var(--bg);
 }
 
-/* Soft edge vignette: fades viewport corners so clipped grid lines blend into the canvas background. */
-.patent-cube__viewport::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: 2;
-  pointer-events: none;
-  border-radius: inherit;
-  background: radial-gradient(
-    ellipse 118% 112% at 50% 48%,
-    rgb(0 0 0 / 0) 0%,
-    rgb(0 0 0 / 0) 42%,
-    color-mix(in srgb, var(--bg) 14%, transparent) 58%,
-    color-mix(in srgb, var(--bg) 48%, transparent) 74%,
-    color-mix(in srgb, var(--bg) 82%, transparent) 88%,
-    var(--bg) 100%
-  );
-}
-
+/*
+ * Fade the 3D canvas at the interactive frame edge so grid lines never hard-clip inside the viewport.
+ */
 .patent-cube__gltf {
   position: absolute;
   inset: 0;
@@ -315,6 +300,25 @@ body.theme-dark .scene.scene--patent-cube-active .patent-cube {
   overflow: hidden;
   pointer-events: auto;
   touch-action: none;
+  -webkit-mask-image:
+    linear-gradient(to right, transparent 0%, #000 13%, #000 87%, transparent 100%),
+    linear-gradient(to bottom, transparent 0%, #000 13%, #000 87%, transparent 100%);
+  -webkit-mask-composite: source-in;
+  mask-image:
+    linear-gradient(to right, transparent 0%, #000 13%, #000 87%, transparent 100%),
+    linear-gradient(to bottom, transparent 0%, #000 13%, #000 87%, transparent 100%);
+  mask-composite: intersect;
+}
+
+/* Corner feather on the frame (matches rounded clip + canvas background). */
+.patent-cube__viewport::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  border-radius: inherit;
+  box-shadow: inset 0 0 36px 22px var(--bg);
 }
 
 body.theme-dark .scene.scene--patent-cube-active .patent-cube__viewport {
