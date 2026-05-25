@@ -673,6 +673,7 @@ export function initGltfViewer(options) {
           prepareManipulatorGizmoScale(gizmoRoot, cubeMaxForGizmoSizing);
           applyBrightGizmoMaterials(gizmoRoot, THREE);
           applyManipulatorDepthOverlay(gizmoRoot);
+          gizmoRoot.userData.excludeFromViewerFit = true;
           parentManipulatorToRig(gizmoRoot, root, contentRoot);
           topCubeRef = stackScaledCubeCloneOnTop(root, 0.5);
           mainCubeRef = root;
@@ -695,7 +696,7 @@ export function initGltfViewer(options) {
           const cubeFitBox = new THREE.Box3();
           setBoxFromObjectForViewerFit(cubeFitBox, root);
           const cubeOrbitPivot = cubeFitBox.getCenter(new THREE.Vector3());
-          frameObject(contentRoot, camera, controls, cubeOrbitPivot, frameFill);
+          frameObject(root, camera, controls, cubeOrbitPivot, frameFill);
           applyReadyStatus();
         },
         () => {
