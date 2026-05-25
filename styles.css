@@ -353,6 +353,9 @@ body.theme-dark .scene.scene--patent-cube-active .patent-cube__viewport {
   margin: 0;
   font-size: 34px;
   line-height: normal;
+  transition:
+    opacity 240ms ease,
+    visibility 240ms ease;
 }
 
 /* Laptop / smaller screens: hero stays top-left with 32px inset. */
@@ -613,9 +616,14 @@ body.theme-dark .scene.scene--patent-cube-active .patent-cube__viewport {
 }
 
 /*
- * Dark canvas = a sticky is selected (see sticky-theme.js). Hide every other note so only
- * the chosen tile stays visible.
+ * Dark canvas = a sticky is selected (see sticky-theme.js). Hide hero + every other note.
  */
+body.theme-dark .intro {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
 body.theme-dark .cards .sticky:not(.is-selected) {
   opacity: 0;
   visibility: hidden;
@@ -626,6 +634,7 @@ body.theme-dark .cards .sticky:not(.is-selected) {
 }
 
 @media (prefers-reduced-motion: reduce) {
+  body.theme-dark .intro,
   body.theme-dark .cards .sticky:not(.is-selected) {
     transition-duration: 0.01ms;
   }
