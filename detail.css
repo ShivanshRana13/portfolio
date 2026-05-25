@@ -719,7 +719,7 @@ body.detail {
   }
 
   .detail__left {
-    padding-top: 48px;
+    padding-top: max(16px, env(safe-area-inset-top, 0px));
     padding-right: max(24px, env(safe-area-inset-right, 0px));
     /* Space to the body column is controlled by `.detail__right` padding-top (64px total). */
     padding-bottom: 0;

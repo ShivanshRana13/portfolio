@@ -22,12 +22,26 @@ function initStickyTheme() {
     scene.classList.toggle("scene--patent-cube-active", active);
   };
 
+  const clearSelection = () => {
+    for (const el of stickies) el.classList.remove("is-selected");
+    body.classList.remove("theme-dark");
+    syncScenePatentCube();
+  };
+
   const setSelected = (target) => {
     for (const el of stickies) {
       el.classList.toggle("is-selected", el === target);
     }
     enableDarkCanvas();
     syncScenePatentCube();
+  };
+
+  const toggleStickySelection = (sticky) => {
+    if (sticky.classList.contains("is-selected") === true) {
+      clearSelection();
+      return;
+    }
+    setSelected(sticky);
   };
 
   for (const sticky of stickies) {
@@ -37,22 +51,25 @@ function initStickyTheme() {
     });
 
     sticky.addEventListener("click", (e) => {
+      if (!(e.target instanceof Element)) return;
+      if (e.target.closest(".sticky-badge") !== null) return;
+
       // Avoid treating drags as selections.
       const start = pressOrigin.get(sticky);
       if (!start) {
-        setSelected(sticky);
+        toggleStickySelection(sticky);
         return;
       }
       const moved = distance(start, { x: e.clientX, y: e.clientY });
       if (moved > 6) return;
 
-      setSelected(sticky);
+      toggleStickySelection(sticky);
     });
 
     sticky.addEventListener("keydown", (e) => {
       if (e.key !== "Enter" && e.key !== " ") return;
       e.preventDefault();
-      setSelected(sticky);
+      toggleStickySelection(sticky);
     });
   }
 
@@ -66,17 +83,13 @@ function initStickyTheme() {
     if (target.closest(".patent-cube") !== null) return;
 
     // Empty canvas / background — clear selection and return to light mode.
-    for (const el of stickies) el.classList.remove("is-selected");
-    body.classList.remove("theme-dark");
-    syncScenePatentCube();
+    clearSelection();
   });
 
   // Escape clears selection (nice UX for keyboard users).
   document.addEventListener("keydown", (e) => {
     if (e.key !== "Escape") return;
-    for (const el of stickies) el.classList.remove("is-selected");
-    body.classList.remove("theme-dark");
-    syncScenePatentCube();
+    clearSelection();
   });
 
   syncScenePatentCube();
