@@ -341,8 +341,8 @@ body.theme-dark .scene.scene--patent-cube-active .patent-cube__viewport {
 }
 
 .intro {
-  --intro-pad-start: 168px;
-  --intro-pad-top: max(16px, env(safe-area-inset-top, 0px));
+  --intro-pad-start: max(32px, env(safe-area-inset-left, 0px));
+  --intro-pad-top: max(32px, env(safe-area-inset-top, 0px));
   --intro-pad-end: max(16px, env(safe-area-inset-right, 0px));
   position: absolute;
   left: var(--intro-pad-start);
@@ -351,15 +351,14 @@ body.theme-dark .scene.scene--patent-cube-active .patent-cube__viewport {
   width: auto;
   max-width: 456px;
   margin: 0;
-  font-size: 40px;
+  font-size: 34px;
   line-height: normal;
 }
 
-/* Laptop / smaller screens: keep horizontal inset; hero stays top-left. */
+/* Laptop / smaller screens: hero stays top-left with 32px inset. */
 @media (max-width: 1160px) and (min-width: 641px) {
   .intro {
-    --intro-pad-start: clamp(20px, 6vw, 168px);
-    max-width: min(456px, calc(100vw - 48px));
+    max-width: min(456px, calc(100vw - 64px));
   }
 }
 
