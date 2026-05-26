@@ -2,9 +2,6 @@ import * as THREE from "three";
 import { MOUSE, TOUCH } from "three";
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
-import { EffectComposer } from "three/addons/postprocessing/EffectComposer.js";
-import { RenderPass } from "three/addons/postprocessing/RenderPass.js";
-import { OutlinePass } from "three/addons/postprocessing/OutlinePass.js";
 
 /** Horizontal orbit (azimuth) past this accumulates a half-turn flip on the gizmo so arcs stay visible. */
 const GIZMO_ORBIT_FLIP_STEP_RAD = THREE.MathUtils.degToRad(120);
@@ -329,12 +326,39 @@ function resolveSelectableCubeFromObject(object, mainCubeRef, topCubeRef) {
 }
 
 const CUBE_SELECTION_OUTLINE_COLOR = 0xffffff;
+const CUBE_SELECTION_SILHOUETTE_NAME = "portfolio-cube-selection-silhouette";
+/** World-space inflate for inverted-hull silhouette (reads as ~1px on screen at default zoom). */
+const CUBE_SELECTION_SILHOUETTE_SCALE = 1.035;
 
-/** Meshes for {@link OutlinePass} (selected cube only; excludes stacked sibling when needed). */
-function collectCubeOutlineMeshes(cubeRoot, excludeSubtree = null) {
-  const meshes = [];
-  if (!(cubeRoot instanceof THREE.Object3D)) return meshes;
+function removeCubeSilhouetteOutlines(cubeRoot) {
+  if (!(cubeRoot instanceof THREE.Object3D)) return;
+  const toRemove = [];
   cubeRoot.traverse((node) => {
+    if (node.userData.isSelectionOutline === true) toRemove.push(node);
+  });
+  for (const node of toRemove) {
+    node.parent?.remove(node);
+    if (node.material !== null && node.material !== undefined) {
+      const mats = Array.isArray(node.material)
+        ? node.material
+        : [node.material];
+      for (const m of mats) {
+        if (m !== null && m !== undefined) m.dispose();
+      }
+    }
+  }
+}
+
+/**
+ * Inverted-hull silhouette (back-face shell) — reliable on transparent canvas + mobile,
+ * unlike post-process OutlinePass which fails with our EffectComposer setup.
+ */
+function applyCubeSilhouetteOutline(cubeRoot, excludeSubtree, THREEref) {
+  if (!(cubeRoot instanceof THREE.Object3D)) return;
+  removeCubeSilhouetteOutlines(cubeRoot);
+
+  cubeRoot.traverse((node) => {
+    if (node.userData.isSelectionOutline === true) return;
     if (
       excludeSubtree instanceof THREE.Object3D &&
       node !== cubeRoot &&
@@ -343,63 +367,52 @@ function collectCubeOutlineMeshes(cubeRoot, excludeSubtree = null) {
       return;
     }
     if (subtreeExcludedFromViewerFit(node)) return;
-    if (node.isMesh === true) meshes.push(node);
+    if (node.isMesh !== true || node.geometry === null || node.geometry === undefined) {
+      return;
+    }
+
+    const shell = new THREE.Mesh(
+      node.geometry,
+      new THREEref.MeshBasicMaterial({
+        color: CUBE_SELECTION_OUTLINE_COLOR,
+        side: THREEref.BackSide,
+        depthTest: true,
+        depthWrite: false,
+        toneMapped: false,
+      }),
+    );
+    shell.name = CUBE_SELECTION_SILHOUETTE_NAME;
+    shell.userData.isSelectionOutline = true;
+    shell.userData.excludeFromViewerFit = true;
+    shell.raycast = () => {};
+    shell.scale.set(
+      CUBE_SELECTION_SILHOUETTE_SCALE,
+      CUBE_SELECTION_SILHOUETTE_SCALE,
+      CUBE_SELECTION_SILHOUETTE_SCALE,
+    );
+    shell.renderOrder = (node.renderOrder || 0) - 1;
+    node.add(shell);
   });
-  return meshes;
 }
 
-function syncSelectedCubeOutline(
-  outlinePass,
+function syncSelectedCubeSilhouette(
   mainCubeRef,
   topCubeRef,
   selectedCube,
+  THREEref,
 ) {
-  if (outlinePass === null || outlinePass === undefined) return;
-  if (!(selectedCube instanceof THREE.Object3D)) {
-    outlinePass.selectedObjects = [];
-    return;
+  if (mainCubeRef instanceof THREE.Object3D) {
+    removeCubeSilhouetteOutlines(mainCubeRef);
   }
+  if (topCubeRef instanceof THREE.Object3D) {
+    removeCubeSilhouetteOutlines(topCubeRef);
+  }
+  if (!(selectedCube instanceof THREE.Object3D)) return;
   const excludeSubtree =
     selectedCube === mainCubeRef && topCubeRef instanceof THREE.Object3D
       ? topCubeRef
       : null;
-  outlinePass.selectedObjects = collectCubeOutlineMeshes(
-    selectedCube,
-    excludeSubtree,
-  );
-}
-
-function createSelectionOutlinePass(width, height, scene, camera) {
-  const outlinePass = new OutlinePass(
-    new THREE.Vector2(width, height),
-    scene,
-    camera,
-  );
-  outlinePass.visibleEdgeColor.set(CUBE_SELECTION_OUTLINE_COLOR);
-  outlinePass.hiddenEdgeColor.set(CUBE_SELECTION_OUTLINE_COLOR);
-  outlinePass.edgeThickness = 1.25;
-  outlinePass.edgeStrength = 8;
-  outlinePass.edgeGlow = 0;
-  outlinePass.pulsePeriod = 0;
-  outlinePass.downSampleRatio = 1;
-  return outlinePass;
-}
-
-function refreshComposerAndOutline(
-  composer,
-  outlinePass,
-  container,
-  camera,
-  mainCubeRef,
-  topCubeRef,
-  selectedCube,
-) {
-  const w = Math.max(container.clientWidth, 2);
-  const h = Math.max(container.clientHeight, 2);
-  camera.aspect = w / h;
-  camera.updateProjectionMatrix();
-  composer.setSize(w, h);
-  syncSelectedCubeOutline(outlinePass, mainCubeRef, topCubeRef, selectedCube);
+  applyCubeSilhouetteOutline(selectedCube, excludeSubtree, THREEref);
 }
 
 /**
@@ -428,7 +441,6 @@ function initCubeGizmoSelection(options) {
     gizmoRoot,
     mainCubeRef,
     topCubeRef,
-    outlinePass,
     onCubeSelected,
   } = options;
   if (
@@ -486,7 +498,6 @@ function initCubeGizmoSelection(options) {
         ? topCubeRef
         : null;
     moveManipulatorToCubePivot(gizmoRoot, rig, picked, excludeSubtree);
-    syncSelectedCubeOutline(outlinePass, mainCubeRef, topCubeRef, picked);
     if (typeof onCubeSelected === "function") {
       onCubeSelected(picked);
     }
@@ -676,22 +687,6 @@ export function initGltfViewer(options) {
     controls.zoomSpeed = 1.15;
   }
 
-  const composer = new EffectComposer(renderer);
-  const renderPass = new RenderPass(scene, camera);
-  if (transparentBackground === true) {
-    renderPass.clearAlpha = 0;
-  } else {
-    renderPass.clearColor = new THREE.Color(0x141414);
-    renderPass.clearAlpha = 1;
-  }
-  composer.addPass(renderPass);
-
-  let outlinePass = null;
-  if (frameNavigation === true) {
-    outlinePass = createSelectionOutlinePass(width, height, scene, camera);
-    composer.addPass(outlinePass);
-  }
-
   if (brightGizmo === true) {
     scene.add(new THREE.AmbientLight(0xffffff, 1));
     const keyBright = new THREE.DirectionalLight(0xffffff, 1.85);
@@ -824,24 +819,13 @@ export function initGltfViewer(options) {
             gizmoRoot,
             mainCubeRef: root,
             topCubeRef,
-            outlinePass,
             onCubeSelected: (picked) => {
               selectedCubeRef = picked;
+              syncSelectedCubeSilhouette(root, topCubeRef, picked, THREE);
             },
           });
           selectedCubeRef = root;
-          syncSelectedCubeOutline(outlinePass, root, topCubeRef, root);
-          requestAnimationFrame(() => {
-            refreshComposerAndOutline(
-              composer,
-              outlinePass,
-              container,
-              camera,
-              root,
-              topCubeRef,
-              selectedCubeRef,
-            );
-          });
+          syncSelectedCubeSilhouette(root, topCubeRef, root, THREE);
           orbitAzimuthAccum = 0;
           orbitAzimuthSamplingReady = false;
           gizmoFlipParity = 0;
@@ -880,13 +864,12 @@ export function initGltfViewer(options) {
     camera.aspect = w / h;
     camera.updateProjectionMatrix();
     renderer.setSize(w, h);
-    composer.setSize(w, h);
-    if (outlinePass !== null && selectedCubeRef !== null) {
-      syncSelectedCubeOutline(
-        outlinePass,
+    if (selectedCubeRef !== null && frameNavigation === true) {
+      syncSelectedCubeSilhouette(
         mainCubeRef,
         topCubeRef,
         selectedCubeRef,
+        THREE,
       );
     }
   };
@@ -932,7 +915,7 @@ export function initGltfViewer(options) {
       companionGizmoRef.quaternion.copy(companionCubeRef.quaternion);
       companionGizmoRef.quaternion.premultiply(_gizmoFlipYawQuat);
     }
-    composer.render();
+    renderer.render(scene, camera);
   }
   tick();
 }
