@@ -27,7 +27,7 @@ function tryStartPatentGltf() {
   }
   const viewport = container.closest(".patent-cube__viewport");
 
-  import("./gltf-viewer.js?v=2")
+  import("./gltf-viewer.js?v=7")
     .then(({ initGltfViewer }) => {
       initGltfViewer({
         container,

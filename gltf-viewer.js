@@ -2,6 +2,9 @@ import * as THREE from "three";
 import { MOUSE, TOUCH } from "three";
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
+import { EffectComposer } from "three/addons/postprocessing/EffectComposer.js";
+import { RenderPass } from "three/addons/postprocessing/RenderPass.js";
+import { OutlinePass } from "three/addons/postprocessing/OutlinePass.js";
 
 /** Horizontal orbit (azimuth) past this accumulates a half-turn flip on the gizmo so arcs stay visible. */
 const GIZMO_ORBIT_FLIP_STEP_RAD = THREE.MathUtils.degToRad(120);
@@ -176,9 +179,12 @@ function prepareManipulatorGizmoScale(gizmoRoot, cubeMax) {
 /**
  * Neutral grey matte read on the main GLB (no warm/clay tint).
  * Skipped when {@link initGltfViewer} uses `brightGizmo` (standalone vivid preview).
+ * @param {{ brighten?: boolean }} [options] Brighter albedo for the patent-cube frame on dark canvas.
  */
-function applyGreyPrimaryModelMaterials(root, THREEref) {
-  const grey = new THREE.Color(0xababab);
+function applyGreyPrimaryModelMaterials(root, THREEref, options = {}) {
+  const brighten = options.brighten === true;
+  const grey = new THREE.Color(brighten ? 0xd6d6d6 : 0xababab);
+  const colorLerp = brighten ? 0.28 : 0.52;
   root.traverse((child) => {
     if (child.isMesh !== true) return;
     const mats = Array.isArray(child.material)
@@ -190,19 +196,21 @@ function applyGreyPrimaryModelMaterials(root, THREEref) {
         m.isMeshStandardMaterial === true ||
         m.isMeshPhysicalMaterial === true
       ) {
-        m.color.lerp(grey, 0.52);
+        m.color.lerp(grey, colorLerp);
         m.metalness = 0;
         m.roughness = THREEref.MathUtils.clamp(
-          m.roughness * 0.42 + 0.42,
-          0.72,
-          0.96,
+          m.roughness * (brighten ? 0.34 : 0.42) + (brighten ? 0.28 : 0.42),
+          brighten ? 0.52 : 0.72,
+          brighten ? 0.82 : 0.96,
         );
         if ("envMapIntensity" in m) {
-          m.envMapIntensity = Math.min(m.envMapIntensity, 0.1);
+          m.envMapIntensity = brighten
+            ? Math.max(m.envMapIntensity, 0.35)
+            : Math.min(m.envMapIntensity, 0.1);
         }
         m.needsUpdate = true;
       } else if (m.isMeshBasicMaterial === true) {
-        m.color.lerp(grey, 0.48);
+        m.color.lerp(grey, brighten ? 0.26 : 0.48);
         m.needsUpdate = true;
       }
     }
@@ -320,6 +328,63 @@ function resolveSelectableCubeFromObject(object, mainCubeRef, topCubeRef) {
   return null;
 }
 
+const CUBE_SELECTION_OUTLINE_COLOR = 0xffffff;
+
+/** Meshes for {@link OutlinePass} (selected cube only; excludes stacked sibling when needed). */
+function collectCubeOutlineMeshes(cubeRoot, excludeSubtree = null) {
+  const meshes = [];
+  if (!(cubeRoot instanceof THREE.Object3D)) return meshes;
+  cubeRoot.traverse((node) => {
+    if (
+      excludeSubtree instanceof THREE.Object3D &&
+      node !== cubeRoot &&
+      isDescendantOf(node, excludeSubtree) === true
+    ) {
+      return;
+    }
+    if (subtreeExcludedFromViewerFit(node)) return;
+    if (node.isMesh === true) meshes.push(node);
+  });
+  return meshes;
+}
+
+function syncSelectedCubeOutline(
+  outlinePass,
+  mainCubeRef,
+  topCubeRef,
+  selectedCube,
+) {
+  if (!(outlinePass instanceof OutlinePass)) return;
+  if (!(selectedCube instanceof THREE.Object3D)) {
+    outlinePass.selectedObjects = [];
+    return;
+  }
+  const excludeSubtree =
+    selectedCube === mainCubeRef && topCubeRef instanceof THREE.Object3D
+      ? topCubeRef
+      : null;
+  outlinePass.selectedObjects = collectCubeOutlineMeshes(
+    selectedCube,
+    excludeSubtree,
+  );
+}
+
+function createSelectionOutlinePass(width, height, scene, camera) {
+  const outlinePass = new OutlinePass(
+    new THREE.Vector2(width, height),
+    scene,
+    camera,
+  );
+  outlinePass.visibleEdgeColor.set(CUBE_SELECTION_OUTLINE_COLOR);
+  outlinePass.hiddenEdgeColor.set(CUBE_SELECTION_OUTLINE_COLOR);
+  outlinePass.edgeThickness = 1;
+  outlinePass.edgeStrength = 3;
+  outlinePass.edgeGlow = 0;
+  outlinePass.pulsePeriod = 0;
+  outlinePass.downSampleRatio = 2;
+  return outlinePass;
+}
+
 /**
  * iOS Safari can still treat two-finger gestures as page zoom unless touch
  * defaults are cancelled on the interactive surface (touch-action alone is not always enough).
@@ -346,6 +411,7 @@ function initCubeGizmoSelection(options) {
     gizmoRoot,
     mainCubeRef,
     topCubeRef,
+    outlinePass,
   } = options;
   if (
     !(domElement instanceof HTMLElement) ||
@@ -402,6 +468,7 @@ function initCubeGizmoSelection(options) {
         ? topCubeRef
         : null;
     moveManipulatorToCubePivot(gizmoRoot, rig, picked, excludeSubtree);
+    syncSelectedCubeOutline(outlinePass, mainCubeRef, topCubeRef, picked);
   };
 
   domElement.addEventListener("pointerdown", onPointerDown);
@@ -556,7 +623,7 @@ export function initGltfViewer(options) {
     brightGizmo === true
       ? 1.35
       : transparentBackground === true
-        ? 0.72
+        ? 0.98
         : 0.65;
   renderer.domElement.style.display = "block";
   renderer.domElement.style.width = "100%";
@@ -588,6 +655,22 @@ export function initGltfViewer(options) {
     controls.zoomSpeed = 1.15;
   }
 
+  const composer = new EffectComposer(renderer);
+  const renderPass = new RenderPass(scene, camera);
+  if (transparentBackground === true) {
+    renderPass.clearAlpha = 0;
+  } else {
+    renderPass.clearColor = new THREE.Color(0x141414);
+    renderPass.clearAlpha = 1;
+  }
+  composer.addPass(renderPass);
+
+  let outlinePass = null;
+  if (frameNavigation === true) {
+    outlinePass = createSelectionOutlinePass(width, height, scene, camera);
+    composer.addPass(outlinePass);
+  }
+
   if (brightGizmo === true) {
     scene.add(new THREE.AmbientLight(0xffffff, 1));
     const keyBright = new THREE.DirectionalLight(0xffffff, 1.85);
@@ -597,21 +680,32 @@ export function initGltfViewer(options) {
     fillBright.position.set(-5, 2, -4);
     scene.add(fillBright);
   } else {
-    const hemi = new THREE.HemisphereLight(0xf2f2f2, 0xc4c4c4, 0.2);
+    const patentFrame = transparentBackground === true;
+    const hemi = new THREE.HemisphereLight(
+      0xf8f8f8,
+      0xd0d0d0,
+      patentFrame ? 0.38 : 0.2,
+    );
     scene.add(hemi);
     scene.add(
-      new THREE.AmbientLight(
-        0xe8e8e8,
-        transparentBackground === true ? 0.22 : 0.2,
-      ),
+      new THREE.AmbientLight(0xffffff, patentFrame ? 0.42 : 0.2),
     );
-    const keyGrey = new THREE.DirectionalLight(0xffffff, 0.34);
+    const keyGrey = new THREE.DirectionalLight(
+      0xffffff,
+      patentFrame ? 0.62 : 0.34,
+    );
     keyGrey.position.set(5.2, 9, 4.8);
     scene.add(keyGrey);
-    const fillGrey = new THREE.DirectionalLight(0xd8d8d8, 0.18);
+    const fillGrey = new THREE.DirectionalLight(
+      0xf0f0f0,
+      patentFrame ? 0.32 : 0.18,
+    );
     fillGrey.position.set(-4.5, 3.2, -4);
     scene.add(fillGrey);
-    const bounceGrey = new THREE.DirectionalLight(0xd0d0d0, 0.1);
+    const bounceGrey = new THREE.DirectionalLight(
+      0xe8e8e8,
+      patentFrame ? 0.2 : 0.1,
+    );
     bounceGrey.position.set(2, -3.5, 5);
     scene.add(bounceGrey);
   }
@@ -654,7 +748,9 @@ export function initGltfViewer(options) {
       if (brightGizmo === true) {
         applyBrightGizmoMaterials(root, THREE);
       } else {
-        applyGreyPrimaryModelMaterials(root, THREE);
+        applyGreyPrimaryModelMaterials(root, THREE, {
+          brighten: transparentBackground === true,
+        });
       }
 
       if (companionModelFilenames.length === 0) {
@@ -706,7 +802,9 @@ export function initGltfViewer(options) {
             gizmoRoot,
             mainCubeRef: root,
             topCubeRef,
+            outlinePass,
           });
+          syncSelectedCubeOutline(outlinePass, root, topCubeRef, root);
           orbitAzimuthAccum = 0;
           orbitAzimuthSamplingReady = false;
           gizmoFlipParity = 0;
@@ -745,6 +843,10 @@ export function initGltfViewer(options) {
     camera.aspect = w / h;
     camera.updateProjectionMatrix();
     renderer.setSize(w, h);
+    composer.setSize(w, h);
+    if (outlinePass instanceof OutlinePass) {
+      outlinePass.resolution.set(w, h);
+    }
   };
 
   window.addEventListener("resize", onResize);
@@ -788,7 +890,7 @@ export function initGltfViewer(options) {
       companionGizmoRef.quaternion.copy(companionCubeRef.quaternion);
       companionGizmoRef.quaternion.premultiply(_gizmoFlipYawQuat);
     }
-    renderer.render(scene, camera);
+    composer.render();
   }
   tick();
 }
