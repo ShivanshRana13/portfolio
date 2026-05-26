@@ -354,7 +354,7 @@ function syncSelectedCubeOutline(
   topCubeRef,
   selectedCube,
 ) {
-  if (!(outlinePass instanceof OutlinePass)) return;
+  if (outlinePass === null || outlinePass === undefined) return;
   if (!(selectedCube instanceof THREE.Object3D)) {
     outlinePass.selectedObjects = [];
     return;
@@ -377,12 +377,29 @@ function createSelectionOutlinePass(width, height, scene, camera) {
   );
   outlinePass.visibleEdgeColor.set(CUBE_SELECTION_OUTLINE_COLOR);
   outlinePass.hiddenEdgeColor.set(CUBE_SELECTION_OUTLINE_COLOR);
-  outlinePass.edgeThickness = 1;
-  outlinePass.edgeStrength = 3;
+  outlinePass.edgeThickness = 1.25;
+  outlinePass.edgeStrength = 8;
   outlinePass.edgeGlow = 0;
   outlinePass.pulsePeriod = 0;
-  outlinePass.downSampleRatio = 2;
+  outlinePass.downSampleRatio = 1;
   return outlinePass;
+}
+
+function refreshComposerAndOutline(
+  composer,
+  outlinePass,
+  container,
+  camera,
+  mainCubeRef,
+  topCubeRef,
+  selectedCube,
+) {
+  const w = Math.max(container.clientWidth, 2);
+  const h = Math.max(container.clientHeight, 2);
+  camera.aspect = w / h;
+  camera.updateProjectionMatrix();
+  composer.setSize(w, h);
+  syncSelectedCubeOutline(outlinePass, mainCubeRef, topCubeRef, selectedCube);
 }
 
 /**
@@ -412,6 +429,7 @@ function initCubeGizmoSelection(options) {
     mainCubeRef,
     topCubeRef,
     outlinePass,
+    onCubeSelected,
   } = options;
   if (
     !(domElement instanceof HTMLElement) ||
@@ -469,6 +487,9 @@ function initCubeGizmoSelection(options) {
         : null;
     moveManipulatorToCubePivot(gizmoRoot, rig, picked, excludeSubtree);
     syncSelectedCubeOutline(outlinePass, mainCubeRef, topCubeRef, picked);
+    if (typeof onCubeSelected === "function") {
+      onCubeSelected(picked);
+    }
   };
 
   domElement.addEventListener("pointerdown", onPointerDown);
@@ -733,6 +754,7 @@ export function initGltfViewer(options) {
   let companionGizmoRef = null;
   let mainCubeRef = null;
   let topCubeRef = null;
+  let selectedCubeRef = null;
   let orbitAzimuthAccum = 0;
   let lastOrbitAzimuth = 0;
   let orbitAzimuthSamplingReady = false;
@@ -803,8 +825,23 @@ export function initGltfViewer(options) {
             mainCubeRef: root,
             topCubeRef,
             outlinePass,
+            onCubeSelected: (picked) => {
+              selectedCubeRef = picked;
+            },
           });
+          selectedCubeRef = root;
           syncSelectedCubeOutline(outlinePass, root, topCubeRef, root);
+          requestAnimationFrame(() => {
+            refreshComposerAndOutline(
+              composer,
+              outlinePass,
+              container,
+              camera,
+              root,
+              topCubeRef,
+              selectedCubeRef,
+            );
+          });
           orbitAzimuthAccum = 0;
           orbitAzimuthSamplingReady = false;
           gizmoFlipParity = 0;
@@ -844,8 +881,13 @@ export function initGltfViewer(options) {
     camera.updateProjectionMatrix();
     renderer.setSize(w, h);
     composer.setSize(w, h);
-    if (outlinePass instanceof OutlinePass) {
-      outlinePass.resolution.set(w, h);
+    if (outlinePass !== null && selectedCubeRef !== null) {
+      syncSelectedCubeOutline(
+        outlinePass,
+        mainCubeRef,
+        topCubeRef,
+        selectedCubeRef,
+      );
     }
   };
 
