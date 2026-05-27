@@ -180,8 +180,8 @@ function prepareManipulatorGizmoScale(gizmoRoot, cubeMax) {
  */
 function applyGreyPrimaryModelMaterials(root, THREEref, options = {}) {
   const brighten = options.brighten === true;
-  const grey = new THREE.Color(brighten ? 0xd6d6d6 : 0xababab);
-  const colorLerp = brighten ? 0.28 : 0.52;
+  const grey = new THREE.Color(brighten ? 0x9e9e9e : 0xababab);
+  const colorLerp = brighten ? 0.48 : 0.52;
   root.traverse((child) => {
     if (child.isMesh !== true) return;
     const mats = Array.isArray(child.material)
@@ -196,18 +196,18 @@ function applyGreyPrimaryModelMaterials(root, THREEref, options = {}) {
         m.color.lerp(grey, colorLerp);
         m.metalness = 0;
         m.roughness = THREEref.MathUtils.clamp(
-          m.roughness * (brighten ? 0.34 : 0.42) + (brighten ? 0.28 : 0.42),
-          brighten ? 0.52 : 0.72,
-          brighten ? 0.82 : 0.96,
+          m.roughness * (brighten ? 0.4 : 0.42) + (brighten ? 0.4 : 0.42),
+          brighten ? 0.68 : 0.72,
+          brighten ? 0.94 : 0.96,
         );
         if ("envMapIntensity" in m) {
           m.envMapIntensity = brighten
-            ? Math.max(m.envMapIntensity, 0.35)
+            ? Math.min(m.envMapIntensity, 0.1)
             : Math.min(m.envMapIntensity, 0.1);
         }
         m.needsUpdate = true;
       } else if (m.isMeshBasicMaterial === true) {
-        m.color.lerp(grey, brighten ? 0.26 : 0.48);
+        m.color.lerp(grey, brighten ? 0.44 : 0.48);
         m.needsUpdate = true;
       }
     }
@@ -323,96 +323,6 @@ function resolveSelectableCubeFromObject(object, mainCubeRef, topCubeRef) {
     node = node.parent;
   }
   return null;
-}
-
-const CUBE_SELECTION_OUTLINE_COLOR = 0xffffff;
-const CUBE_SELECTION_SILHOUETTE_NAME = "portfolio-cube-selection-silhouette";
-/** World-space inflate for inverted-hull silhouette (reads as ~1px on screen at default zoom). */
-const CUBE_SELECTION_SILHOUETTE_SCALE = 1.035;
-
-function removeCubeSilhouetteOutlines(cubeRoot) {
-  if (!(cubeRoot instanceof THREE.Object3D)) return;
-  const toRemove = [];
-  cubeRoot.traverse((node) => {
-    if (node.userData.isSelectionOutline === true) toRemove.push(node);
-  });
-  for (const node of toRemove) {
-    node.parent?.remove(node);
-    if (node.material !== null && node.material !== undefined) {
-      const mats = Array.isArray(node.material)
-        ? node.material
-        : [node.material];
-      for (const m of mats) {
-        if (m !== null && m !== undefined) m.dispose();
-      }
-    }
-  }
-}
-
-/**
- * Inverted-hull silhouette (back-face shell) — reliable on transparent canvas + mobile,
- * unlike post-process OutlinePass which fails with our EffectComposer setup.
- */
-function applyCubeSilhouetteOutline(cubeRoot, excludeSubtree, THREEref) {
-  if (!(cubeRoot instanceof THREE.Object3D)) return;
-  removeCubeSilhouetteOutlines(cubeRoot);
-
-  cubeRoot.traverse((node) => {
-    if (node.userData.isSelectionOutline === true) return;
-    if (
-      excludeSubtree instanceof THREE.Object3D &&
-      node !== cubeRoot &&
-      isDescendantOf(node, excludeSubtree) === true
-    ) {
-      return;
-    }
-    if (subtreeExcludedFromViewerFit(node)) return;
-    if (node.isMesh !== true || node.geometry === null || node.geometry === undefined) {
-      return;
-    }
-
-    const shell = new THREE.Mesh(
-      node.geometry,
-      new THREEref.MeshBasicMaterial({
-        color: CUBE_SELECTION_OUTLINE_COLOR,
-        side: THREEref.BackSide,
-        depthTest: true,
-        depthWrite: false,
-        toneMapped: false,
-      }),
-    );
-    shell.name = CUBE_SELECTION_SILHOUETTE_NAME;
-    shell.userData.isSelectionOutline = true;
-    shell.userData.excludeFromViewerFit = true;
-    shell.raycast = () => {};
-    shell.scale.set(
-      CUBE_SELECTION_SILHOUETTE_SCALE,
-      CUBE_SELECTION_SILHOUETTE_SCALE,
-      CUBE_SELECTION_SILHOUETTE_SCALE,
-    );
-    shell.renderOrder = (node.renderOrder || 0) - 1;
-    node.add(shell);
-  });
-}
-
-function syncSelectedCubeSilhouette(
-  mainCubeRef,
-  topCubeRef,
-  selectedCube,
-  THREEref,
-) {
-  if (mainCubeRef instanceof THREE.Object3D) {
-    removeCubeSilhouetteOutlines(mainCubeRef);
-  }
-  if (topCubeRef instanceof THREE.Object3D) {
-    removeCubeSilhouetteOutlines(topCubeRef);
-  }
-  if (!(selectedCube instanceof THREE.Object3D)) return;
-  const excludeSubtree =
-    selectedCube === mainCubeRef && topCubeRef instanceof THREE.Object3D
-      ? topCubeRef
-      : null;
-  applyCubeSilhouetteOutline(selectedCube, excludeSubtree, THREEref);
 }
 
 /**
@@ -655,7 +565,7 @@ export function initGltfViewer(options) {
     brightGizmo === true
       ? 1.35
       : transparentBackground === true
-        ? 0.98
+        ? 0.68
         : 0.65;
   renderer.domElement.style.display = "block";
   renderer.domElement.style.width = "100%";
@@ -698,29 +608,29 @@ export function initGltfViewer(options) {
   } else {
     const patentFrame = transparentBackground === true;
     const hemi = new THREE.HemisphereLight(
-      0xf8f8f8,
-      0xd0d0d0,
-      patentFrame ? 0.38 : 0.2,
+      0xe8e8e8,
+      0xbcbcbc,
+      patentFrame ? 0.2 : 0.2,
     );
     scene.add(hemi);
     scene.add(
-      new THREE.AmbientLight(0xffffff, patentFrame ? 0.42 : 0.2),
+      new THREE.AmbientLight(0xffffff, patentFrame ? 0.22 : 0.2),
     );
     const keyGrey = new THREE.DirectionalLight(
       0xffffff,
-      patentFrame ? 0.62 : 0.34,
+      patentFrame ? 0.34 : 0.34,
     );
     keyGrey.position.set(5.2, 9, 4.8);
     scene.add(keyGrey);
     const fillGrey = new THREE.DirectionalLight(
-      0xf0f0f0,
-      patentFrame ? 0.32 : 0.18,
+      0xe8e8e8,
+      patentFrame ? 0.16 : 0.18,
     );
     fillGrey.position.set(-4.5, 3.2, -4);
     scene.add(fillGrey);
     const bounceGrey = new THREE.DirectionalLight(
-      0xe8e8e8,
-      patentFrame ? 0.2 : 0.1,
+      0xe0e0e0,
+      patentFrame ? 0.1 : 0.1,
     );
     bounceGrey.position.set(2, -3.5, 5);
     scene.add(bounceGrey);
@@ -747,9 +657,7 @@ export function initGltfViewer(options) {
 
   let companionCubeRef = null;
   let companionGizmoRef = null;
-  let mainCubeRef = null;
   let topCubeRef = null;
-  let selectedCubeRef = null;
   let orbitAzimuthAccum = 0;
   let lastOrbitAzimuth = 0;
   let orbitAzimuthSamplingReady = false;
@@ -809,7 +717,6 @@ export function initGltfViewer(options) {
           gizmoRoot.userData.excludeFromViewerFit = true;
           parentManipulatorToRig(gizmoRoot, root, contentRoot);
           topCubeRef = stackScaledCubeCloneOnTop(root, 0.5);
-          mainCubeRef = root;
           companionCubeRef = root;
           companionGizmoRef = gizmoRoot;
           initCubeGizmoSelection({
@@ -819,13 +726,7 @@ export function initGltfViewer(options) {
             gizmoRoot,
             mainCubeRef: root,
             topCubeRef,
-            onCubeSelected: (picked) => {
-              selectedCubeRef = picked;
-              syncSelectedCubeSilhouette(root, topCubeRef, picked, THREE);
-            },
           });
-          selectedCubeRef = root;
-          syncSelectedCubeSilhouette(root, topCubeRef, root, THREE);
           orbitAzimuthAccum = 0;
           orbitAzimuthSamplingReady = false;
           gizmoFlipParity = 0;
@@ -864,14 +765,6 @@ export function initGltfViewer(options) {
     camera.aspect = w / h;
     camera.updateProjectionMatrix();
     renderer.setSize(w, h);
-    if (selectedCubeRef !== null && frameNavigation === true) {
-      syncSelectedCubeSilhouette(
-        mainCubeRef,
-        topCubeRef,
-        selectedCubeRef,
-        THREE,
-      );
-    }
   };
 
   window.addEventListener("resize", onResize);

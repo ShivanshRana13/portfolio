@@ -252,17 +252,18 @@ body.has-custom-cursor * {
  */
 .patent-cube {
   position: absolute;
-  left: 50%;
-  top: 100px;
+  left: 0;
+  right: 0;
+  top: 0;
   z-index: 4;
-  width: min(520px, 86vw);
-  height: min(520px, 86vw);
+  width: 100%;
+  height: 60vh;
+  height: 60dvh;
   margin: 0;
   padding: 0;
-  transform: translateX(-50%);
   display: flex;
-  align-items: center;
-  justify-content: center;
+  align-items: stretch;
+  justify-content: stretch;
   pointer-events: none;
   opacity: 0;
   visibility: hidden;
@@ -336,13 +337,6 @@ body.theme-dark .scene.scene--patent-cube-active .patent-cube__viewport {
   }
 }
 
-@media (max-width: 640px) {
-  .patent-cube {
-    top: clamp(108px, 28vw, 160px);
-    width: min(420px, 94vw);
-    height: min(420px, 82vw);
-  }
-}
 
 .intro {
   --intro-pad-start: max(32px, env(safe-area-inset-left, 0px));
