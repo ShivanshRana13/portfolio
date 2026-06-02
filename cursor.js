@@ -60,18 +60,56 @@
   }
 
   /**
-   * Walk up from the hit target until we find a non-transparent background-color.
+   * Opaque surface color from background-color or SVG fill.
+   * @param {Element} node
+   * @returns {{ r: number; g: number; b: number } | null}
+   */
+  function sampleSurfaceRgb(node) {
+    const style = window.getComputedStyle(node);
+    const bg = parseCssRgb(style.backgroundColor);
+    if (bg !== null && bg.a >= 0.08) {
+      return { r: bg.r, g: bg.g, b: bg.b };
+    }
+
+    if (node instanceof SVGElement) {
+      const fill = style.fill;
+      if (fill !== "none" && fill !== "") {
+        const parsedFill = parseCssRgb(fill);
+        if (parsedFill !== null && parsedFill.a >= 0.08) {
+          return { r: parsedFill.r, g: parsedFill.g, b: parsedFill.b };
+        }
+      }
+    }
+
+    return null;
+  }
+
+  /**
+   * Walk up from the hit target until we find a non-transparent surface (background or SVG fill).
    * @param {Element | null} hitEl
    * @returns {{ r: number; g: number; b: number }}
    */
   function rgbUnderElement(hitEl) {
     let node = hitEl;
     while (node !== null && node.nodeType === Node.ELEMENT_NODE) {
-      const bg = window.getComputedStyle(node).backgroundColor;
-      const parsed = parseCssRgb(bg);
-      if (parsed !== null && parsed.a >= 0.08) {
-        return { r: parsed.r, g: parsed.g, b: parsed.b };
+      const sampled = sampleSurfaceRgb(node);
+      if (sampled !== null) {
+        return sampled;
       }
+
+      if (
+        node instanceof HTMLElement &&
+        node.classList.contains("sticky--star") === true
+      ) {
+        const starPath = node.querySelector(".sticky-star__path");
+        if (starPath instanceof SVGElement) {
+          const starFill = sampleSurfaceRgb(starPath);
+          if (starFill !== null) {
+            return starFill;
+          }
+        }
+      }
+
       node = node.parentElement;
     }
     const htmlBg = parseCssRgb(window.getComputedStyle(document.documentElement).backgroundColor);

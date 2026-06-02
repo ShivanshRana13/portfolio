@@ -38,6 +38,11 @@ function initStickyNotes() {
 
   const NOTE_SIZE_PX = 246;
 
+  function noteSizePx(note) {
+    const s = getNumberAttr(note, "data-size", NOTE_SIZE_PX);
+    return Number.isFinite(s) && s > 0 ? s : NOTE_SIZE_PX;
+  }
+
   /** Axis-aligned bounding-box fraction allowed past each stage/container edge (per side). */
   const EDGE_OVERFLOW_FRACTION = 0.5;
 
@@ -145,11 +150,12 @@ function initStickyNotes() {
 
       for (let i = 0; i < positions.length; i += 1) {
         const rot = getNumberAttr(notes[i], "data-rot", 0);
+        const size = noteSizePx(notes[i]);
         const p = positions[i];
-        const b = axisAlignedBoundsForRotatedSquare(rot, p.x, p.y);
+        const b = axisAlignedBoundsForRotatedSquare(rot, p.x, p.y, size);
         let dx = 0;
 
-        const bb0 = axisAlignedBoundsForRotatedSquare(rot, 0, 0);
+        const bb0 = axisAlignedBoundsForRotatedSquare(rot, 0, 0, size);
         const aw = bb0.maxX - bb0.minX;
         const slack = EDGE_OVERFLOW_FRACTION * aw;
         const innerLeft = left - slack;
@@ -221,7 +227,8 @@ function initStickyNotes() {
   function constrainToStage(noteEl, x, y) {
     const sb = constrainBoundsSize();
     const rot = getNumberAttr(noteEl, "data-rot", 0);
-    const bb0 = axisAlignedBoundsForRotatedSquare(rot, 0, 0);
+    const size = noteSizePx(noteEl);
+    const bb0 = axisAlignedBoundsForRotatedSquare(rot, 0, 0, size);
     const w = bb0.maxX - bb0.minX;
     const h = bb0.maxY - bb0.minY;
     const sx = EDGE_OVERFLOW_FRACTION * w;

@@ -611,6 +611,92 @@ body.theme-dark .scene.scene--patent-cube-active .patent-cube__viewport {
   font-weight: 600;
 }
 
+.sticky--star {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 275px;
+  height: 275px;
+  padding: 0;
+  background: transparent;
+  border: none;
+  color: #000000;
+  cursor: grab;
+  pointer-events: auto;
+  touch-action: none;
+  user-select: none;
+  will-change: transform;
+}
+
+.sticky--star:active {
+  cursor: grabbing;
+}
+
+.sticky--star:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 3px;
+}
+
+.sticky-star__shape {
+  display: block;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  user-select: none;
+}
+
+.sticky-star__path {
+  fill: #ffffff;
+  stroke: #000000;
+  stroke-width: 2;
+  transition:
+    fill 160ms ease,
+    stroke 160ms ease;
+}
+
+.sticky-star__label {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  z-index: 1;
+  margin: 0;
+  font-size: 20px;
+  font-weight: 600;
+  line-height: normal;
+  text-align: center;
+  white-space: nowrap;
+  pointer-events: none;
+  transform: translate(-50%, -50%) rotate(-10deg);
+  transition: color 160ms ease;
+}
+
+.sticky--star:hover:not(.is-selected),
+.sticky--star:focus-visible:not(.is-selected),
+body.theme-dark .sticky--star:not(:hover):not(:focus-visible):not(.is-selected) {
+  background: transparent;
+  border-color: transparent;
+}
+
+@media (hover: hover) {
+  .sticky--star:hover:not(.is-selected) .sticky-star__path {
+    fill: var(--sticky-hover-surface);
+    stroke: var(--sticky-hover-border);
+  }
+
+  .sticky--star:hover:not(.is-selected) {
+    color: var(--sticky-hover-ink);
+  }
+}
+
+.sticky--star:focus-visible:not(.is-selected) .sticky-star__path {
+  fill: var(--sticky-hover-surface);
+  stroke: var(--sticky-hover-border);
+}
+
+.sticky--star:focus-visible:not(.is-selected) {
+  color: var(--sticky-hover-ink);
+}
+
 /*
  * Dark canvas = a sticky is selected (see sticky-theme.js). Hide hero + every other note.
  */
@@ -638,7 +724,7 @@ body.theme-dark .cards .sticky:not(.is-selected) {
 
 @media (hover: hover) {
   /* Hover preview: all stickies share the same dark treatment. */
-  .sticky:hover:not(.is-selected) {
+  .sticky:not(.sticky--star):hover:not(.is-selected) {
     background: var(--sticky-hover-surface);
     color: var(--sticky-hover-ink);
     border-color: var(--sticky-hover-border);
@@ -648,21 +734,39 @@ body.theme-dark .cards .sticky:not(.is-selected) {
    * Dark canvas (sticky selected): unselected notes are black-on-black at rest.
    * On hover, invert to white tile / black type so they read clearly.
    */
-  body.theme-dark .sticky:hover:not(.is-selected) {
+  body.theme-dark .sticky:not(.sticky--star):hover:not(.is-selected) {
     background: #ffffff;
     color: #000000;
     border-color: #000000;
   }
+
+  body.theme-dark .sticky--star:hover:not(.is-selected) .sticky-star__path {
+    fill: #ffffff;
+    stroke: #000000;
+  }
+
+  body.theme-dark .sticky--star:hover:not(.is-selected) {
+    color: #000000;
+  }
 }
 
 /* Keyboard parity when canvas is dark */
-body.theme-dark .sticky:focus-visible:not(.is-selected) {
+body.theme-dark .sticky:not(.sticky--star):focus-visible:not(.is-selected) {
   background: #ffffff;
   color: #000000;
   border-color: #000000;
 }
 
-body.theme-dark .sticky:not(:hover):not(:focus-visible):not(.is-selected) {
+body.theme-dark .sticky--star:focus-visible:not(.is-selected) .sticky-star__path {
+  fill: #ffffff;
+  stroke: #000000;
+}
+
+body.theme-dark .sticky--star:focus-visible:not(.is-selected) {
+  color: #000000;
+}
+
+body.theme-dark .sticky:not(.sticky--star):not(:hover):not(:focus-visible):not(.is-selected) {
   background: var(--sticky-hover-surface);
   color: var(--sticky-hover-ink);
   border-color: var(--sticky-hover-border);
