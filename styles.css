@@ -11,30 +11,9 @@
   --sticky-hover-ink: #ffffff;
   --sticky-hover-border: #ffffff;
 
-  /*
-   * Selected palettes use a split-complementary relationship per tile:
-   * pick a base hue, take the two accents at hue +150° and hue +210° (split around the complement),
-   * then assign one accent to the sticky background and the other to the text ink.
-   */
-  --sticky-selected-education-surface: #f6c531; /* accent @ base 255° +150° → 45° */
-  --sticky-selected-education-ink: #257d08; /* accent @ base 255° +210° → 105° */
-
-  --sticky-selected-case-tilt-surface: #f6317a; /* base 188° +150° → 338° */
-  /* Same hue family as the split accent @ ~38°, but much darker for readability on hot pink. */
-  --sticky-selected-case-tilt-ink: #140905;
-
-  --sticky-selected-case-surface: #38f631; /* base 328° +150° → 118° */
-  --sticky-selected-case-ink: #087d79; /* base 328° +210° → 178° */
-
-  --sticky-selected-college-surface: #31aef6; /* base 52° +150° → 202° */
-  --sticky-selected-college-ink: #33087d; /* base 52° +210° → 262° */
-
-  --sticky-selected-passions-surface: #c831f6; /* base 136° +150° → 286° */
-  /* Same accent hue family @ ~346°, nudged darker for readability on bright magenta-violet. */
-  --sticky-selected-passions-ink: #380410;
-
-  --sticky-selected-instagram-surface: #31f6e3; /* base 24° +150° → 174° */
-  --sticky-selected-instagram-ink: #08147d; /* base 24° +210° → 234° */
+  --sticky-selected-surface: #ffffff;
+  --sticky-selected-ink: #000000;
+  --sticky-selected-border: #000000;
 
   --font: "Inter", system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
 }
@@ -327,7 +306,7 @@ body.theme-dark .scene.scene--patent-cube-active .patent-cube__viewport {
 }
 
 .patent-cube__viewport:focus-visible {
-  outline: 2px solid color-mix(in srgb, var(--sticky-selected-case-tilt-surface) 75%, #ffffff);
+  outline: 2px solid #ffffff;
   outline-offset: 4px;
 }
 
@@ -549,53 +528,12 @@ body.theme-dark .scene.scene--patent-cube-active .patent-cube__viewport {
   flex-shrink: 0;
 }
 
-.card--education.sticky.is-selected .sticky-badge__circle {
-  background-color: var(--sticky-selected-education-surface);
+.card.sticky.is-selected .sticky-badge__circle {
+  background-color: transparent;
 }
 
-.card--case-tilt.sticky.is-selected .sticky-badge__circle {
-  background-color: var(--sticky-selected-case-tilt-surface);
-}
-
-.card--case.sticky.is-selected .sticky-badge__circle {
-  background-color: var(--sticky-selected-case-surface);
-}
-
-.card--college.sticky.is-selected .sticky-badge__circle {
-  background-color: var(--sticky-selected-college-surface);
-}
-
-.card--passions.sticky.is-selected .sticky-badge__circle {
-  background-color: var(--sticky-selected-passions-surface);
-}
-
-.card--instagram.sticky.is-selected .sticky-badge__circle {
-  background-color: var(--sticky-selected-instagram-surface);
-}
-
-/* Explicit ink on badge link so UA / visited styles never override SVG fill (currentColor). */
-.card--education.sticky.is-selected .sticky-badge {
-  color: var(--sticky-selected-education-ink);
-}
-
-.card--case-tilt.sticky.is-selected .sticky-badge {
-  color: var(--sticky-selected-case-tilt-ink);
-}
-
-.card--case.sticky.is-selected .sticky-badge {
-  color: var(--sticky-selected-case-ink);
-}
-
-.card--college.sticky.is-selected .sticky-badge {
-  color: var(--sticky-selected-college-ink);
-}
-
-.card--passions.sticky.is-selected .sticky-badge {
-  color: var(--sticky-selected-passions-ink);
-}
-
-.card--instagram.sticky.is-selected .sticky-badge {
-  color: var(--sticky-selected-instagram-ink);
+.card.sticky.is-selected .sticky-badge {
+  color: #ffffff;
 }
 
 .card__kicker {
@@ -668,6 +606,19 @@ body.theme-dark .scene.scene--patent-cube-active .patent-cube__viewport {
   pointer-events: none;
   transform: translate(-50%, -50%) rotate(-10deg);
   transition: color 160ms ease;
+}
+
+.sticky--star.is-selected .sticky-star__path {
+  fill: var(--sticky-selected-surface);
+  stroke: var(--sticky-selected-border);
+}
+
+.sticky--star.is-selected {
+  color: var(--sticky-selected-ink);
+}
+
+.sticky--star.is-selected:focus-visible {
+  outline-color: var(--sticky-selected-ink);
 }
 
 .sticky--star:hover:not(.is-selected),
@@ -772,71 +723,11 @@ body.theme-dark .sticky:not(.sticky--star):not(:hover):not(:focus-visible):not(.
   border-color: var(--sticky-hover-border);
 }
 
-/* Selected tile palettes (persist even while hovered). */
-.card--education.sticky.is-selected {
-  background: var(--sticky-selected-education-surface);
-  color: var(--sticky-selected-education-ink);
-  border-color: transparent;
-}
-
-.card--case-tilt.sticky.is-selected {
-  background: var(--sticky-selected-case-tilt-surface);
-  color: var(--sticky-selected-case-tilt-ink);
-  border-color: transparent;
-}
-
-.card--case.sticky.is-selected {
-  background: var(--sticky-selected-case-surface);
-  color: var(--sticky-selected-case-ink);
-  border-color: transparent;
-}
-
-.card--college.sticky.is-selected {
-  background: var(--sticky-selected-college-surface);
-  color: var(--sticky-selected-college-ink);
-  border-color: transparent;
-}
-
-.card--passions.sticky.is-selected {
-  background: var(--sticky-selected-passions-surface);
-  color: var(--sticky-selected-passions-ink);
-  border-color: transparent;
-}
-
-.card--instagram.sticky.is-selected {
-  background: var(--sticky-selected-instagram-surface);
-  color: var(--sticky-selected-instagram-ink);
-  border-color: transparent;
-}
-
-body.theme-dark .card--education.sticky.is-selected {
-  outline: 1px solid color-mix(in srgb, var(--sticky-selected-education-ink) 55%, transparent);
-  outline-offset: -1px;
-}
-
-body.theme-dark .card--case-tilt.sticky.is-selected {
-  outline: 1px solid color-mix(in srgb, var(--sticky-selected-case-tilt-ink) 55%, transparent);
-  outline-offset: -1px;
-}
-
-body.theme-dark .card--case.sticky.is-selected {
-  outline: 1px solid color-mix(in srgb, var(--sticky-selected-case-ink) 55%, transparent);
-  outline-offset: -1px;
-}
-
-body.theme-dark .card--college.sticky.is-selected {
-  outline: 1px solid color-mix(in srgb, var(--sticky-selected-college-ink) 55%, transparent);
-  outline-offset: -1px;
-}
-
-body.theme-dark .card--passions.sticky.is-selected {
-  outline: 1px solid color-mix(in srgb, var(--sticky-selected-passions-ink) 55%, transparent);
-  outline-offset: -1px;
-}
-
-body.theme-dark .card--instagram.sticky.is-selected {
-  outline: 1px solid color-mix(in srgb, var(--sticky-selected-instagram-ink) 55%, transparent);
-  outline-offset: -1px;
+/* Selected tile — white on black canvas (minimal). */
+.card.sticky.is-selected {
+  background: var(--sticky-selected-surface);
+  color: var(--sticky-selected-ink);
+  border-color: var(--sticky-selected-border);
 }
 
 /* Match Figma placements / rotations */
