@@ -615,6 +615,10 @@ body.theme-focus-light .about-page__photo {
     --about-pad-end: max(16px, env(safe-area-inset-right, 0px));
   }
 
+  .about-page__lede {
+    font-size: 21px;
+  }
+
   .about-page__collage {
     opacity: 1;
   }
@@ -1194,6 +1198,7 @@ body.theme-dark .sticky:not(.sticky--star):not(:hover):not(:focus-visible):not(.
     width: auto;
     max-width: 456px;
     margin: 0;
+    font-size: 21px;
     z-index: 1;
   }
 
