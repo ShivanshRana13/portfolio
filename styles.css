@@ -1223,7 +1223,7 @@ body.theme-dark .sticky:not(.sticky--star):not(:hover):not(:focus-visible):not(.
   top: 0;
 }
 
-/* Mobile layout (see Figma `7:367`): fixed-size stickies that overlap/stack vertically */
+/* Mobile layout (see Figma `7:367`, reference `148:798`): fixed-size stickies that overlap/stack vertically */
 @media (max-width: 640px) {
   .stage {
     box-sizing: border-box;
