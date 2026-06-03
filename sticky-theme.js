@@ -49,31 +49,77 @@ function initStickyTheme() {
 
   const collageGroup = document.querySelector(".about-page__collage-group");
   const MOBILE_COLLAGE_MAX_PX = 640;
+  const COLLAGE_SCALE_MIN = 0.45;
+  const COLLAGE_SCALE_MAX = 2.2;
 
   const isMobileCollageViewport = () =>
     window.matchMedia(`(max-width: ${MOBILE_COLLAGE_MAX_PX}px)`).matches;
+
+  const clampCollage = (value, min, max) => Math.max(min, Math.min(max, value));
+
+  /** @type {Map<number, { x: number; y: number }>} */
+  const collagePointers = new Map();
 
   let collageDragPointerId = null;
   let collageDragStartX = 0;
   let collageDragStartY = 0;
   let collageOffsetX = 0;
   let collageOffsetY = 0;
+  let collageScale = 1;
+  let collagePinchStartDistance = 0;
+  let collagePinchStartScale = 1;
+
+  const pointerDistance = (a, b) => Math.hypot(a.x - b.x, a.y - b.y);
 
   const resetCollageDrag = () => {
+    collagePointers.clear();
     collageDragPointerId = null;
     collageOffsetX = 0;
     collageOffsetY = 0;
+    collageScale = 1;
+    collagePinchStartDistance = 0;
     if (collageGroup instanceof HTMLElement) {
       collageGroup.classList.remove("about-page__collage-group--dragging");
       collageGroup.style.setProperty("--collage-x", "0px");
       collageGroup.style.setProperty("--collage-y", "0px");
+      collageGroup.style.setProperty("--collage-scale", "1");
     }
   };
 
-  const applyCollageDragOffset = () => {
+  const applyCollageTransform = () => {
     if (!(collageGroup instanceof HTMLElement)) return;
     collageGroup.style.setProperty("--collage-x", `${collageOffsetX}px`);
     collageGroup.style.setProperty("--collage-y", `${collageOffsetY}px`);
+    collageGroup.style.setProperty("--collage-scale", String(collageScale));
+  };
+
+  const syncCollagePinch = () => {
+    if (collagePointers.size < 2) return;
+    const pts = Array.from(collagePointers.values());
+    const dist = pointerDistance(pts[0], pts[1]);
+    if (collagePinchStartDistance <= 0) return;
+    collageScale = clampCollage(
+      collagePinchStartScale * (dist / collagePinchStartDistance),
+      COLLAGE_SCALE_MIN,
+      COLLAGE_SCALE_MAX,
+    );
+    applyCollageTransform();
+  };
+
+  const beginCollageDragFromPointer = (pointerId) => {
+    const pt = collagePointers.get(pointerId);
+    if (!pt) return;
+    collageDragPointerId = pointerId;
+    collageDragStartX = pt.x - collageOffsetX;
+    collageDragStartY = pt.y - collageOffsetY;
+  };
+
+  const beginCollagePinch = () => {
+    collageDragPointerId = null;
+    const pts = Array.from(collagePointers.values());
+    if (pts.length < 2) return;
+    collagePinchStartDistance = pointerDistance(pts[0], pts[1]);
+    collagePinchStartScale = collageScale;
   };
 
   const clearSelection = () => {
@@ -155,35 +201,65 @@ function initStickyTheme() {
       if (!isMobileCollageViewport()) return;
       if (!body.classList.contains("theme-focus-light")) return;
 
-      collageDragPointerId = e.pointerId;
-      collageDragStartX = e.clientX - collageOffsetX;
-      collageDragStartY = e.clientY - collageOffsetY;
+      collagePointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
       collageGroup.setPointerCapture(e.pointerId);
       collageGroup.classList.add("about-page__collage-group--dragging");
+
+      if (collagePointers.size === 1) {
+        beginCollageDragFromPointer(e.pointerId);
+      } else if (collagePointers.size === 2) {
+        beginCollagePinch();
+      }
+
       e.stopPropagation();
     });
 
     collageGroup.addEventListener("pointermove", (e) => {
+      if (!(e instanceof PointerEvent)) return;
+      if (!collagePointers.has(e.pointerId)) return;
+
+      collagePointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
+
+      if (collagePointers.size >= 2) {
+        syncCollagePinch();
+        return;
+      }
+
       if (collageDragPointerId === null || e.pointerId !== collageDragPointerId) return;
       collageOffsetX = e.clientX - collageDragStartX;
       collageOffsetY = e.clientY - collageDragStartY;
-      applyCollageDragOffset();
+      applyCollageTransform();
     });
 
-    const endCollageDrag = (e) => {
+    const endCollagePointer = (e) => {
       if (!(e instanceof PointerEvent)) return;
-      if (collageDragPointerId === null || e.pointerId !== collageDragPointerId) return;
+      if (!collagePointers.has(e.pointerId)) return;
+
       try {
-        collageGroup.releasePointerCapture(collageDragPointerId);
+        collageGroup.releasePointerCapture(e.pointerId);
       } catch {
         // ignore
       }
-      collageDragPointerId = null;
-      collageGroup.classList.remove("about-page__collage-group--dragging");
+
+      collagePointers.delete(e.pointerId);
+
+      if (collagePointers.size === 1) {
+        const remainingId = collagePointers.keys().next().value;
+        if (typeof remainingId === "number") {
+          beginCollageDragFromPointer(remainingId);
+        }
+        collagePinchStartDistance = 0;
+      } else if (collagePointers.size >= 2) {
+        beginCollagePinch();
+      } else {
+        collageDragPointerId = null;
+        collagePinchStartDistance = 0;
+        collageGroup.classList.remove("about-page__collage-group--dragging");
+      }
     };
 
-    collageGroup.addEventListener("pointerup", endCollageDrag);
-    collageGroup.addEventListener("pointercancel", endCollageDrag);
+    collageGroup.addEventListener("pointerup", endCollagePointer);
+    collageGroup.addEventListener("pointercancel", endCollagePointer);
   }
 
   if (aboutBack instanceof HTMLButtonElement) {

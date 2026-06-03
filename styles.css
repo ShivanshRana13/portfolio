@@ -613,31 +613,71 @@ body.theme-focus-light .about-page__photo {
     --about-pad-start: max(16px, env(safe-area-inset-left, 0px));
     --about-pad-top: max(16px, env(safe-area-inset-top, 0px));
     --about-pad-end: max(16px, env(safe-area-inset-right, 0px));
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+    padding-left: var(--about-pad-start);
+    padding-right: var(--about-pad-end);
   }
 
   .about-page__lede {
+    position: relative;
+    left: auto;
+    top: auto;
+    right: auto;
+    margin: calc(44px + var(--about-back-gap)) 0 0 0;
+    flex: 0 0 auto;
     font-size: 28px;
   }
 
   .about-page__collage {
+    position: relative;
+    inset: auto;
+    flex: 1 1 auto;
+    min-height: 0;
+    margin-top: 24px;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
     opacity: 1;
+    pointer-events: none;
   }
 
   .about-page__collage-group {
-    left: 50%;
+    position: relative;
+    left: auto;
     top: auto;
-    bottom: max(16px, env(safe-area-inset-bottom, 0px));
-    width: min(92vw, 360px);
+    bottom: auto;
+    width: min(72vw, 280px);
     max-width: none;
+    aspect-ratio: auto;
+    height: auto;
     pointer-events: auto;
     touch-action: none;
     cursor: grab;
-    transform: translateX(-50%) translate(var(--collage-x, 0px), var(--collage-y, 0px));
-    transform-origin: bottom center;
+    transform: translate(var(--collage-x, 0px), var(--collage-y, 0px)) scale(var(--collage-scale, 1));
+    transform-origin: center center;
+  }
+
+  .about-page__collage-group img:not(.about-page__photo) {
+    display: none;
+  }
+
+  .about-page__photo {
+    position: relative;
+    left: auto;
+    top: auto;
+    width: 100%;
+    z-index: auto;
   }
 
   .about-page__collage-group.about-page__collage-group--dragging {
     cursor: grabbing;
+  }
+
+  .about-page__collage-group.about-page__collage-group--dragging .about-page__photo {
+    animation: none;
+    transform: rotate(var(--wiggle-base, 0deg));
   }
 }
 
