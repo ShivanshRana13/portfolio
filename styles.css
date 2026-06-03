@@ -458,7 +458,7 @@ body.theme-focus-light .about-page {
 .about-page__collage-group {
   position: absolute;
   left: 45.597%;
-  top: 2.9%;
+  top: max(0%, calc(2.9% - 15dvh));
   width: min(55%, calc(100% - 45.597%));
   max-width: 792px;
   aspect-ratio: 792 / 865;
@@ -655,7 +655,7 @@ body.theme-focus-light .about-page__photo {
     flex: 0 0 auto;
     width: 100%;
     min-height: 0;
-    margin-top: 20px;
+    margin-top: calc(20px - 15dvh);
     display: block;
     opacity: 1;
     pointer-events: auto;
