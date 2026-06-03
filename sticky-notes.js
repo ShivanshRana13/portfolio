@@ -245,11 +245,12 @@ function initStickyNotes() {
     };
   }
 
-  /** Patent (case-tilt) sticky sits above the rest on narrow viewports so it stays easy to spot. */
+  /** On narrow viewports: About me on top, then the patent case sticky. */
   function applyStickyStackOrder() {
     const narrow = window.innerWidth <= MOBILE_BREAKPOINT_PX;
     const patentNote =
       notes.find((n) => n.classList.contains("card--case-tilt")) ?? null;
+    const starNote = notes.find((n) => n.classList.contains("sticky--star")) ?? null;
 
     let maxDeclared = 10;
     for (const note of notes) {
@@ -258,12 +259,15 @@ function initStickyNotes() {
     }
 
     topZ = 10;
+    const starZ = narrow && starNote !== null ? maxDeclared + 2 : null;
     const patentZ = narrow && patentNote !== null ? maxDeclared + 1 : null;
 
     for (const note of notes) {
       const stackZ = getNumberAttr(note, "data-stack-z", NaN);
       let z = Number.isFinite(stackZ) ? stackZ : topZ;
-      if (patentZ !== null && note === patentNote) {
+      if (starZ !== null && note === starNote) {
+        z = starZ;
+      } else if (patentZ !== null && note === patentNote) {
         z = patentZ;
       }
       setZ(note, z);
