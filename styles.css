@@ -609,6 +609,20 @@ body.theme-focus-light .about-page__photo {
 }
 
 @media (max-width: 640px) {
+  body.theme-focus-light {
+    touch-action: none;
+    overflow: hidden;
+  }
+
+  body.theme-focus-light .stage {
+    touch-action: none;
+    overflow: hidden;
+  }
+
+  body.theme-focus-light .about-page__back {
+    touch-action: manipulation;
+  }
+
   .about-page {
     --about-pad-start: max(16px, env(safe-area-inset-left, 0px));
     --about-pad-top: max(16px, env(safe-area-inset-top, 0px));
@@ -640,7 +654,8 @@ body.theme-focus-light .about-page__photo {
     justify-content: center;
     align-items: flex-start;
     opacity: 1;
-    pointer-events: none;
+    pointer-events: auto;
+    touch-action: none;
   }
 
   .about-page__collage-group {
@@ -661,6 +676,11 @@ body.theme-focus-light .about-page__photo {
 
   .about-page__collage-group img:not(.about-page__photo) {
     display: none;
+  }
+
+  .about-page__collage-group img.about-page__photo {
+    pointer-events: auto;
+    -webkit-touch-callout: none;
   }
 
   .about-page__photo {
