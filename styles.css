@@ -451,7 +451,21 @@ body.theme-focus-light .about-page {
   pointer-events: none;
 }
 
-.about-page__collage img {
+/*
+ * Collage hero — fixed artboard (792×865) anchored to the me photo; scales as one unit.
+ * Positions below are % of this group, derived from the 1440×1024 layout.
+ */
+.about-page__collage-group {
+  position: absolute;
+  left: 45.597%;
+  top: 2.9%;
+  width: min(55%, calc(100% - 45.597%));
+  max-width: 792px;
+  aspect-ratio: 792 / 865;
+  transform-origin: top left;
+}
+
+.about-page__collage-group img {
   position: absolute;
   display: block;
   height: auto;
@@ -461,51 +475,51 @@ body.theme-focus-light .about-page {
 }
 
 .about-page__elden {
-  left: 58.8%;
-  top: 2.9%;
-  width: min(22.6%, 326px);
+  left: 24%;
+  top: 0;
+  width: 41.162%;
   --wiggle-base: 0deg;
   transform-origin: center center;
 }
 
 .about-page__controller {
-  left: 45.6%;
-  top: 26%;
-  width: min(11%, 158px);
+  left: 0;
+  top: 27.341%;
+  width: 19.949%;
   --wiggle-base: -45deg;
   transform-origin: center center;
 }
 
 .about-page__food {
-  left: 74.4%;
-  top: 19.1%;
-  width: min(26.3%, 378px);
+  left: 52.374%;
+  top: 19.179%;
+  width: 47.727%;
   --wiggle-base: 12.9deg;
   transform-origin: center center;
 }
 
 .about-page__photo {
-  left: 51.6%;
-  top: 32.7%;
-  width: min(28.5%, 411px);
+  left: 10.909%;
+  top: 35.272%;
+  width: 51.894%;
   --wiggle-base: 5deg;
   transform-origin: center center;
   z-index: 1;
 }
 
 .about-page__dumbbells {
-  left: 50.6%;
-  top: 67%;
-  width: min(12.9%, 185px);
+  left: 9.141%;
+  top: 75.873%;
+  width: 23.359%;
   z-index: 2;
   --wiggle-base: 0deg;
   transform-origin: center center;
 }
 
 .about-page__spotify {
-  left: 70.8%;
-  top: 61%;
-  width: min(17%, 245px);
+  left: 45.846%;
+  top: 68.775%;
+  width: 30.934%;
   z-index: 2;
   --wiggle-base: 0deg;
   transform-origin: center center;
@@ -602,7 +616,24 @@ body.theme-focus-light .about-page__photo {
   }
 
   .about-page__collage {
-    display: none;
+    opacity: 1;
+  }
+
+  .about-page__collage-group {
+    left: 50%;
+    top: auto;
+    bottom: max(16px, env(safe-area-inset-bottom, 0px));
+    width: min(92vw, 360px);
+    max-width: none;
+    pointer-events: auto;
+    touch-action: none;
+    cursor: grab;
+    transform: translateX(-50%) translate(var(--collage-x, 0px), var(--collage-y, 0px));
+    transform-origin: bottom center;
+  }
+
+  .about-page__collage-group.about-page__collage-group--dragging {
+    cursor: grabbing;
   }
 }
 
