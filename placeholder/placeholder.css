@@ -1,0 +1,168 @@
+/* Figma frame `148:765` — view-only placeholder landing */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  height: 100%;
+}
+
+.placeholder-page {
+  min-height: 100dvh;
+  background: #ffffff;
+  color: #000000;
+  font-family: Inter, system-ui, -apple-system, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  /* Entire page is display-only */
+  pointer-events: none;
+  user-select: none;
+  cursor: default;
+}
+
+.placeholder-page__stage {
+  position: relative;
+  width: 100%;
+  min-height: 100dvh;
+  max-width: 1440px;
+  margin: 0 auto;
+  overflow: visible;
+  padding-bottom: max(48px, env(safe-area-inset-bottom, 0px));
+}
+
+.placeholder-page__intro {
+  position: absolute;
+  left: max(16px, env(safe-area-inset-left, 0px));
+  top: max(16px, env(safe-area-inset-top, 0px));
+  width: min(456px, calc(100vw - 32px));
+  margin: 0;
+  font-size: 34px;
+  line-height: normal;
+  font-weight: 400;
+}
+
+.placeholder-page__autodesk {
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 2px;
+}
+
+.placeholder-page__wip {
+  position: absolute;
+  left: 57.2%;
+  top: 33%;
+  width: 337px;
+  height: 445px;
+  transform: translateX(-12%) translateY(-48px);
+}
+
+.placeholder-page__dog {
+  position: absolute;
+  right: 0;
+  top: 0;
+  display: block;
+  width: 120px;
+  height: auto;
+}
+
+.placeholder-page__star-wrap {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 275px;
+  height: 275px;
+  transform: rotate(-10.83deg);
+  transform-origin: center center;
+}
+
+.placeholder-page__star {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.placeholder-page__star-label {
+  position: absolute;
+  left: 50%;
+  top: 46%;
+  transform: translate(-50%, -50%) rotate(10.83deg);
+  margin: 0;
+  font-size: 20px;
+  font-weight: 600;
+  line-height: normal;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.placeholder-page__footer {
+  position: absolute;
+  left: max(16px, env(safe-area-inset-left, 0px));
+  bottom: max(16px, env(safe-area-inset-bottom, 0px));
+  margin: 0;
+  font-size: 14px;
+  line-height: normal;
+  white-space: nowrap;
+}
+
+@media (max-width: 900px) {
+  .placeholder-page__intro {
+    font-size: 28px;
+    max-width: min(456px, calc(100vw - 32px));
+  }
+
+  .placeholder-page__wip {
+    position: relative;
+    left: auto;
+    top: auto;
+    transform: none;
+    width: min(337px, calc(100vw - 32px));
+    height: auto;
+    min-height: 320px;
+    margin: max(112px, 18dvh) auto 0;
+  }
+
+  .placeholder-page__star-wrap {
+    position: relative;
+    left: auto;
+    bottom: auto;
+    margin: 64px auto 0;
+  }
+
+  .placeholder-page__dog {
+    right: max(0px, calc(50% - 150px));
+    top: 0;
+  }
+
+  .placeholder-page__footer {
+    position: static;
+    padding: 32px max(16px, env(safe-area-inset-left, 0px))
+      max(16px, env(safe-area-inset-bottom, 0px));
+    white-space: normal;
+  }
+}
+
+@media (max-width: 640px) {
+  .placeholder-page__intro {
+    position: relative;
+    font-size: 28px;
+  }
+
+  .placeholder-page__stage {
+    display: flex;
+    flex-direction: column;
+    min-height: 100dvh;
+  }
+
+  .placeholder-page__wip {
+    margin-top: 8px;
+    flex: 0 0 auto;
+  }
+
+  .placeholder-page__footer {
+    margin-top: auto;
+  }
+}
