@@ -1030,6 +1030,15 @@ body.theme-focus-light .about-page__photo {
   opacity: 0;
 }
 
+/* Homepage About me: always smile inside the stack so hover-out doesn't flash default. */
+.sticky--star:not(.is-selected) .sticky-star__dog--default {
+  opacity: 0;
+}
+
+.sticky--star:not(.is-selected) .sticky-star__dog--smile {
+  opacity: 1;
+}
+
 .sticky-star__shape {
   position: relative;
   z-index: 1;
@@ -1100,16 +1109,6 @@ body.theme-focus-light .about-page__photo {
 }
 
 @media (hover: hover) {
-  .sticky--star:not(.is-selected):has(.sticky-star__path:hover) .sticky-star__dog--default,
-  .sticky--star:not(.is-selected):focus-visible .sticky-star__dog--default {
-    opacity: 0;
-  }
-
-  .sticky--star:not(.is-selected):has(.sticky-star__path:hover) .sticky-star__dog--smile,
-  .sticky--star:not(.is-selected):focus-visible .sticky-star__dog--smile {
-    opacity: 1;
-  }
-
   .sticky--star.is-selected:has(.sticky-star__path:hover) .sticky-star__dog--default,
   .sticky--star.is-selected:focus-visible .sticky-star__dog--default {
     opacity: 0;
