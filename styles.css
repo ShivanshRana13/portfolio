@@ -17,9 +17,10 @@
 
   --font: "Inter", system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
 
-  --page-pad-start: max(32px, env(safe-area-inset-left, 0px));
-  --page-pad-top: max(32px, env(safe-area-inset-top, 0px));
-  --page-pad-end: max(16px, env(safe-area-inset-right, 0px));
+  --page-pad-start: max(64px, env(safe-area-inset-left, 0px));
+  --page-pad-top: max(64px, env(safe-area-inset-top, 0px));
+  --page-pad-end: max(64px, env(safe-area-inset-right, 0px));
+  --page-pad-bottom: max(64px, env(safe-area-inset-bottom, 0px));
 }
 
 *,
@@ -368,9 +369,6 @@ body.theme-dark .scene.scene--patent-cube-active .patent-cube__viewport {
  * About me — full-scene view when the star sticky is selected (Figma node 145:693).
  */
 .about-page {
-  --about-pad-start: max(32px, env(safe-area-inset-left, 0px));
-  --about-pad-top: max(32px, env(safe-area-inset-top, 0px));
-  --about-pad-end: max(16px, env(safe-area-inset-right, 0px));
   --about-back-gap: 32px;
   position: absolute;
   inset: 0;
@@ -391,8 +389,8 @@ body.theme-focus-light .about-page {
 .about-page__back {
   position: absolute;
   z-index: 1;
-  left: var(--about-pad-start);
-  top: var(--about-pad-top);
+  left: var(--page-pad-start);
+  top: var(--page-pad-top);
   pointer-events: auto;
   border: none;
   padding: 0;
@@ -477,9 +475,9 @@ body.theme-focus-light .about-page {
 
 .about-page__lede {
   position: absolute;
-  left: var(--about-pad-start);
-  top: calc(var(--about-pad-top) + 44px + var(--about-back-gap));
-  right: var(--about-pad-end);
+  left: var(--page-pad-start);
+  top: calc(var(--page-pad-top) + 44px + var(--about-back-gap));
+  right: var(--page-pad-end);
   width: auto;
   max-width: 456px;
   margin: 0;
@@ -637,7 +635,7 @@ body.theme-focus-light .about-page__photo {
 
 @media (max-width: 1160px) and (min-width: 641px) {
   .about-page__lede {
-    max-width: min(456px, calc(100vw - 64px));
+    max-width: min(456px, calc(100vw - (var(--page-pad-start) * 2)));
   }
 }
 
@@ -647,7 +645,7 @@ body.theme-focus-light .about-page__photo {
   }
 
   .about-page__lede {
-    max-width: min(456px, calc(100vw - 48px));
+    max-width: min(456px, calc(100vw - (var(--page-pad-start) + var(--page-pad-end))));
   }
 }
 
@@ -667,16 +665,13 @@ body.theme-focus-light .about-page__photo {
   }
 
   .about-page {
-    --about-pad-start: max(16px, env(safe-area-inset-left, 0px));
-    --about-pad-top: max(16px, env(safe-area-inset-top, 0px));
-    --about-pad-end: max(16px, env(safe-area-inset-right, 0px));
     display: flex;
     flex-direction: column;
     align-items: flex-start;
     justify-content: flex-start;
     box-sizing: border-box;
-    padding-left: var(--about-pad-start);
-    padding-right: var(--about-pad-end);
+    padding-left: var(--page-pad-start);
+    padding-right: var(--page-pad-end);
     overflow: visible;
   }
 
@@ -788,14 +783,14 @@ body.theme-focus-light .about-page__photo {
 /* Laptop / smaller screens: hero stays top-left with 32px inset. */
 @media (max-width: 1160px) and (min-width: 641px) {
   .intro {
-    max-width: min(456px, calc(100vw - 64px));
+    max-width: min(456px, calc(100vw - (var(--page-pad-start) * 2)));
   }
 }
 
 .footer {
   position: absolute;
-  left: 20px;
-  bottom: 20px;
+  left: var(--page-pad-start);
+  bottom: var(--page-pad-bottom);
   z-index: 5;
   font-size: 14px;
   line-height: normal;
@@ -1293,9 +1288,6 @@ body.theme-dark .sticky:not(.sticky--star):not(:hover):not(:focus-visible):not(.
 /* Mobile layout (see Figma `7:367`, reference `148:798`): fixed-size stickies that overlap/stack vertically */
 @media (max-width: 640px) {
   :root {
-    --page-pad-start: max(16px, env(safe-area-inset-left, 0px));
-    --page-pad-top: max(16px, env(safe-area-inset-top, 0px));
-    --page-pad-end: max(16px, env(safe-area-inset-right, 0px));
     --now-playing-pill-height: 48px;
     --now-playing-pill-gap: 16px;
   }
@@ -1368,8 +1360,9 @@ body.theme-dark .sticky:not(.sticky--star):not(:hover):not(:focus-visible):not(.
     bottom: auto;
     flex-shrink: 0;
     margin-top: 0;
-    padding-left: max(16px, env(safe-area-inset-left, 0px));
-    padding-right: max(16px, env(safe-area-inset-right, 0px));
+    padding-left: var(--page-pad-start);
+    padding-right: var(--page-pad-end);
+    padding-bottom: var(--page-pad-bottom);
     white-space: normal;
   }
 }
