@@ -16,6 +16,10 @@
   --sticky-selected-border: #000000;
 
   --font: "Inter", system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+
+  --page-pad-start: max(32px, env(safe-area-inset-left, 0px));
+  --page-pad-top: max(32px, env(safe-area-inset-top, 0px));
+  --page-pad-end: max(16px, env(safe-area-inset-right, 0px));
 }
 
 *,
@@ -198,8 +202,8 @@ body.has-custom-cursor * {
 
 .now-playing-pill {
   position: fixed;
-  top: max(64px, calc(env(safe-area-inset-top, 0px) + 32px));
-  right: max(56px, calc(env(safe-area-inset-right, 0px) + 16px));
+  top: var(--page-pad-top);
+  right: var(--page-pad-start);
   left: auto;
   z-index: 150;
   display: inline-flex;
@@ -237,9 +241,7 @@ body.has-custom-cursor * {
 
 @media (max-width: 640px) {
   .now-playing-pill {
-    top: max(16px, calc(env(safe-area-inset-top, 0px) + 12px));
-    right: max(16px, calc(env(safe-area-inset-right, 0px) + 12px));
-    max-width: calc(100vw - 32px);
+    max-width: calc(100vw - (var(--page-pad-start) * 2));
   }
 }
 
@@ -777,13 +779,10 @@ body.theme-focus-light .about-page__photo {
 
 
 .intro {
-  --intro-pad-start: max(32px, env(safe-area-inset-left, 0px));
-  --intro-pad-top: max(32px, env(safe-area-inset-top, 0px));
-  --intro-pad-end: max(16px, env(safe-area-inset-right, 0px));
   position: absolute;
-  left: var(--intro-pad-start);
-  top: var(--intro-pad-top);
-  right: var(--intro-pad-end);
+  left: var(--page-pad-start);
+  top: var(--page-pad-top);
+  right: var(--page-pad-end);
   width: auto;
   max-width: 456px;
   margin: 0;
@@ -1300,6 +1299,12 @@ body.theme-dark .sticky:not(.sticky--star):not(:hover):not(:focus-visible):not(.
 
 /* Mobile layout (see Figma `7:367`, reference `148:798`): fixed-size stickies that overlap/stack vertically */
 @media (max-width: 640px) {
+  :root {
+    --page-pad-start: max(16px, env(safe-area-inset-left, 0px));
+    --page-pad-top: max(16px, env(safe-area-inset-top, 0px));
+    --page-pad-end: max(16px, env(safe-area-inset-right, 0px));
+  }
+
   .stage {
     box-sizing: border-box;
     height: 100dvh;
@@ -1329,13 +1334,10 @@ body.theme-dark .sticky:not(.sticky--star):not(:hover):not(:focus-visible):not(.
 
   /* Same layering idea as desktop: bio sits under the sticky pile so notes can overlap it. */
   .intro {
-    --intro-pad-start: max(16px, env(safe-area-inset-left, 0px));
-    --intro-pad-top: max(16px, env(safe-area-inset-top, 0px));
-    --intro-pad-end: max(16px, env(safe-area-inset-right, 0px));
     position: absolute;
-    left: var(--intro-pad-start);
-    right: var(--intro-pad-end);
-    top: var(--intro-pad-top);
+    left: var(--page-pad-start);
+    right: var(--page-pad-end);
+    top: var(--page-pad-top);
     width: auto;
     max-width: 456px;
     margin: 0;
