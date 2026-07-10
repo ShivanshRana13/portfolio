@@ -1,7 +1,7 @@
 /** Per-tile left-rail copy for the detail page (Figma node 73:2227 layout). */
 const TILE_COPY = {
   education: {
-    title: "Redesign of a modular character rigging tool",
+    title: "How to design an icon that is legible at different scales",
     meta: "Case study | 2026",
   },
   "case-tilt": {
@@ -9,19 +9,19 @@ const TILE_COPY = {
     meta: "Autodesk - Project Falcon | 2026",
   },
   case: {
-    title: "Redesign of a modular character rigging tool",
+    title: "Redesigning camera sequencer tool for studios like NETFLIX and DISNEY",
     meta: "Case study | 2026",
   },
   college: {
-    title: "Redesign of a modular character rigging tool",
+    title: "Designing, documenting and shipping complex figma components",
     meta: "College projects | 2026",
   },
   passions: {
-    title: "Redesign of a modular character rigging tool",
+    title: "Designing for LODs - Generative AI interactive nodes",
     meta: "Passions | 2026",
   },
   instagram: {
-    title: "Redesign of a modular character rigging tool",
+    title: "Designing a web based 3D tool for newbies who want to learn 3D design",
     meta: "Instagram | 2026",
   },
 };
