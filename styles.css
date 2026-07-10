@@ -5,7 +5,7 @@
   --note: #ffffff;
   --sticky-surface: #ffffff;
   --sticky-ink: #000000;
-  --sticky-border: #000000;
+  --sticky-border: #bbbbbb;
 
   --sticky-hover-surface: #0d0d0d;
   --sticky-hover-ink: #ffffff;
@@ -770,6 +770,7 @@ body.theme-focus-light .about-page__photo {
   background: var(--sticky-surface);
   color: var(--sticky-ink);
   border: 2px solid var(--sticky-border);
+  border-radius: 4px;
   box-sizing: border-box;
   padding: 24px;
   display: flex;
