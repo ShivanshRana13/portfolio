@@ -37,6 +37,10 @@ function initStickyNotes() {
   let pendingLayout = false;
 
   const NOTE_SIZE_PX = 246;
+  const TITLE_FONT_MAX_PX = 20;
+  const TITLE_FONT_MIN_PX = 11;
+  const TITLE_LINE_HEIGHT = 1.2;
+  const TITLE_KICKER_GAP_PX = 8;
 
   function noteSizePx(note) {
     const s = getNumberAttr(note, "data-size", NOTE_SIZE_PX);
@@ -247,6 +251,32 @@ function initStickyNotes() {
     for (let i = 0; i < notes.length; i += 1) {
       applyCoords(notes[i], fitted[i].x, fitted[i].y);
     }
+
+    fitStickyCardTitles();
+  }
+
+  /** Shrink long titles so they stay inside the 24px-padded sticky area. */
+  function fitStickyCardTitles() {
+    for (const card of document.querySelectorAll(".card.sticky")) {
+      const title = card.querySelector(".card__title");
+      if (!(title instanceof HTMLElement)) continue;
+
+      const kicker = card.querySelector(".card__kicker");
+      const styles = window.getComputedStyle(card);
+      const padT = Number.parseFloat(styles.paddingTop) || 0;
+      const padB = Number.parseFloat(styles.paddingBottom) || 0;
+      const kickerH = kicker instanceof HTMLElement ? kicker.offsetHeight : 0;
+      const maxTitleH = Math.max(0, card.clientHeight - padT - padB - kickerH - TITLE_KICKER_GAP_PX);
+
+      title.style.lineHeight = String(TITLE_LINE_HEIGHT);
+      title.style.fontSize = `${TITLE_FONT_MAX_PX}px`;
+
+      let size = TITLE_FONT_MAX_PX;
+      while (size > TITLE_FONT_MIN_PX && title.scrollHeight > maxTitleH + 1) {
+        size -= 1;
+        title.style.fontSize = `${size}px`;
+      }
+    }
   }
 
   function applyCoords(note, x, y) {
@@ -341,6 +371,12 @@ function initStickyNotes() {
   applyStickyStackOrder();
 
   layoutNotes();
+
+  if (document.fonts !== undefined && typeof document.fonts.ready?.then === "function") {
+    document.fonts.ready.then(() => {
+      fitStickyCardTitles();
+    });
+  }
 
   window.addEventListener("resize", () => {
     if (resizeRaf !== null) cancelAnimationFrame(resizeRaf);

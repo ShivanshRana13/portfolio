@@ -770,7 +770,12 @@ body.theme-focus-light .about-page__photo {
   background: var(--sticky-surface);
   color: var(--sticky-ink);
   border: 2px solid var(--sticky-border);
-  padding: 20px;
+  box-sizing: border-box;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  overflow: hidden;
   user-select: none;
   touch-action: none;
   cursor: grab;
@@ -953,13 +958,16 @@ body.theme-focus-light .about-page__photo {
   margin: 0;
   font-size: 14px;
   line-height: normal;
+  flex-shrink: 0;
 }
 
 .card__title {
-  margin: 90px 0 0 0;
+  margin: 0;
   font-size: 20px;
-  line-height: normal;
+  line-height: 1.2;
   font-weight: 400;
+  flex-shrink: 1;
+  min-height: 0;
 }
 
 .sticky--star {
