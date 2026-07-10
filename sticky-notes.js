@@ -127,25 +127,35 @@ function initStickyNotes() {
     const cs = window.getComputedStyle(target);
     const padL = Number.parseFloat(cs.paddingLeft) || 0;
     const padR = Number.parseFloat(cs.paddingRight) || 0;
+    const padT = Number.parseFloat(cs.paddingTop) || 0;
+    const padB = Number.parseFloat(cs.paddingBottom) || 0;
     const innerW = Math.max(0, rect.width - padL - padR);
-    return { rect, padL, padR, innerW, target };
+    const innerH = Math.max(0, rect.height - padT - padB);
+    return { rect, padL, padR, padT, padB, innerW, innerH, target };
   }
 
   /**
-   * Fits sticky notes into the container width **locally**:
-   * only notes whose rotated bounds cross an edge get their `x` nudged.
-   * (No global “pile squish” / group translation.)
+   * Fits sticky notes into the container **locally**:
+   * only notes whose rotated bounds cross an edge get nudged.
+   * On narrow viewports, constrain both axes so the pile stays on-screen.
    */
   function fitPositionsToContainer(basePositions) {
-    const { padL, innerW } = containerMetrics();
+    const { padL, padT, innerW, innerH } = containerMetrics();
     if (innerW <= 1) return basePositions;
+
+    const narrow = window.innerWidth <= MOBILE_BREAKPOINT_PX;
+    const overflowX = narrow ? 0.1 : EDGE_OVERFLOW_FRACTION;
+    const overflowY = narrow ? 0.06 : EDGE_OVERFLOW_FRACTION;
+    const constrainY = narrow && innerH > 1;
 
     const left = padL;
     const right = padL + innerW;
+    const top = padT;
+    const bottom = padT + innerH;
 
     let positions = basePositions.map((p) => ({ x: p.x, y: p.y }));
 
-    for (let iter = 0; iter < 8; iter += 1) {
+    for (let iter = 0; iter < 10; iter += 1) {
       let changed = false;
 
       for (let i = 0; i < positions.length; i += 1) {
@@ -154,18 +164,29 @@ function initStickyNotes() {
         const p = positions[i];
         const b = axisAlignedBoundsForRotatedSquare(rot, p.x, p.y, size);
         let dx = 0;
+        let dy = 0;
 
         const bb0 = axisAlignedBoundsForRotatedSquare(rot, 0, 0, size);
         const aw = bb0.maxX - bb0.minX;
-        const slack = EDGE_OVERFLOW_FRACTION * aw;
-        const innerLeft = left - slack;
-        const innerRight = right + slack;
+        const ah = bb0.maxY - bb0.minY;
+        const slackX = overflowX * aw;
+        const slackY = overflowY * ah;
+        const innerLeft = left - slackX;
+        const innerRight = right + slackX;
+        const innerTop = top - slackY;
+        const innerBottom = bottom + slackY;
 
         if (b.minX < innerLeft) dx += innerLeft - b.minX;
         if (b.maxX > innerRight) dx -= b.maxX - innerRight;
 
-        if (dx !== 0) {
+        if (constrainY) {
+          if (b.minY < innerTop) dy += innerTop - b.minY;
+          if (b.maxY > innerBottom) dy -= b.maxY - innerBottom;
+        }
+
+        if (dx !== 0 || dy !== 0) {
           positions[i].x += dx;
+          positions[i].y += dy;
           changed = true;
         }
       }
