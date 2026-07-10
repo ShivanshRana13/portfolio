@@ -1100,6 +1100,16 @@ body.theme-focus-light .about-page__photo {
 }
 
 @media (hover: hover) {
+  .sticky--star:not(.is-selected):has(.sticky-star__path:hover) .sticky-star__dog--default,
+  .sticky--star:not(.is-selected):focus-visible .sticky-star__dog--default {
+    opacity: 0;
+  }
+
+  .sticky--star:not(.is-selected):has(.sticky-star__path:hover) .sticky-star__dog--smile,
+  .sticky--star:not(.is-selected):focus-visible .sticky-star__dog--smile {
+    opacity: 1;
+  }
+
   .sticky--star.is-selected:has(.sticky-star__path:hover) .sticky-star__dog--default,
   .sticky--star.is-selected:focus-visible .sticky-star__dog--default {
     opacity: 0;
@@ -1111,13 +1121,21 @@ body.theme-focus-light .about-page__photo {
   }
 }
 
-/* Touch / no-hover: smile dog whenever the about view is open. */
+/* Touch / no-hover: default dog on the about view; smile only while pressed. */
 @media (hover: none) {
   .sticky--star.is-selected .sticky-star__dog--default {
-    opacity: 0;
+    opacity: 1;
   }
 
   .sticky--star.is-selected .sticky-star__dog--smile {
+    opacity: 0;
+  }
+
+  .sticky--star.is-selected:active .sticky-star__dog--default {
+    opacity: 0;
+  }
+
+  .sticky--star.is-selected:active .sticky-star__dog--smile {
     opacity: 1;
   }
 }
