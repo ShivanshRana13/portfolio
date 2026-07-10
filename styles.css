@@ -196,6 +196,68 @@ body.has-custom-cursor * {
   justify-content: flex-start;
 }
 
+.now-playing-pill {
+  position: fixed;
+  top: max(16px, env(safe-area-inset-top, 0px));
+  left: 50%;
+  z-index: 150;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  max-width: min(calc(100vw - 32px), 420px);
+  padding: 8px 12px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 43px;
+  background: #ffffff;
+  color: #000000;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: normal;
+  text-decoration: none;
+  white-space: nowrap;
+  transform: translateX(-50%);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+  pointer-events: auto;
+  transition:
+    opacity 200ms ease,
+    visibility 200ms ease;
+}
+
+.now-playing-pill[hidden] {
+  display: none;
+}
+
+.now-playing-pill__icon {
+  flex: 0 0 32px;
+  width: 32px;
+  height: 32px;
+  display: block;
+}
+
+.now-playing-pill__label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+@media (hover: hover) {
+  .now-playing-pill:hover {
+    border-color: rgba(0, 0, 0, 0.18);
+  }
+}
+
+.now-playing-pill:focus-visible {
+  outline: 2px solid #000000;
+  outline-offset: 3px;
+}
+
+@media (max-width: 640px) {
+  .now-playing-pill {
+    top: max(12px, env(safe-area-inset-top, 0px));
+    max-width: calc(100vw - 24px);
+    font-size: 13px;
+  }
+}
+
 .scene {
   position: relative;
   width: 100%;

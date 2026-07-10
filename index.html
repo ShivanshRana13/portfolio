@@ -10,7 +10,7 @@
       href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="./styles.css?v=83" />
+    <link rel="stylesheet" href="./styles.css?v=84" />
     <script type="importmap">
       {
         "imports": {
@@ -22,6 +22,24 @@
   </head>
   <body>
     <main class="stage" aria-label="Portfolio landing">
+      <a
+        class="now-playing-pill"
+        hidden
+        aria-hidden="true"
+        aria-live="polite"
+        aria-label="Currently listening on Spotify"
+      >
+        <img
+          class="now-playing-pill__icon"
+          src="./assets/headphones.svg"
+          alt=""
+          width="32"
+          height="32"
+          draggable="false"
+        />
+        <span class="now-playing-pill__label">Listening to: Fred again</span>
+      </a>
+
       <div class="scene" data-scale="1">
         <p class="intro">
           Shivansh Rana is a product designer, with 6+ years experience building visual experiences.
@@ -391,6 +409,7 @@
     <script src="./patent-cube.js?v=63" defer></script>
     <script src="./detail-nav.js?v=63" defer></script>
     <script type="module" src="./patent-gltf-embed.js?v=63"></script>
+    <script src="./now-playing-pill.js?v=1" defer></script>
     <script src="./live-reload.js?v=63" defer></script>
   </body>
 </html>
