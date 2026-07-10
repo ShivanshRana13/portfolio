@@ -201,7 +201,7 @@ body.has-custom-cursor * {
 }
 
 .now-playing-pill {
-  position: fixed;
+  position: absolute;
   top: var(--page-pad-top);
   right: var(--page-pad-start);
   left: auto;
@@ -211,7 +211,7 @@ body.has-custom-cursor * {
   gap: 8px;
   box-sizing: border-box;
   min-height: 48px;
-  max-width: min(calc(100vw - 32px), 219px);
+  max-width: min(calc(100% - (var(--page-pad-start) * 2)), 219px);
   padding: 8px 12px;
   border: 1px solid rgba(0, 0, 0, 0.1);
   border-radius: 43px;
@@ -237,12 +237,6 @@ body.has-custom-cursor * {
   min-width: 0;
   overflow: hidden;
   text-overflow: ellipsis;
-}
-
-@media (max-width: 640px) {
-  .now-playing-pill {
-    max-width: calc(100vw - (var(--page-pad-start) * 2));
-  }
 }
 
 .scene {
