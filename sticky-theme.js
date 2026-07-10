@@ -12,8 +12,18 @@ function initStickyTheme() {
 
   const starSticky = document.querySelector(".sticky--star");
   const aboutPage = document.querySelector(".about-page");
+  const nowPlayingPill = document.querySelector(".now-playing-pill");
   const starLabel = starSticky?.querySelector(".sticky-star__label");
   const CALENDLY_URL = "https://calendly.com/shivanshrana13/coffee-chat-w-shivansh";
+
+  const syncNowPlayingPill = () => {
+    if (!(nowPlayingPill instanceof HTMLElement)) return;
+    const onHomepage =
+      body.classList.contains("theme-dark") === false &&
+      body.classList.contains("theme-focus-light") === false;
+    nowPlayingPill.hidden = !onHomepage;
+    nowPlayingPill.setAttribute("aria-hidden", onHomepage ? "false" : "true");
+  };
 
   const syncStarStickyLabel = () => {
     if (!(starSticky instanceof HTMLElement)) return;
@@ -150,6 +160,7 @@ function initStickyTheme() {
     syncScenePatentCube();
     syncAboutPage();
     syncStarStickyLabel();
+    syncNowPlayingPill();
     resetCollageDrag();
     syncMobileAboutViewport(false);
   };
@@ -168,6 +179,7 @@ function initStickyTheme() {
     syncScenePatentCube();
     syncAboutPage();
     syncStarStickyLabel();
+    syncNowPlayingPill();
   };
 
   const activateSticky = (sticky) => {
@@ -340,6 +352,7 @@ function initStickyTheme() {
   syncScenePatentCube();
   syncAboutPage();
   syncStarStickyLabel();
+  syncNowPlayingPill();
 }
 
 if (document.readyState === "loading") {
