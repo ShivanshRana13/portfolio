@@ -1163,21 +1163,20 @@ body.theme-focus-light .about-page__photo {
   }
 }
 
-/* Touch / no-hover: default dog on the about view; smile only while pressed. */
+/* Touch / no-hover: dog only after About me is selected; smile only. */
 @media (hover: none) {
+  .sticky--star:not(.is-selected) .sticky-star__dog-stack,
+  .sticky--star:not(.is-selected):focus-visible .sticky-star__dog-stack,
+  .sticky--star:not(.is-selected):has(.sticky-star__path:hover) .sticky-star__dog-stack {
+    opacity: 0;
+    transform: translate(12px, -12px);
+  }
+
   .sticky--star.is-selected .sticky-star__dog--default {
-    opacity: 1;
+    opacity: 0;
   }
 
   .sticky--star.is-selected .sticky-star__dog--smile {
-    opacity: 0;
-  }
-
-  .sticky--star.is-selected:active .sticky-star__dog--default {
-    opacity: 0;
-  }
-
-  .sticky--star.is-selected:active .sticky-star__dog--smile {
     opacity: 1;
   }
 }
