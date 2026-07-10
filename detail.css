@@ -10,7 +10,7 @@ body.detail {
   font-family: var(--font);
   overflow-x: hidden;
   overflow-y: auto;
-  background: #ffffff;
+  background: #f6f6f6;
   /*
    * Golden (Fibonacci) type scale — consecutive steps ≈ φ (1.618).
    * 13 → 21 → 34 → 55 px (hero title uses 21–34, one step below 34–55)
