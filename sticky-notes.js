@@ -46,7 +46,7 @@ function initStickyNotes() {
   /** Axis-aligned bounding-box fraction allowed past each stage/container edge (per side). */
   const EDGE_OVERFLOW_FRACTION = 0.5;
   /** Desktop/tablet: keep stickies inside the artboard with a small safe inset. */
-  const DESKTOP_EDGE_INSET_PX = 20;
+  const DESKTOP_EDGE_INSET_PX = 40;
   const DESKTOP_EDGE_OVERFLOW = 0.06;
 
   function getSceneScale() {
