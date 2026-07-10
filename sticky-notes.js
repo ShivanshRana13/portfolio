@@ -45,8 +45,9 @@ function initStickyNotes() {
 
   /** Axis-aligned bounding-box fraction allowed past each stage/container edge (per side). */
   const EDGE_OVERFLOW_FRACTION = 0.5;
-  /** On mobile, keep the full sticky inside the viewport with a small safe inset. */
-  const MOBILE_EDGE_INSET_PX = 16;
+  /** Desktop/tablet: keep stickies inside the artboard with a small safe inset. */
+  const DESKTOP_EDGE_INSET_PX = 20;
+  const DESKTOP_EDGE_OVERFLOW = 0.06;
 
   function getSceneScale() {
     if (!(scene instanceof HTMLElement)) return 1;
@@ -139,26 +140,58 @@ function initStickyNotes() {
   /**
    * Fits sticky notes into the container **locally**:
    * only notes whose rotated bounds cross an edge get nudged.
-   * On narrow viewports, constrain both axes so the pile stays on-screen.
+   * Mobile: X-only with generous overflow (partial off-screen is intentional).
+   * Desktop: constrain X and Y so the pile stays inside the viewport.
    */
   function fitPositionsToContainer(basePositions) {
     const { padL, padT, innerW, innerH } = containerMetrics();
     if (innerW <= 1) return basePositions;
 
     const narrow = window.innerWidth <= MOBILE_BREAKPOINT_PX;
-    const overflowX = narrow ? 0 : EDGE_OVERFLOW_FRACTION;
-    const overflowY = narrow ? 0 : EDGE_OVERFLOW_FRACTION;
-    const constrainY = narrow && innerH > 1;
-    const inset = narrow ? MOBILE_EDGE_INSET_PX : 0;
+    let positions = basePositions.map((p) => ({ x: p.x, y: p.y }));
 
+    if (narrow) {
+      const left = padL;
+      const right = padL + innerW;
+
+      for (let iter = 0; iter < 8; iter += 1) {
+        let changed = false;
+
+        for (let i = 0; i < positions.length; i += 1) {
+          const rot = getNumberAttr(notes[i], "data-rot", 0);
+          const size = noteSizePx(notes[i]);
+          const p = positions[i];
+          const b = axisAlignedBoundsForRotatedSquare(rot, p.x, p.y, size);
+          let dx = 0;
+
+          const bb0 = axisAlignedBoundsForRotatedSquare(rot, 0, 0, size);
+          const aw = bb0.maxX - bb0.minX;
+          const slack = EDGE_OVERFLOW_FRACTION * aw;
+          const innerLeft = left - slack;
+          const innerRight = right + slack;
+
+          if (b.minX < innerLeft) dx += innerLeft - b.minX;
+          if (b.maxX > innerRight) dx -= b.maxX - innerRight;
+
+          if (dx !== 0) {
+            positions[i].x += dx;
+            changed = true;
+          }
+        }
+
+        if (!changed) break;
+      }
+
+      return positions;
+    }
+
+    const inset = DESKTOP_EDGE_INSET_PX;
     const left = padL + inset;
     const right = padL + innerW - inset;
     const top = padT + inset;
     const bottom = padT + innerH - inset;
 
-    let positions = basePositions.map((p) => ({ x: p.x, y: p.y }));
-
-    for (let iter = 0; iter < (narrow ? 16 : 10); iter += 1) {
+    for (let iter = 0; iter < 12; iter += 1) {
       let changed = false;
 
       for (let i = 0; i < positions.length; i += 1) {
@@ -172,8 +205,8 @@ function initStickyNotes() {
         const bb0 = axisAlignedBoundsForRotatedSquare(rot, 0, 0, size);
         const aw = bb0.maxX - bb0.minX;
         const ah = bb0.maxY - bb0.minY;
-        const slackX = overflowX * aw;
-        const slackY = overflowY * ah;
+        const slackX = DESKTOP_EDGE_OVERFLOW * aw;
+        const slackY = DESKTOP_EDGE_OVERFLOW * ah;
         const innerLeft = left - slackX;
         const innerRight = right + slackX;
         const innerTop = top - slackY;
@@ -181,8 +214,7 @@ function initStickyNotes() {
 
         if (b.minX < innerLeft) dx += innerLeft - b.minX;
         if (b.maxX > innerRight) dx -= b.maxX - innerRight;
-
-        if (constrainY) {
+        if (innerH > 1) {
           if (b.minY < innerTop) dy += innerTop - b.minY;
           if (b.maxY > innerBottom) dy -= b.maxY - innerBottom;
         }
