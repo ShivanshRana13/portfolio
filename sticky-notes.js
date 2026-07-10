@@ -45,6 +45,8 @@ function initStickyNotes() {
 
   /** Axis-aligned bounding-box fraction allowed past each stage/container edge (per side). */
   const EDGE_OVERFLOW_FRACTION = 0.5;
+  /** On mobile, keep the full sticky inside the viewport with a small safe inset. */
+  const MOBILE_EDGE_INSET_PX = 16;
 
   function getSceneScale() {
     if (!(scene instanceof HTMLElement)) return 1;
@@ -144,18 +146,19 @@ function initStickyNotes() {
     if (innerW <= 1) return basePositions;
 
     const narrow = window.innerWidth <= MOBILE_BREAKPOINT_PX;
-    const overflowX = narrow ? 0.1 : EDGE_OVERFLOW_FRACTION;
-    const overflowY = narrow ? 0.06 : EDGE_OVERFLOW_FRACTION;
+    const overflowX = narrow ? 0 : EDGE_OVERFLOW_FRACTION;
+    const overflowY = narrow ? 0 : EDGE_OVERFLOW_FRACTION;
     const constrainY = narrow && innerH > 1;
+    const inset = narrow ? MOBILE_EDGE_INSET_PX : 0;
 
-    const left = padL;
-    const right = padL + innerW;
-    const top = padT;
-    const bottom = padT + innerH;
+    const left = padL + inset;
+    const right = padL + innerW - inset;
+    const top = padT + inset;
+    const bottom = padT + innerH - inset;
 
     let positions = basePositions.map((p) => ({ x: p.x, y: p.y }));
 
-    for (let iter = 0; iter < 10; iter += 1) {
+    for (let iter = 0; iter < (narrow ? 16 : 10); iter += 1) {
       let changed = false;
 
       for (let i = 0; i < positions.length; i += 1) {
