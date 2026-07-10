@@ -1297,6 +1297,8 @@ body.theme-dark .sticky:not(.sticky--star):not(:hover):not(:focus-visible):not(.
     --page-pad-start: max(16px, env(safe-area-inset-left, 0px));
     --page-pad-top: max(16px, env(safe-area-inset-top, 0px));
     --page-pad-end: max(16px, env(safe-area-inset-right, 0px));
+    --now-playing-pill-height: 48px;
+    --now-playing-pill-gap: 16px;
   }
 
   .stage {
@@ -1337,6 +1339,10 @@ body.theme-dark .sticky:not(.sticky--star):not(:hover):not(:focus-visible):not(.
     margin: 0;
     font-size: 28px;
     z-index: 1;
+  }
+
+  .now-playing-pill:not([hidden]) ~ .intro {
+    top: calc(var(--page-pad-top) + var(--now-playing-pill-height) + var(--now-playing-pill-gap));
   }
 
   .cards {
