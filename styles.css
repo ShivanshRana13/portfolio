@@ -1052,8 +1052,10 @@ body.theme-focus-light .about-page__photo {
 
 .sticky-star__path {
   fill: #ffffff;
-  stroke: #000000;
+  stroke: var(--sticky-border);
   stroke-width: 2;
+  stroke-linejoin: round;
+  stroke-linecap: round;
   pointer-events: visiblePainted;
   cursor: grab;
   touch-action: none;
