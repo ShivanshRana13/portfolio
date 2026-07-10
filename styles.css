@@ -775,7 +775,7 @@ body.theme-focus-light .about-page__photo {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  overflow: hidden;
+  overflow: visible;
   user-select: none;
   touch-action: none;
   cursor: grab;
