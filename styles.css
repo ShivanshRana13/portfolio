@@ -1288,6 +1288,10 @@ body.theme-dark .sticky:not(.sticky--star):not(:hover):not(:focus-visible):not(.
 /* Mobile layout (see Figma `7:367`, reference `148:798`): fixed-size stickies that overlap/stack vertically */
 @media (max-width: 640px) {
   :root {
+    --page-pad-start: max(16px, env(safe-area-inset-left, 0px));
+    --page-pad-top: max(16px, env(safe-area-inset-top, 0px));
+    --page-pad-end: max(16px, env(safe-area-inset-right, 0px));
+    --page-pad-bottom: max(16px, env(safe-area-inset-bottom, 0px));
     --now-playing-pill-height: 48px;
     --now-playing-pill-gap: 16px;
   }
