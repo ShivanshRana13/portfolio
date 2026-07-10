@@ -1,27 +1,27 @@
 /** Per-tile left-rail copy for the detail page (Figma node 73:2227 layout). */
 const TILE_COPY = {
   education: {
-    title: "How to design an icon that is legible at different scales",
+    title: "Icons legible at every scale",
     meta: "Case study | 2026",
   },
   "case-tilt": {
-    title: "Designing a patent pending intuitive manipulator for future generation of 3d tools",
+    title: "Patent-pending 3D manipulator",
     meta: "Autodesk - Project Falcon | 2026",
   },
   case: {
-    title: "Redesigning camera sequencer tool for studios like NETFLIX and DISNEY",
+    title: "Camera sequencer for Netflix & Disney",
     meta: "Case study | 2026",
   },
   college: {
-    title: "Designing, documenting and shipping complex figma components",
+    title: "Shipping complex Figma components",
     meta: "College projects | 2026",
   },
   passions: {
-    title: "Designing for LODs - Generative AI interactive nodes",
+    title: "Generative AI nodes for LODs",
     meta: "Passions | 2026",
   },
   instagram: {
-    title: "Designing a web based 3D tool for newbies who want to learn 3D design",
+    title: "Web 3D for beginners",
     meta: "Instagram | 2026",
   },
 };
