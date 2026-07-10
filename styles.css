@@ -213,18 +213,10 @@ body.has-custom-cursor * {
   font-size: 14px;
   font-weight: 400;
   line-height: normal;
-  text-decoration: none;
   white-space: nowrap;
   transform: translateX(-50%);
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
-  pointer-events: auto;
-  transition:
-    opacity 200ms ease,
-    visibility 200ms ease;
-}
-
-.now-playing-pill[hidden] {
-  display: none;
+  pointer-events: none;
 }
 
 .now-playing-pill__icon {
@@ -237,17 +229,6 @@ body.has-custom-cursor * {
 .now-playing-pill__label {
   overflow: hidden;
   text-overflow: ellipsis;
-}
-
-@media (hover: hover) {
-  .now-playing-pill:hover {
-    border-color: rgba(0, 0, 0, 0.18);
-  }
-}
-
-.now-playing-pill:focus-visible {
-  outline: 2px solid #000000;
-  outline-offset: 3px;
 }
 
 @media (max-width: 640px) {
