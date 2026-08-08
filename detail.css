@@ -464,11 +464,14 @@ body.detail {
   flex-direction: column;
   gap: 8px;
   align-items: flex-start;
-  max-width: 32.8125rem;
+  width: 100%;
+  max-width: none;
 }
 
 .detail__section-heading {
   margin: 0;
+  max-width: 32.8125rem;
+  width: 100%;
   font-size: var(--detail-fs-section);
   font-weight: 700;
   line-height: normal;
@@ -484,8 +487,8 @@ body.detail {
   display: flex;
   flex-direction: column;
   gap: 16px;
-  max-width: 839px;
   width: 100%;
+  max-width: none;
   margin-top: 24px;
 }
 
@@ -516,8 +519,8 @@ body.detail {
   flex-direction: row;
   flex-wrap: nowrap;
   gap: 8px;
-  max-width: 839px;
   width: 100%;
+  max-width: none;
 }
 
 .detail__split-cell {
@@ -533,8 +536,8 @@ body.detail {
 
 .detail__figure {
   margin: 0;
-  max-width: 839px;
   width: 100%;
+  max-width: none;
   line-height: 0;
 }
 
@@ -553,12 +556,11 @@ body.detail {
 }
 
 /*
- * Figma frame 70:637 — cap at design width (839px) so ultra-wide layouts do not
- * upscale the bitmap (avoids blur). WebP + PNG in markup; see detail.html.
+ * Full width of the right rail; srcset in markup supplies 2× assets for sharp scaling.
  */
 .detail__media.detail__media--static {
-  max-width: 839px;
   width: 100%;
+  max-width: none;
   min-height: 0;
   line-height: 0;
 }
