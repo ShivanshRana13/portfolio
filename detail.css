@@ -47,7 +47,7 @@ body.detail {
   justify-content: flex-start;
   box-sizing: border-box;
   padding: 64px;
-  background: #ffffff;
+  background: var(--bg, #f6f6f6);
   color: #120704;
 }
 
