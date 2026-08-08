@@ -5,6 +5,7 @@ function clamp(n, min, max) {
 function initDetailScale() {
   const stage = document.querySelector(".detail-stage");
   const layout = document.querySelector(".detail-layout");
+  const bleed = document.querySelector(".detail__white-bleed");
   if (!(stage instanceof HTMLElement) || !(layout instanceof HTMLElement)) {
     return;
   }
@@ -13,6 +14,30 @@ function initDetailScale() {
   const BASE_H = 1024;
   const LARGE_MIN_W = 1440;
   const LARGE_MIN_H = 1024;
+
+  const updateWhiteBleed = () => {
+    if (!(bleed instanceof HTMLElement)) {
+      return;
+    }
+
+    if (document.body.classList.contains("detail--artboard-scale") !== true) {
+      bleed.style.display = "none";
+      return;
+    }
+
+    const rect = layout.getBoundingClientRect();
+    const fillLeft = rect.right + window.scrollX;
+    const fillWidth = Math.max(0, document.documentElement.clientWidth - rect.right);
+    const fillHeight = Math.max(
+      document.documentElement.scrollHeight,
+      document.body.scrollHeight,
+    );
+
+    bleed.style.display = "block";
+    bleed.style.left = `${fillLeft}px`;
+    bleed.style.width = `${fillWidth}px`;
+    bleed.style.minHeight = `${fillHeight}px`;
+  };
 
   const apply = () => {
     const vw = window.innerWidth;
@@ -27,6 +52,7 @@ function initDetailScale() {
     if (vw < LARGE_MIN_W || vh < LARGE_MIN_H) {
       layout.dataset.scale = "1";
       layout.style.setProperty("--detail-scale", "1");
+      updateWhiteBleed();
       return;
     }
 
@@ -51,6 +77,7 @@ function initDetailScale() {
     stage.style.width = `${scaledW}px`;
     stage.style.minHeight = `${layout.offsetHeight * scale}px`;
     document.body.classList.add("detail--artboard-scale");
+    updateWhiteBleed();
   };
 
   apply();
@@ -59,6 +86,14 @@ function initDetailScale() {
     "resize",
     () => {
       window.requestAnimationFrame(apply);
+    },
+    { passive: true },
+  );
+
+  window.addEventListener(
+    "scroll",
+    () => {
+      window.requestAnimationFrame(updateWhiteBleed);
     },
     { passive: true },
   );
