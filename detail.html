@@ -160,7 +160,7 @@
                   <source
                     type="image/webp"
                     srcset="
-                      ./assets/detail/problem-grid-178@2x.webp 722w,
+                      ./assets/detail/problem-grid-178@3x.webp 1083w,
                       ./assets/detail/problem-grid-178.webp 361w
                     "
                     sizes="(max-width: 520px) min(100vw, 807px), 361px"
@@ -168,7 +168,7 @@
                   <img
                     src="./assets/detail/problem-grid-178.png"
                     srcset="
-                      ./assets/detail/problem-grid-178@2x.png 722w,
+                      ./assets/detail/problem-grid-178@3x.png 1083w,
                       ./assets/detail/problem-grid-178.png 361w
                     "
                     sizes="(max-width: 520px) min(100vw, 807px), 361px"
@@ -185,7 +185,7 @@
                   <source
                     type="image/webp"
                     srcset="
-                      ./assets/detail/problem-deform-294@2x.webp 860w,
+                      ./assets/detail/problem-deform-294@3x.webp 1290w,
                       ./assets/detail/problem-deform-294.webp 430w
                     "
                     sizes="(max-width: 520px) min(100vw, 807px), 430px"
@@ -193,7 +193,7 @@
                   <img
                     src="./assets/detail/problem-deform-294.png"
                     srcset="
-                      ./assets/detail/problem-deform-294@2x.png 860w,
+                      ./assets/detail/problem-deform-294@3x.png 1290w,
                       ./assets/detail/problem-deform-294.png 430w
                     "
                     sizes="(max-width: 520px) min(100vw, 807px), 430px"
@@ -211,7 +211,7 @@
                 <source
                   type="image/webp"
                   srcset="
-                    ./assets/detail/problem-gizmos-291@2x.webp 1614w,
+                    ./assets/detail/problem-gizmos-291@3x.webp 2421w,
                     ./assets/detail/problem-gizmos-291.webp 807w
                   "
                   sizes="min(100vw, 807px)"
@@ -219,7 +219,7 @@
                 <img
                   src="./assets/detail/problem-gizmos-291.png"
                   srcset="
-                    ./assets/detail/problem-gizmos-291@2x.png 1614w,
+                    ./assets/detail/problem-gizmos-291@3x.png 2421w,
                     ./assets/detail/problem-gizmos-291.png 807w
                   "
                   sizes="min(100vw, 807px)"
@@ -261,19 +261,29 @@
           </div>
 
           <figure class="detail__figure detail__discovery-image">
-            <img
-              src="./assets/detail/discovery-839.png"
-              srcset="
-                ./assets/detail/discovery-839@2x.png 1678w,
-                ./assets/detail/discovery-839.png 839w
-              "
-              sizes="(max-width: 900px) 100vw, min(839px, 100%)"
-              width="839"
-              height="882"
-              alt="Team synthesis from gizmo tool exploration: positive traits like progressive reveal and intuitive rotation, and negatives like cluttered UI and latency."
-              loading="lazy"
-              decoding="async"
-            />
+            <picture>
+              <source
+                type="image/webp"
+                srcset="
+                  ./assets/detail/discovery-839@3x.webp 2517w,
+                  ./assets/detail/discovery-839.webp 839w
+                "
+                sizes="(max-width: 900px) 100vw, min(839px, 100%)"
+              />
+              <img
+                src="./assets/detail/discovery-839.png"
+                srcset="
+                  ./assets/detail/discovery-839@3x.png 2517w,
+                  ./assets/detail/discovery-839.png 839w
+                "
+                sizes="(max-width: 900px) 100vw, min(839px, 100%)"
+                width="839"
+                height="882"
+                alt="Team synthesis from gizmo tool exploration: positive traits like progressive reveal and intuitive rotation, and negatives like cluttered UI and latency."
+                loading="lazy"
+                decoding="async"
+              />
+            </picture>
           </figure>
         </section>
 
@@ -349,7 +359,7 @@
 
         <!--
           Max width 839px (Figma) so wide monitors do not upscale the bitmap.
-          WebP q98 first; PNG fallback. sizes capped so srcset matches layout width.
+          WebP q92 first; PNG fallback. 1x + 3x srcset for sharp retina/high-DPI displays.
         -->
         <div
           class="detail__media detail__media--static"
@@ -359,7 +369,7 @@
             <source
               type="image/webp"
               srcset="
-                ./assets/detail/gizmo-content-70-637@2x.webp 1678w,
+                ./assets/detail/gizmo-content-70-637@3x.webp 2517w,
                 ./assets/detail/gizmo-content-70-637@1x.webp  839w
               "
               sizes="min(100vw, 839px)"
@@ -368,7 +378,7 @@
               class="detail__media__img"
               src="./assets/detail/gizmo-content-70-637.png"
               srcset="
-                ./assets/detail/gizmo-content-70-637@2x.png 1678w,
+                ./assets/detail/gizmo-content-70-637@3x.png 2517w,
                 ./assets/detail/gizmo-content-70-637.png    839w
               "
               sizes="min(100vw, 839px)"
