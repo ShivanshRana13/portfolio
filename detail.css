@@ -668,7 +668,8 @@ body.detail--artboard-scale .detail__grey-bleed {
 }
 
 .detail__discovery-image,
-.detail__principles-image {
+.detail__principles-image,
+.detail__exploration-image {
   margin-top: 24px;
 }
 
