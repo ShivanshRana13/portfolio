@@ -26,6 +26,7 @@ body.detail {
   --detail-left-pad: 64px;
   --detail-left-content-max: 345px;
   --detail-section-gap: 0;
+  --detail-stack-gap: 32px;
 }
 
 .detail-stage {
@@ -95,7 +96,7 @@ body.detail--artboard-scale .detail__grey-bleed {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 32px;
+  gap: var(--detail-stack-gap);
   width: 100%;
   flex-shrink: 0;
 }
@@ -104,7 +105,7 @@ body.detail--artboard-scale .detail__grey-bleed {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 32px;
+  gap: var(--detail-stack-gap);
   width: 100%;
 }
 
@@ -550,7 +551,7 @@ body.detail--artboard-scale .detail__grey-bleed {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 32px;
+  gap: var(--detail-stack-gap);
   width: 100%;
   min-width: 0;
   box-sizing: border-box;
@@ -559,14 +560,36 @@ body.detail--artboard-scale .detail__grey-bleed {
   color: #000000;
 }
 
+.detail__section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--detail-stack-gap);
+  align-items: flex-start;
+  width: 100%;
+  max-width: none;
+}
+
+.detail__section-body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--detail-stack-gap);
+  align-items: flex-start;
+  width: 100%;
+  max-width: 32.8125rem; /* 525px — Figma frame 70:626 copy width */
+}
+
 .detail__lede,
 .detail__body,
 .detail__section-body {
   margin: 0;
-  max-width: 32.8125rem; /* 525px — Figma frame 70:626 copy width */
   font-size: var(--detail-fs-body);
   line-height: normal;
   color: rgba(0, 0, 0, 0.8);
+}
+
+.detail__lede,
+.detail__body {
+  max-width: 32.8125rem; /* 525px — Figma frame 70:626 copy width */
 }
 
 .detail__lede a,
@@ -579,15 +602,6 @@ body.detail--artboard-scale .detail__grey-bleed {
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0.08);
 }
 
-.detail__section {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  align-items: flex-start;
-  width: 100%;
-  max-width: none;
-}
-
 .detail__section-heading {
   margin: 0;
   max-width: 32.8125rem;
@@ -596,6 +610,10 @@ body.detail--artboard-scale .detail__grey-bleed {
   font-weight: 700;
   line-height: normal;
   color: #000000;
+}
+
+.detail__section-body > * {
+  margin: 0;
 }
 
 .detail__section-body ol {
@@ -609,7 +627,7 @@ body.detail--artboard-scale .detail__grey-bleed {
   gap: 16px;
   width: 100%;
   max-width: none;
-  margin-top: 24px;
+  margin: 0;
 }
 
 .detail__problem-images-row {
@@ -671,7 +689,7 @@ body.detail--artboard-scale .detail__grey-bleed {
 .detail__principles-image,
 .detail__exploration-image,
 .detail__design-image {
-  margin-top: 24px;
+  margin: 0;
 }
 
 .detail__media {
