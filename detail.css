@@ -24,27 +24,39 @@ body.detail {
   --detail-canvas-max: 1440px;
 }
 
+.detail-stage {
+  width: 100%;
+}
+
 .detail-layout {
   display: grid;
   grid-template-columns: minmax(260px, 473fr) minmax(0, 967fr);
   min-height: 100vh;
   min-height: 100dvh;
   width: 100%;
+  will-change: transform;
 }
 
-@media (min-width: 1441px) {
-  .detail-layout {
-    max-width: none;
-    margin-left: 0;
-    margin-right: 0;
-    /*
-     * Keep the 1440px artboard centered on the left rail; let the white right
-     * column grow through the right margin so grey never shows on that edge.
-     */
-    grid-template-columns:
-      minmax(473px, calc((100vw - var(--detail-canvas-max)) / 2 + 473px))
-      minmax(0, 1fr);
+@media (min-width: 1440px) and (min-height: 1024px) {
+  .detail-stage {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
   }
+
+  .detail-layout {
+    width: 1440px;
+    flex: 0 0 auto;
+    grid-template-columns: 473fr 967fr;
+    transform: scale(var(--detail-scale, 1));
+    transform-origin: top center;
+  }
+}
+
+body.detail--artboard-scale .detail__left {
+  position: relative;
+  top: auto;
+  min-height: auto;
 }
 
 .detail__left {
