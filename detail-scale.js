@@ -158,10 +158,10 @@ function initDetailScale() {
     layout.dataset.scale = String(scale);
     layout.style.setProperty("--detail-scale", String(scale));
 
-    stage.style.width = `${scaledW}px`;
+    stage.style.width = "100%";
     stage.style.minHeight = `${layout.offsetHeight}px`;
-    stage.style.marginLeft = "auto";
-    stage.style.marginRight = "auto";
+    stage.style.marginLeft = "0";
+    stage.style.marginRight = "0";
     document.body.classList.add("detail--artboard-scale");
     syncLeftRailAnchors();
     updateEdgeBleeds();

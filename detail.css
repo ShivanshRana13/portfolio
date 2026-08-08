@@ -21,7 +21,7 @@ body.detail {
   --detail-fs-title-min: 21px;
   --detail-fs-title-max: 34px;
   --detail-fs-title-shrunk: 21px;
-  /* Above laptop: center page; width matches common laptop design canvas (473+967). */
+  /* Above laptop: left hugs content; right column fills the remainder. */
   --detail-canvas-max: 1440px;
   --detail-left-pad: 64px;
   --detail-left-content-max: 345px;
@@ -70,14 +70,11 @@ body.detail--artboard-scale .detail__grey-bleed {
 
 @media (min-width: 1440px) and (min-height: 1024px) {
   .detail-stage {
-    display: flex;
-    justify-content: center;
-    align-items: flex-start;
+    width: 100%;
   }
 
   .detail-layout {
-    width: 1440px;
-    flex: 0 0 auto;
+    width: 100%;
     grid-template-columns: max-content minmax(0, 1fr);
     zoom: var(--detail-scale, 1);
   }
@@ -209,6 +206,8 @@ body.detail--artboard-scale .detail__grey-bleed {
   .detail__right {
     grid-column: 2;
     grid-row: 1;
+    width: 100%;
+    min-width: 0;
   }
 }
 
@@ -552,6 +551,9 @@ body.detail--artboard-scale .detail__grey-bleed {
   flex-direction: column;
   align-items: flex-start;
   gap: 32px;
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
   background: #ffffff;
   padding: 64px var(--detail-rail-pad-x) 80px;
   color: #000000;
