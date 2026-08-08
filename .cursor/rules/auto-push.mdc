@@ -1,0 +1,19 @@
+---
+description: Commit and push to origin after every completed task in this repo
+alwaysApply: true
+---
+
+# Auto commit and push
+
+After completing work in this repository (every user prompt that results in file changes):
+
+1. **Commit and push automatically** — do not wait for the user to ask.
+2. Follow the git safety protocol from user rules (no force push, no hook skips, no amend unless allowed).
+3. **Skip commit/push** only when:
+   - No files were changed
+   - The user explicitly says not to push for that turn
+   - Changes likely contain secrets (`.env`, credentials)
+4. Use concise commit messages focused on *why*; bump cache-bust query params when touching static assets.
+5. After pushing, briefly note the commit hash in the response.
+
+Workflow: `git status` → stage relevant files → commit → `git push` → confirm success.
