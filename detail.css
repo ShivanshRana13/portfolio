@@ -34,9 +34,16 @@ body.detail {
 
 @media (min-width: 1441px) {
   .detail-layout {
-    max-width: var(--detail-canvas-max);
-    margin-left: auto;
-    margin-right: auto;
+    max-width: none;
+    margin-left: 0;
+    margin-right: 0;
+    /*
+     * Keep the 1440px artboard centered on the left rail; let the white right
+     * column grow through the right margin so grey never shows on that edge.
+     */
+    grid-template-columns:
+      minmax(473px, calc((100vw - var(--detail-canvas-max)) / 2 + 473px))
+      minmax(0, 1fr);
   }
 }
 
