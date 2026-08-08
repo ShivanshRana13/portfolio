@@ -60,14 +60,12 @@ function initDetailPage() {
 }
 
 /**
- * Scroll offset — body is the scroll container on the detail page.
+ * Scroll offset — the page (body) is the scroll container on the detail page.
  */
 function getDetailScrollY() {
   const w = window.scrollY || window.pageYOffset || 0;
-  const root = document.documentElement;
-  const b = document.body;
-  const r = root !== null && typeof root.scrollTop === "number" ? root.scrollTop : 0;
-  const bodyTop = b !== null && typeof b.scrollTop === "number" ? b.scrollTop : 0;
+  const r = document.documentElement.scrollTop;
+  const bodyTop = document.body.scrollTop;
   const se = document.scrollingElement;
   const seTop = se !== null && typeof se.scrollTop === "number" ? se.scrollTop : 0;
   const y = Math.max(w, r, bodyTop, seTop);
@@ -99,7 +97,6 @@ const SCROLL_END_THRESHOLD_PX = 4;
 
 /**
  * Scroll back to the first fold (top of the detail page / hero rail).
- * `body.detail` is the scroll container (`overflow-y: auto`); set every root to 0.
  */
 function scrollDetailToTop() {
   const reduceMotionMq = window.matchMedia("(prefers-reduced-motion: reduce)");
