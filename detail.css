@@ -711,9 +711,24 @@ body.detail--artboard-scale .detail__grey-bleed {
 }
 
 @media (max-width: 900px) {
+  html,
+  body.detail {
+    background: #ffffff;
+  }
+
+  .detail__grey-bleed,
+  .detail__white-bleed {
+    display: none !important;
+  }
+
+  .detail-stage {
+    background: #ffffff;
+  }
+
   .detail-layout {
     grid-template-columns: 1fr;
     column-gap: 0;
+    background: #ffffff;
   }
 
   .detail__left {
@@ -723,6 +738,7 @@ body.detail--artboard-scale .detail__grey-bleed {
     height: auto;
     min-height: auto;
     overflow: visible;
+    background: #ffffff;
   }
 
   /*
