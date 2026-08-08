@@ -470,41 +470,6 @@
           </figure>
         </section>
 
-        <!--
-          Max width 839px (Figma) so wide monitors do not upscale the bitmap.
-          WebP q92 first; PNG fallback. 1x + 3x srcset for sharp retina/high-DPI displays.
-        -->
-        <div
-          class="detail__media detail__media--static"
-          aria-label="Gizmo concepts: Mini Gizmo, Move and Rotate, Scale — light and dark themes"
-        >
-          <picture>
-            <source
-              type="image/webp"
-              srcset="
-                ./assets/detail/gizmo-content-70-637@3x.webp 2517w,
-                ./assets/detail/gizmo-content-70-637@1x.webp  839w
-              "
-              sizes="min(100vw, 839px)"
-            />
-            <img
-              class="detail__media__img"
-              src="./assets/detail/gizmo-content-70-637.png"
-              srcset="
-                ./assets/detail/gizmo-content-70-637@3x.png 2517w,
-                ./assets/detail/gizmo-content-70-637.png    839w
-              "
-              sizes="min(100vw, 839px)"
-              width="839"
-              height="824"
-              alt="Three columns of 3D cubes with transformation gizmos labelled Mini Gizmo, Move and Rotate, and Scale. Shown on light grey and dark charcoal backgrounds."
-              loading="lazy"
-              decoding="async"
-              fetchpriority="low"
-            />
-          </picture>
-        </div>
-
         <p class="detail__body">
           I could have decided to do it the other way around where body is black and the silhouette
           is white but due to a flaw in our eye sight known as chromatic dilation effect that would
@@ -557,17 +522,6 @@
           move and rotate interaction explained above activates precision scaling mode where a user
           can do precise scaling actions like move and rotate from a context focused manipulator.
         </p>
-
-        <figure class="detail__figure">
-          <img
-            src="./assets/detail/case-falcon-70-746.png"
-            width="839"
-            height="408"
-            alt="Wide diagram of a 3D cube with grouped transform manipulators on a light background."
-            loading="lazy"
-            decoding="async"
-          />
-        </figure>
 
         <section class="detail__section" aria-labelledby="detail-handoff-heading">
           <h2 class="detail__section-heading" id="detail-handoff-heading">Design Handoff</h2>
