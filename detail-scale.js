@@ -5,7 +5,8 @@ function clamp(n, min, max) {
 function initDetailScale() {
   const stage = document.querySelector(".detail-stage");
   const layout = document.querySelector(".detail-layout");
-  const bleed = document.querySelector(".detail__white-bleed");
+  const whiteBleed = document.querySelector(".detail__white-bleed");
+  const greyBleed = document.querySelector(".detail__grey-bleed");
   if (!(stage instanceof HTMLElement) || !(layout instanceof HTMLElement)) {
     return;
   }
@@ -15,28 +16,39 @@ function initDetailScale() {
   const LARGE_MIN_W = 1440;
   const LARGE_MIN_H = 1024;
 
-  const updateWhiteBleed = () => {
-    if (!(bleed instanceof HTMLElement)) {
-      return;
-    }
-
-    if (document.body.classList.contains("detail--artboard-scale") !== true) {
-      bleed.style.display = "none";
-      return;
-    }
-
-    const rect = layout.getBoundingClientRect();
-    const fillLeft = rect.right + window.scrollX;
-    const fillWidth = Math.max(0, document.documentElement.clientWidth - rect.right);
+  const updateEdgeBleeds = () => {
     const fillHeight = Math.max(
       document.documentElement.scrollHeight,
       document.body.scrollHeight,
     );
 
-    bleed.style.display = "block";
-    bleed.style.left = `${fillLeft}px`;
-    bleed.style.width = `${fillWidth}px`;
-    bleed.style.minHeight = `${fillHeight}px`;
+    if (document.body.classList.contains("detail--artboard-scale") !== true) {
+      if (whiteBleed instanceof HTMLElement) {
+        whiteBleed.style.display = "none";
+      }
+      if (greyBleed instanceof HTMLElement) {
+        greyBleed.style.display = "none";
+      }
+      return;
+    }
+
+    const rect = layout.getBoundingClientRect();
+    const rightWidth = Math.max(0, document.documentElement.clientWidth - rect.right);
+    const leftWidth = Math.max(0, rect.left);
+
+    if (whiteBleed instanceof HTMLElement) {
+      whiteBleed.style.display = "block";
+      whiteBleed.style.left = `${rect.right + window.scrollX}px`;
+      whiteBleed.style.width = `${rightWidth}px`;
+      whiteBleed.style.minHeight = `${fillHeight}px`;
+    }
+
+    if (greyBleed instanceof HTMLElement) {
+      greyBleed.style.display = "block";
+      greyBleed.style.left = "0";
+      greyBleed.style.width = `${leftWidth + window.scrollX}px`;
+      greyBleed.style.minHeight = `${fillHeight}px`;
+    }
   };
 
   const apply = () => {
@@ -47,12 +59,14 @@ function initDetailScale() {
     layout.style.removeProperty("transform-origin");
     stage.style.removeProperty("width");
     stage.style.removeProperty("min-height");
+    stage.style.removeProperty("margin-left");
+    stage.style.removeProperty("margin-right");
     document.body.classList.remove("detail--artboard-scale");
 
     if (vw < LARGE_MIN_W || vh < LARGE_MIN_H) {
       layout.dataset.scale = "1";
       layout.style.setProperty("--detail-scale", "1");
-      updateWhiteBleed();
+      updateEdgeBleeds();
       return;
     }
 
@@ -76,8 +90,10 @@ function initDetailScale() {
 
     stage.style.width = `${scaledW}px`;
     stage.style.minHeight = `${layout.offsetHeight * scale}px`;
+    stage.style.marginLeft = "auto";
+    stage.style.marginRight = "auto";
     document.body.classList.add("detail--artboard-scale");
-    updateWhiteBleed();
+    updateEdgeBleeds();
   };
 
   apply();
@@ -93,7 +109,7 @@ function initDetailScale() {
   window.addEventListener(
     "scroll",
     () => {
-      window.requestAnimationFrame(updateWhiteBleed);
+      window.requestAnimationFrame(updateEdgeBleeds);
     },
     { passive: true },
   );

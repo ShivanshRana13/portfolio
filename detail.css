@@ -8,10 +8,10 @@ body.detail {
 
 body.detail {
   font-family: var(--font);
-  overflow-x: hidden;
+  overflow-x: visible;
   overflow-y: auto;
   position: relative;
-  background: #ffffff;
+  background: #f6f6f6;
   /*
    * Golden (Fibonacci) type scale — consecutive steps ≈ φ (1.618).
    * 13 → 21 → 34 → 55 px (hero title uses 21–34, one step below 34–55)
@@ -41,7 +41,18 @@ body.detail {
   pointer-events: none;
 }
 
-body.detail--artboard-scale .detail__white-bleed {
+.detail__grey-bleed {
+  display: none;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 0;
+  background: var(--bg, #f6f6f6);
+  pointer-events: none;
+}
+
+body.detail--artboard-scale .detail__white-bleed,
+body.detail--artboard-scale .detail__grey-bleed {
   display: block;
 }
 
@@ -68,12 +79,6 @@ body.detail--artboard-scale .detail__white-bleed {
     transform: scale(var(--detail-scale, 1));
     transform-origin: top center;
   }
-}
-
-body.detail--artboard-scale .detail__left {
-  position: relative;
-  top: auto;
-  min-height: auto;
 }
 
 .detail__left {
