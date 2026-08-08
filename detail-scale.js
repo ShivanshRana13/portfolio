@@ -19,6 +19,22 @@ function initDetailScale() {
   const BASE_H = 1024;
   const LARGE_MIN_W = 1440;
   const LARGE_MIN_H = 1024;
+  const LEFT_PAD = 64;
+
+  const measureLeftColumnWidth = () => {
+    const top = document.querySelector(".detail__left-top");
+    const bottom = document.querySelector(".detail__left-bottom");
+    let contentW = 44;
+
+    if (top instanceof HTMLElement) {
+      contentW = Math.max(contentW, top.offsetWidth);
+    }
+    if (bottom instanceof HTMLElement) {
+      contentW = Math.max(contentW, bottom.offsetWidth);
+    }
+
+    return Math.ceil(contentW + 2 * LEFT_PAD);
+  };
 
   const syncLeftRailAnchors = () => {
     const root = document.documentElement;
@@ -27,15 +43,22 @@ function initDetailScale() {
     if (!(anchorEl instanceof HTMLElement) || desktopRailMq.matches !== true) {
       root.style.removeProperty("--detail-left-x");
       root.style.removeProperty("--detail-left-w");
+      if (leftAnchor instanceof HTMLElement) {
+        leftAnchor.style.removeProperty("width");
+      }
       return;
     }
 
+    const columnW = measureLeftColumnWidth();
+    if (leftAnchor instanceof HTMLElement) {
+      leftAnchor.style.width = `${columnW}px`;
+    }
+
     const leftRect = anchorEl.getBoundingClientRect();
-    let width = anchorEl.offsetWidth;
+    let width = columnW;
 
     if (width <= 0) {
       width = leftRect.width;
-      /* Fallback only — never span past the right column. */
       if (rightCol instanceof HTMLElement) {
         const rightRect = rightCol.getBoundingClientRect();
         if (rightRect.left > leftRect.left) {
@@ -56,7 +79,6 @@ function initDetailScale() {
     if (isScaled && scale > 0) {
       const layoutRect = layout.getBoundingClientRect();
       x = (leftRect.left - layoutRect.left) / scale;
-      width = anchorEl.offsetWidth > 0 ? anchorEl.offsetWidth : width / scale;
     }
 
     root.style.setProperty("--detail-left-x", `${x}px`);
@@ -183,6 +205,18 @@ function initDetailScale() {
     }
     if (rightCol instanceof HTMLElement) {
       observer.observe(rightCol);
+    }
+    const leftTop = document.querySelector(".detail__left-top");
+    const leftBottom = document.querySelector(".detail__left-bottom");
+    if (leftTop instanceof HTMLElement) {
+      observer.observe(leftTop);
+    }
+    if (leftBottom instanceof HTMLElement) {
+      observer.observe(leftBottom);
+    }
+    const titleEl = document.getElementById("detail-title");
+    if (titleEl instanceof HTMLElement) {
+      observer.observe(titleEl);
     }
   }
 
