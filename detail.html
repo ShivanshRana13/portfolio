@@ -14,7 +14,7 @@
       rel="stylesheet"
     />
     <link rel="stylesheet" href="./styles.css?v=93" />
-    <link rel="stylesheet" href="./detail.css?v=87" />
+    <link rel="stylesheet" href="./detail.css?v=88" />
   </head>
   <body class="detail">
     <script>
@@ -148,6 +148,86 @@
               if any, would get lost in figuring it out without proper tutorial or guidance.
             </p>
           </div>
+
+          <div class="detail__problem-images" aria-label="Examples of existing 3D gizmo tools">
+            <div class="detail__problem-images-row">
+              <figure class="detail__problem-image">
+                <picture>
+                  <source
+                    type="image/webp"
+                    srcset="
+                      ./assets/detail/problem-grid-178@2x.webp 722w,
+                      ./assets/detail/problem-grid-178.webp 361w
+                    "
+                    sizes="(max-width: 520px) min(100vw, 807px), 361px"
+                  />
+                  <img
+                    src="./assets/detail/problem-grid-178.png"
+                    srcset="
+                      ./assets/detail/problem-grid-178@2x.png 722w,
+                      ./assets/detail/problem-grid-178.png 361w
+                    "
+                    sizes="(max-width: 520px) min(100vw, 807px), 361px"
+                    width="361"
+                    height="314"
+                    alt="3D cube with a colourful move, rotate, and scale gizmo on a dark viewport grid."
+                    loading="lazy"
+                    decoding="async"
+                  />
+                </picture>
+              </figure>
+              <figure class="detail__problem-image">
+                <picture>
+                  <source
+                    type="image/webp"
+                    srcset="
+                      ./assets/detail/problem-deform-294@2x.webp 860w,
+                      ./assets/detail/problem-deform-294.webp 430w
+                    "
+                    sizes="(max-width: 520px) min(100vw, 807px), 430px"
+                  />
+                  <img
+                    src="./assets/detail/problem-deform-294.png"
+                    srcset="
+                      ./assets/detail/problem-deform-294@2x.png 860w,
+                      ./assets/detail/problem-deform-294.png 430w
+                    "
+                    sizes="(max-width: 520px) min(100vw, 807px), 430px"
+                    width="430"
+                    height="315"
+                    alt="Deformed grid surface with a transform gizmo on a dark viewport grid."
+                    loading="lazy"
+                    decoding="async"
+                  />
+                </picture>
+              </figure>
+            </div>
+            <figure class="detail__problem-image detail__problem-image--wide">
+              <picture>
+                <source
+                  type="image/webp"
+                  srcset="
+                    ./assets/detail/problem-gizmos-291@2x.webp 1614w,
+                    ./assets/detail/problem-gizmos-291.webp 807w
+                  "
+                  sizes="min(100vw, 807px)"
+                />
+                <img
+                  src="./assets/detail/problem-gizmos-291.png"
+                  srcset="
+                    ./assets/detail/problem-gizmos-291@2x.png 1614w,
+                    ./assets/detail/problem-gizmos-291.png 807w
+                  "
+                  sizes="min(100vw, 807px)"
+                  width="807"
+                  height="431"
+                  alt="Cube and cone with transform gizmos, wireframes, and measurement labels on a dark viewport grid."
+                  loading="lazy"
+                  decoding="async"
+                />
+              </picture>
+            </figure>
+          </div>
         </section>
 
         <section class="detail__section" aria-labelledby="detail-challenge-heading">
@@ -216,29 +296,6 @@
             </p>
           </div>
         </section>
-
-        <div class="detail__split" role="group" aria-label="Case study image pair">
-          <div class="detail__split-cell">
-            <img
-              src="./assets/detail/case-falcon-70-632.png"
-              width="416"
-              height="408"
-              alt="3D cube with transform manipulators on a light canvas, left panel of the pair."
-              loading="lazy"
-              decoding="async"
-            />
-          </div>
-          <div class="detail__split-cell">
-            <img
-              src="./assets/detail/case-falcon-70-633.png"
-              width="416"
-              height="408"
-              alt="3D cube with transform manipulators on a light canvas, right panel of the pair."
-              loading="lazy"
-              decoding="async"
-            />
-          </div>
-        </div>
 
         <section class="detail__section" aria-labelledby="detail-design-heading">
           <h2 class="detail__section-heading" id="detail-design-heading">The Design</h2>
