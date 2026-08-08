@@ -24,7 +24,7 @@ body.detail {
   /* Above laptop: center page; width matches common laptop design canvas (473+967). */
   --detail-canvas-max: 1440px;
   --detail-left-pad: 64px;
-  --detail-section-gap: 64px;
+  --detail-section-gap: 0;
 }
 
 .detail-stage {
