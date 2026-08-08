@@ -667,6 +667,10 @@ body.detail--artboard-scale .detail__grey-bleed {
   height: auto;
 }
 
+.detail__discovery-image {
+  margin-top: 24px;
+}
+
 .detail__media {
   width: 100%;
   max-width: 100%;
