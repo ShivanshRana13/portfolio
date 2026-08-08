@@ -23,6 +23,8 @@ body.detail {
   --detail-fs-title-shrunk: 21px;
   /* Above laptop: center page; width matches common laptop design canvas (473+967). */
   --detail-canvas-max: 1440px;
+  --detail-left-pad: 64px;
+  --detail-section-gap: 64px;
 }
 
 .detail-stage {
@@ -59,6 +61,7 @@ body.detail--artboard-scale .detail__grey-bleed {
 .detail-layout {
   display: grid;
   grid-template-columns: minmax(260px, 473fr) minmax(0, 967fr);
+  column-gap: var(--detail-section-gap);
   min-height: 100vh;
   min-height: 100dvh;
   width: 100%;
@@ -116,54 +119,94 @@ body.detail--artboard-scale .detail__grey-bleed {
   border-top: 1px solid rgba(0, 0, 0, 0.12);
 }
 
-/* Desktop: sticky column + pinned top/bottom that stay visible at every scroll position. */
+.detail__left-spacer {
+  display: none;
+}
+
+/* Desktop: fixed left rail in the grid column — padding + gap keep content off the right section. */
 @media (min-width: 901px) {
+  .detail__left-spacer {
+    display: block;
+    grid-column: 1;
+    grid-row: 1;
+    min-height: 100dvh;
+    visibility: hidden;
+    pointer-events: none;
+  }
+
   .detail__left {
-    position: sticky;
+    grid-column: 1;
+    grid-row: 1;
+    position: fixed;
     top: 0;
-    align-self: start;
-    z-index: 1;
+    left: var(--detail-left-x, 0);
+    width: var(--detail-left-w, auto);
+    height: 100dvh;
     min-height: 100dvh;
     padding: 0;
+    box-sizing: border-box;
+    display: block;
     background: transparent;
+    z-index: 2;
+    overflow: visible;
+    pointer-events: none;
+  }
+
+  /* Full-column grey behind pinned top/bottom content. */
+  .detail__left::after {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: var(--detail-left-x, 0);
+    width: var(--detail-left-w, auto);
+    height: 100dvh;
+    background: var(--bg, #f6f6f6);
+    z-index: 1;
     pointer-events: none;
   }
 
   .detail__left::before {
-    content: "";
-    display: block;
-    min-height: 100dvh;
-  }
-
-  .detail__left-top,
-  .detail__left-bottom {
-    pointer-events: auto;
+    display: none;
   }
 
   .detail__left-top {
     position: fixed;
     top: 0;
-    left: var(--detail-left-x, 0);
-    width: var(--detail-left-w, auto);
-    max-width: var(--detail-left-w, none);
-    padding: 64px 64px 0;
+    left: calc(var(--detail-left-x, 0px) + var(--detail-left-pad));
+    width: calc(var(--detail-left-w, 100%) - (2 * var(--detail-left-pad)));
+    max-width: calc(var(--detail-left-w, 100%) - (2 * var(--detail-left-pad)));
+    padding: var(--detail-left-pad) 0 0;
     box-sizing: border-box;
-    background: var(--bg, #f6f6f6);
     z-index: 2;
     overflow: hidden;
+    pointer-events: auto;
   }
 
   .detail__left-bottom {
     position: fixed;
     bottom: 0;
-    left: var(--detail-left-x, 0);
-    width: var(--detail-left-w, auto);
-    max-width: var(--detail-left-w, none);
-    padding: 0 64px 64px;
+    left: calc(var(--detail-left-x, 0px) + var(--detail-left-pad));
+    width: calc(var(--detail-left-w, 100%) - (2 * var(--detail-left-pad)));
+    max-width: calc(var(--detail-left-w, 100%) - (2 * var(--detail-left-pad)));
+    padding: 0 0 var(--detail-left-pad);
+    margin-top: 0;
     box-sizing: border-box;
-    background: var(--bg, #f6f6f6);
     z-index: 2;
-    overflow: hidden;
+    overflow: visible;
+    pointer-events: auto;
+  }
+
+  .detail__header-row,
+  .detail__title,
+  .detail__meta {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+  }
+
+  .detail__right {
+    grid-column: 2;
+    grid-row: 1;
   }
 }
 
@@ -666,6 +709,16 @@ body.detail--artboard-scale .detail__grey-bleed {
 @media (max-width: 900px) {
   .detail-layout {
     grid-template-columns: 1fr;
+    column-gap: 0;
+  }
+
+  .detail__left {
+    position: relative;
+    left: auto;
+    width: auto;
+    height: auto;
+    min-height: auto;
+    overflow: visible;
   }
 
   /*

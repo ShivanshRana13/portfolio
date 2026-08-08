@@ -5,6 +5,7 @@ function clamp(n, min, max) {
 function initDetailScale() {
   const stage = document.querySelector(".detail-stage");
   const layout = document.querySelector(".detail-layout");
+  const leftAnchor = document.querySelector(".detail__left-spacer");
   const leftRail = document.querySelector(".detail__left");
   const rightCol = document.querySelector(".detail__right");
   const whiteBleed = document.querySelector(".detail__white-bleed");
@@ -21,28 +22,44 @@ function initDetailScale() {
 
   const syncLeftRailAnchors = () => {
     const root = document.documentElement;
-    if (!(leftRail instanceof HTMLElement) || desktopRailMq.matches !== true) {
+    const anchorEl =
+      leftAnchor instanceof HTMLElement ? leftAnchor : leftRail;
+    if (!(anchorEl instanceof HTMLElement) || desktopRailMq.matches !== true) {
       root.style.removeProperty("--detail-left-x");
       root.style.removeProperty("--detail-left-w");
       return;
     }
 
-    const leftRect = leftRail.getBoundingClientRect();
-    let columnRight = leftRect.right;
+    const leftRect = anchorEl.getBoundingClientRect();
+    let width = anchorEl.offsetWidth;
 
-    if (rightCol instanceof HTMLElement) {
-      const rightRect = rightCol.getBoundingClientRect();
-      if (rightRect.left > leftRect.left) {
-        columnRight = rightRect.left;
+    if (width <= 0) {
+      width = leftRect.width;
+      /* Fallback only — never span past the right column. */
+      if (rightCol instanceof HTMLElement) {
+        const rightRect = rightCol.getBoundingClientRect();
+        if (rightRect.left > leftRect.left) {
+          width = Math.min(width, rightRect.left - leftRect.left);
+        }
       }
     }
 
-    const width = Math.max(0, columnRight - leftRect.left);
     if (width <= 0) {
       return;
     }
 
-    root.style.setProperty("--detail-left-x", `${leftRect.left}px`);
+    let x = leftRect.left;
+    const isScaled =
+      document.body.classList.contains("detail--artboard-scale") === true;
+    const scale = parseFloat(layout.dataset.scale || "1") || 1;
+
+    if (isScaled && scale > 0) {
+      const layoutRect = layout.getBoundingClientRect();
+      x = (leftRect.left - layoutRect.left) / scale;
+      width = anchorEl.offsetWidth > 0 ? anchorEl.offsetWidth : width / scale;
+    }
+
+    root.style.setProperty("--detail-left-x", `${x}px`);
     root.style.setProperty("--detail-left-w", `${width}px`);
   };
 
@@ -158,6 +175,9 @@ function initDetailScale() {
       window.requestAnimationFrame(apply);
     });
     observer.observe(layout);
+    if (leftAnchor instanceof HTMLElement) {
+      observer.observe(leftAnchor);
+    }
     if (leftRail instanceof HTMLElement) {
       observer.observe(leftRail);
     }

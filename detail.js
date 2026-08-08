@@ -199,7 +199,7 @@ function initScrollLevelIndicator() {
 
     const hasScrolled = y > 0;
     wrapper.classList.toggle(visibleClass, hasScrolled);
-    wrapper.setAttribute("aria-hidden", hasScrolled ? "false" : "true");
+    wrapper.setAttribute("aria-hidden", hasScrolled || atEnd ? "false" : "true");
   }
 
   return apply;
