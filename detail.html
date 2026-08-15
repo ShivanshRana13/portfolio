@@ -14,7 +14,7 @@
       rel="stylesheet"
     />
     <link rel="stylesheet" href="./styles.css?v=93" />
-    <link rel="stylesheet" href="./detail.css?v=120" />
+    <link rel="stylesheet" href="./detail.css?v=121" />
   </head>
   <body class="detail">
     <script>
@@ -652,6 +652,32 @@
           move and rotate interaction explained above activates precision scaling mode where a user
           can do precise scaling actions like move and rotate from a context focused manipulator.
         </p>
+
+        <figure class="detail__figure detail__precision-scale-image">
+          <picture>
+            <source
+              type="image/webp"
+              srcset="
+                ./assets/detail/precision-scale-839@4x.webp 3356w,
+                ./assets/detail/precision-scale-839.webp 839w
+              "
+              sizes="(max-width: 900px) calc(100vw - 48px), calc((100vw - var(--detail-left-w, 473px) - 128px) * var(--detail-scale, 1))"
+            />
+            <img
+              src="./assets/detail/precision-scale-839.png"
+              srcset="
+                ./assets/detail/precision-scale-839@4x.png 3356w,
+                ./assets/detail/precision-scale-839.png 839w
+              "
+              sizes="(max-width: 900px) calc(100vw - 48px), calc((100vw - var(--detail-left-w, 473px) - 128px) * var(--detail-scale, 1))"
+              width="839"
+              height="3155"
+              alt="Scale precise gizmo interaction flow from mini gizmo through two-axis scaling, single-axis scaling, snapping, and free scaling with upscaling and downscaling states."
+              loading="lazy"
+              decoding="async"
+            />
+          </picture>
+        </figure>
 
         <section class="detail__section" aria-labelledby="detail-handoff-heading">
           <h2 class="detail__section-heading" id="detail-handoff-heading">Design Handoff</h2>

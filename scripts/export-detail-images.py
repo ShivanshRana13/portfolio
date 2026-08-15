@@ -35,6 +35,7 @@ ASSETS = (
     ("mini-gizmo-2-839-src.png", "mini-gizmo-2-839", 839, 849),
     ("mini-gizmo-3-839-src.png", "mini-gizmo-3-839", 839, 540),
     ("precision-gizmo-839-src.png", "precision-gizmo-839", 839, 2805),
+    ("precision-scale-839-src.png", "precision-scale-839", 839, 3155),
 )
 
 
