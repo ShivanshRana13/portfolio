@@ -7,10 +7,12 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="./styles.css?v=93" />
+    <link rel="stylesheet" href="./styles.css?v=94" />
+    <link rel="stylesheet" href="./detail.css?v=124" />
+    <link rel="stylesheet" href="./about.css?v=1" />
     <script type="importmap">
       {
         "imports": {
@@ -315,80 +317,187 @@
         </div>
 
         <div class="about-page" hidden aria-hidden="true">
-          <button type="button" class="detail__back about-page__back" aria-label="Back to portfolio">
-            <span class="detail__back-circle" aria-hidden="true"></span>
-            <span class="detail__back-arrow" aria-hidden="true">
-              <svg
-                width="44"
-                height="44"
-                viewBox="0 0 44 44"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-                focusable="false"
-              >
-                <path
-                  d="M35 34H33V12.4141L10.707 34.707L9.29297 33.293L31.5859 11H10V9H35V34Z"
-                  fill="currentColor"
-                />
-              </svg>
-            </span>
-          </button>
-          <p class="about-page__lede">
-            Currently dealing with a Boston Terrier • Religiously playing Elden Ring • Trying
-            to get jacked • Cooking food and listening to sh*t ton of Fred Again and again and
-            again • Recently got off the market 💍 :)
-          </p>
+          <header
+            class="detail__mini-title"
+            id="about-mini-title"
+            hidden
+            aria-hidden="true"
+          >
+            <div class="detail__mini-title__inner">
+              <div class="detail__mini-title__content">
+                <div class="detail__header-row">
+                  <button
+                    type="button"
+                    class="detail__back about-page__back"
+                    aria-label="Back to portfolio"
+                  >
+                    <span class="detail__back-circle" aria-hidden="true"></span>
+                    <span class="detail__back-arrow" aria-hidden="true">
+                      <svg
+                        width="44"
+                        height="44"
+                        viewBox="0 0 44 44"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                        focusable="false"
+                      >
+                        <path
+                          d="M35 34H33V12.4141L10.707 34.707L9.29297 33.293L31.5859 11H10V9H35V34Z"
+                          fill="currentColor"
+                        />
+                      </svg>
+                    </span>
+                  </button>
+                  <p class="detail__mini-title-text" id="about-mini-title-text">About me</p>
+                </div>
+                <hr class="detail__header-rule" aria-hidden="true" />
+              </div>
+            </div>
+          </header>
 
-          <div class="about-page__collage" aria-hidden="true">
-            <div class="about-page__collage-group">
-              <img
-                class="about-page__elden"
-                src="./assets/elden-ring.png"
-                alt=""
-                width="326"
-                height="433"
-                draggable="false"
-              />
-              <img
-                class="about-page__controller"
-                src="./assets/controller.png"
-                alt=""
-                width="125"
-                height="88"
-                draggable="false"
-              />
-              <img
-                class="about-page__food"
-                src="./assets/food.png"
-                alt=""
-                width="378"
-                height="504"
-                draggable="false"
-              />
-              <img
-                class="about-page__photo"
-                src="./assets/me.png"
-                alt=""
-                width="411"
-                height="436"
-                draggable="false"
-              />
-              <img
-                class="about-page__dumbbells"
-                src="./assets/dumbells.png"
-                alt=""
-                width="185"
-                height="209"
-                draggable="false"
-              />
-              <img
-                class="about-page__spotify"
-                src="./assets/spotify.png"
-                alt=""
-                width="245"
-                height="245"
-                draggable="false"
-              />
+          <div class="detail__grey-bleed" aria-hidden="true"></div>
+          <div class="detail__white-bleed" aria-hidden="true"></div>
+
+          <div class="detail-stage">
+            <div class="detail-layout">
+              <div class="detail__left-spacer" aria-hidden="true"></div>
+              <aside class="detail__left" aria-labelledby="about-title">
+                <div class="detail__left-top">
+                  <div class="detail__header-row">
+                    <button
+                      type="button"
+                      class="detail__back about-page__back"
+                      aria-label="Back to portfolio"
+                    >
+                      <span class="detail__back-circle" aria-hidden="true"></span>
+                      <span class="detail__back-arrow" aria-hidden="true">
+                        <svg
+                          width="44"
+                          height="44"
+                          viewBox="0 0 44 44"
+                          fill="none"
+                          xmlns="http://www.w3.org/2000/svg"
+                          focusable="false"
+                        >
+                          <path
+                            d="M35 34H33V12.4141L10.707 34.707L9.29297 33.293L31.5859 11H10V9H35V34Z"
+                            fill="currentColor"
+                          />
+                        </svg>
+                      </span>
+                    </button>
+                    <h1 class="detail__title" id="about-title">About me</h1>
+                  </div>
+                  <p class="detail__meta" id="about-meta">Product designer · Autodesk</p>
+                  <hr class="detail__header-rule" aria-hidden="true" />
+                </div>
+                <div class="detail__left-bottom">
+                  <div class="detail__scroll-slot" id="about-scroll-slot">
+                    <div
+                      class="detail__scroll-level"
+                      id="about-scroll-level"
+                      role="progressbar"
+                      aria-valuemin="0"
+                      aria-valuemax="100"
+                      aria-valuenow="100"
+                      aria-label="How much content is left to scroll"
+                    >
+                      <div class="detail__scroll-track" id="about-scroll-track">
+                        <div class="detail__scroll-shell">
+                          <div class="detail__scroll-bar"></div>
+                        </div>
+                      </div>
+                      <button
+                        type="button"
+                        class="detail__scroll-up"
+                        id="about-scroll-up"
+                        aria-label="Scroll up"
+                        hidden
+                      >
+                        <span class="detail__scroll-up-icon" aria-hidden="true">
+                          <svg
+                            width="16"
+                            height="16"
+                            viewBox="0 0 16 16"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg"
+                            focusable="false"
+                          >
+                            <path
+                              d="M8 14V2M14 7L8 2L2 7"
+                              stroke="currentColor"
+                              stroke-width="1"
+                            />
+                          </svg>
+                        </span>
+                        <span class="detail__scroll-up-label">Scroll up</span>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </aside>
+              <main class="detail__right">
+                <p class="detail__lede">
+                  Currently dealing with a Boston Terrier • Religiously playing Elden Ring • Trying
+                  to get jacked • Cooking food and listening to sh*t ton of Fred Again and again and
+                  again • Recently got off the market 💍 :)
+                </p>
+
+                <figure class="detail__figure about-page__collage-figure">
+                  <div class="about-page__collage" aria-hidden="true">
+                    <div class="about-page__collage-group">
+                      <img
+                        class="about-page__elden"
+                        src="./assets/elden-ring.png"
+                        alt=""
+                        width="326"
+                        height="433"
+                        draggable="false"
+                      />
+                      <img
+                        class="about-page__controller"
+                        src="./assets/controller.png"
+                        alt=""
+                        width="125"
+                        height="88"
+                        draggable="false"
+                      />
+                      <img
+                        class="about-page__food"
+                        src="./assets/food.png"
+                        alt=""
+                        width="378"
+                        height="504"
+                        draggable="false"
+                      />
+                      <img
+                        class="about-page__photo"
+                        src="./assets/me.png"
+                        alt=""
+                        width="411"
+                        height="436"
+                        draggable="false"
+                      />
+                      <img
+                        class="about-page__dumbbells"
+                        src="./assets/dumbells.png"
+                        alt=""
+                        width="185"
+                        height="209"
+                        draggable="false"
+                      />
+                      <img
+                        class="about-page__spotify"
+                        src="./assets/spotify.png"
+                        alt=""
+                        width="245"
+                        height="245"
+                        draggable="false"
+                      />
+                    </div>
+                  </div>
+                </figure>
+              </main>
             </div>
           </div>
         </div>
@@ -399,7 +508,9 @@
     <script src="./cursor.js?v=63" defer></script>
     <script src="./scene-scale.js?v=63" defer></script>
     <script src="./sticky-notes.js?v=83" defer></script>
-    <script src="./sticky-theme.js?v=72" defer></script>
+    <script src="./detail-scale.js?v=17" defer></script>
+    <script src="./about-detail.js?v=1" defer></script>
+    <script src="./sticky-theme.js?v=73" defer></script>
     <script src="./patent-cube.js?v=63" defer></script>
     <script src="./detail-nav.js?v=63" defer></script>
     <script type="module" src="./patent-gltf-embed.js?v=63"></script>

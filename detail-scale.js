@@ -2,17 +2,32 @@ function clamp(n, min, max) {
   return Math.max(min, Math.min(max, n));
 }
 
-function initDetailScale() {
-  const stage = document.querySelector(".detail-stage");
-  const layout = document.querySelector(".detail-layout");
-  const leftAnchor = document.querySelector(".detail__left-spacer");
-  const leftRail = document.querySelector(".detail__left");
-  const rightCol = document.querySelector(".detail__right");
-  const whiteBleed = document.querySelector(".detail__white-bleed");
-  const greyBleed = document.querySelector(".detail__grey-bleed");
+/**
+ * @param {ParentNode} scope
+ * @param {{
+ *   artboardClass?: string;
+ *   isEnabled?: () => boolean;
+ *   scrollRoot?: HTMLElement | null;
+ *   titleId?: string;
+ * }} [config]
+ * @returns {(() => void) | null}
+ */
+function initDetailScaleInRoot(scope, config = {}) {
+  const artboardClass = config.artboardClass ?? "detail--artboard-scale";
+  const isEnabled = config.isEnabled ?? (() => true);
+  const scrollRoot = config.scrollRoot ?? null;
+  const titleId = config.titleId ?? "detail-title";
+
+  const stage = scope.querySelector(".detail-stage");
+  const layout = scope.querySelector(".detail-layout");
+  const leftAnchor = scope.querySelector(".detail__left-spacer");
+  const leftRail = scope.querySelector(".detail__left");
+  const rightCol = scope.querySelector(".detail__right");
+  const whiteBleed = scope.querySelector(".detail__white-bleed");
+  const greyBleed = scope.querySelector(".detail__grey-bleed");
   const desktopRailMq = window.matchMedia("(min-width: 901px)");
   if (!(stage instanceof HTMLElement) || !(layout instanceof HTMLElement)) {
-    return;
+    return null;
   }
 
   const BASE_W = 1440;
@@ -22,8 +37,8 @@ function initDetailScale() {
   const LEFT_PAD = 64;
 
   const measureLeftColumnWidth = () => {
-    const top = document.querySelector(".detail__left-top");
-    const bottom = document.querySelector(".detail__left-bottom");
+    const top = scope.querySelector(".detail__left-top");
+    const bottom = scope.querySelector(".detail__left-bottom");
     let contentW = 44;
 
     if (top instanceof HTMLElement) {
@@ -72,8 +87,7 @@ function initDetailScale() {
     }
 
     let x = leftRect.left;
-    const isScaled =
-      document.body.classList.contains("detail--artboard-scale") === true;
+    const isScaled = document.body.classList.contains(artboardClass) === true;
     const scale = parseFloat(layout.dataset.scale || "1") || 1;
 
     if (isScaled && scale > 0) {
@@ -85,13 +99,20 @@ function initDetailScale() {
     root.style.setProperty("--detail-left-w", `${width}px`);
   };
 
-  const updateEdgeBleeds = () => {
-    const fillHeight = Math.max(
+  const getFillHeight = () => {
+    if (scrollRoot instanceof HTMLElement) {
+      return scrollRoot.scrollHeight;
+    }
+    return Math.max(
       document.documentElement.scrollHeight,
       document.body.scrollHeight,
     );
+  };
 
-    if (document.body.classList.contains("detail--artboard-scale") !== true) {
+  const updateEdgeBleeds = () => {
+    const fillHeight = getFillHeight();
+
+    if (document.body.classList.contains(artboardClass) !== true) {
       if (whiteBleed instanceof HTMLElement) {
         whiteBleed.style.display = "none";
       }
@@ -126,16 +147,28 @@ function initDetailScale() {
 
     layout.style.removeProperty("zoom");
     layout.style.removeProperty("--detail-scale");
-    document.documentElement.style.removeProperty("--detail-scale");
+    if (scrollRoot === null) {
+      document.documentElement.style.removeProperty("--detail-scale");
+    }
     stage.style.removeProperty("width");
     stage.style.removeProperty("min-height");
     stage.style.removeProperty("margin-left");
     stage.style.removeProperty("margin-right");
-    document.body.classList.remove("detail--artboard-scale");
+    document.body.classList.remove(artboardClass);
+
+    if (isEnabled() !== true) {
+      layout.dataset.scale = "1";
+      layout.style.setProperty("--detail-scale", "1");
+      syncLeftRailAnchors();
+      updateEdgeBleeds();
+      return;
+    }
 
     if (vw < LARGE_MIN_W || vh < LARGE_MIN_H) {
       layout.dataset.scale = "1";
-      document.documentElement.style.setProperty("--detail-scale", "1");
+      if (scrollRoot === null) {
+        document.documentElement.style.setProperty("--detail-scale", "1");
+      }
       layout.style.setProperty("--detail-scale", "1");
       syncLeftRailAnchors();
       updateEdgeBleeds();
@@ -145,7 +178,6 @@ function initDetailScale() {
     const scaleW = vw / BASE_W;
     const scaleH = vh / BASE_H;
     let scale = Math.min(scaleW, scaleH);
-    /* Cap at 2× so 839px frames + native @4x assets stay sharp on retina (2 zoom × 2 DPR). */
     scale = clamp(scale, 1, 2);
 
     let scaledW = BASE_W * scale;
@@ -160,16 +192,25 @@ function initDetailScale() {
     scale = clamp(scale, 1, 2);
 
     layout.dataset.scale = String(scale);
-    document.documentElement.style.setProperty("--detail-scale", String(scale));
+    if (scrollRoot === null) {
+      document.documentElement.style.setProperty("--detail-scale", String(scale));
+    }
     layout.style.setProperty("--detail-scale", String(scale));
 
     stage.style.width = "100%";
     stage.style.minHeight = `${layout.offsetHeight}px`;
     stage.style.marginLeft = "0";
     stage.style.marginRight = "0";
-    document.body.classList.add("detail--artboard-scale");
+    document.body.classList.add(artboardClass);
     syncLeftRailAnchors();
     updateEdgeBleeds();
+  };
+
+  const onScroll = () => {
+    window.requestAnimationFrame(() => {
+      syncLeftRailAnchors();
+      updateEdgeBleeds();
+    });
   };
 
   apply();
@@ -182,16 +223,11 @@ function initDetailScale() {
     { passive: true },
   );
 
-  window.addEventListener(
-    "scroll",
-    () => {
-      window.requestAnimationFrame(() => {
-        syncLeftRailAnchors();
-        updateEdgeBleeds();
-      });
-    },
-    { passive: true },
-  );
+  if (scrollRoot instanceof HTMLElement) {
+    scrollRoot.addEventListener("scroll", onScroll, { passive: true });
+  } else {
+    window.addEventListener("scroll", onScroll, { passive: true });
+  }
 
   desktopRailMq.addEventListener("change", () => {
     window.requestAnimationFrame(apply);
@@ -211,17 +247,20 @@ function initDetailScale() {
     if (rightCol instanceof HTMLElement) {
       observer.observe(rightCol);
     }
-    const leftTop = document.querySelector(".detail__left-top");
-    const leftBottom = document.querySelector(".detail__left-bottom");
+    const leftTop = scope.querySelector(".detail__left-top");
+    const leftBottom = scope.querySelector(".detail__left-bottom");
     if (leftTop instanceof HTMLElement) {
       observer.observe(leftTop);
     }
     if (leftBottom instanceof HTMLElement) {
       observer.observe(leftBottom);
     }
-    const titleEl = document.getElementById("detail-title");
+    const titleEl = scope.querySelector(`#${titleId}`);
     if (titleEl instanceof HTMLElement) {
       observer.observe(titleEl);
+    }
+    if (scrollRoot instanceof HTMLElement) {
+      observer.observe(scrollRoot);
     }
   }
 
@@ -232,10 +271,31 @@ function initDetailScale() {
     },
     { passive: true },
   );
+
+  return apply;
+}
+
+function bootDetailScale() {
+  if (document.body.classList.contains("detail")) {
+    initDetailScaleInRoot(document, { artboardClass: "detail--artboard-scale" });
+  }
+
+  const aboutPage = document.querySelector(".about-page");
+  if (aboutPage instanceof HTMLElement) {
+    const applyAbout = initDetailScaleInRoot(aboutPage, {
+      artboardClass: "about--artboard-scale",
+      isEnabled: () => document.body.classList.contains("about-view") === true,
+      scrollRoot: aboutPage,
+      titleId: "about-title",
+    });
+    if (typeof applyAbout === "function") {
+      window.__refreshAboutDetailScale = applyAbout;
+    }
+  }
 }
 
 if (document.readyState === "loading") {
-  document.addEventListener("DOMContentLoaded", initDetailScale);
+  document.addEventListener("DOMContentLoaded", bootDetailScale);
 } else {
-  initDetailScale();
+  bootDetailScale();
 }

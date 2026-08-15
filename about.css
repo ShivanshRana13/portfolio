@@ -1,0 +1,247 @@
+/*
+ * About page — detail-rail layout overlay (Figma detail node 70:637 pattern).
+ * Star sticky + dog interaction stays on the homepage canvas (sticky-theme.js).
+ */
+
+body.about-view.theme-focus-light {
+  --bg: #f6f6f6;
+  --detail-fs-body: 13px;
+  --detail-fs-section: 21px;
+  --detail-fs-title-min: 21px;
+  --detail-fs-title-max: 34px;
+  --detail-stack-gap: 32px;
+}
+
+body.about-view .scene {
+  transform: none !important;
+  width: 100% !important;
+  height: 100% !important;
+  max-width: none;
+}
+
+.about-page {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  overflow-x: hidden;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  background: #f6f6f6;
+  transition:
+    opacity 280ms ease,
+    visibility 280ms ease;
+}
+
+body.about-view .about-page {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+
+.about-page .detail-stage {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+}
+
+.about-page .detail__back {
+  border: none;
+  padding: 0;
+  background: none;
+  font: inherit;
+  cursor: pointer;
+}
+
+body.about--artboard-scale .about-page .detail__white-bleed,
+body.about--artboard-scale .about-page .detail__grey-bleed {
+  display: block;
+}
+
+.about-page .detail__title {
+  font-size: var(
+    --about-title-fs,
+    clamp(var(--detail-fs-title-min), 5vw, var(--detail-fs-title-max))
+  );
+}
+
+/* Collage hero in the right rail */
+.about-page__collage-figure {
+  width: 100%;
+  max-width: none;
+  margin: 0;
+}
+
+.about-page__collage {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 792 / 865;
+  margin: 0;
+}
+
+.about-page__collage-group {
+  position: absolute;
+  inset: 0;
+  transform-origin: top left;
+}
+
+.about-page__collage-group img {
+  position: absolute;
+  display: block;
+  height: auto;
+  pointer-events: none;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+.about-page__elden {
+  left: 24%;
+  top: 0;
+  width: 41.162%;
+  --wiggle-base: 0deg;
+  transform-origin: center center;
+}
+
+.about-page__controller {
+  left: 0;
+  top: 27.341%;
+  width: 19.949%;
+  --wiggle-base: -45deg;
+  transform-origin: center center;
+}
+
+.about-page__food {
+  left: 52.374%;
+  top: 19.179%;
+  width: 47.727%;
+  --wiggle-base: 12.9deg;
+  transform-origin: center center;
+}
+
+.about-page__photo {
+  left: 10.909%;
+  top: 35.272%;
+  width: 51.894%;
+  --wiggle-base: 5deg;
+  transform-origin: center center;
+  z-index: 1;
+}
+
+.about-page__dumbbells {
+  left: 9.141%;
+  top: 75.873%;
+  width: 23.359%;
+  z-index: 2;
+  --wiggle-base: 0deg;
+  transform-origin: center center;
+}
+
+.about-page__spotify {
+  left: 45.846%;
+  top: 68.775%;
+  width: 30.934%;
+  z-index: 2;
+  --wiggle-base: 0deg;
+  transform-origin: center center;
+}
+
+@keyframes about-collage-wiggle {
+  0%,
+  100% {
+    transform: rotate(var(--wiggle-base, 0deg)) translate3d(0, 0, 0);
+  }
+
+  25% {
+    transform: rotate(calc(var(--wiggle-base, 0deg) + 2.5deg)) translate3d(2px, -3px, 0);
+  }
+
+  50% {
+    transform: rotate(calc(var(--wiggle-base, 0deg) - 2deg)) translate3d(-2px, 2px, 0);
+  }
+
+  75% {
+    transform: rotate(calc(var(--wiggle-base, 0deg) + 1.5deg)) translate3d(1px, 2px, 0);
+  }
+}
+
+@keyframes about-collage-wiggle-subtle {
+  0%,
+  100% {
+    transform: rotate(var(--wiggle-base, 0deg)) translate3d(0, 0, 0);
+  }
+
+  25% {
+    transform: rotate(calc(var(--wiggle-base, 0deg) + 0.8deg)) translate3d(1px, -1px, 0);
+  }
+
+  50% {
+    transform: rotate(calc(var(--wiggle-base, 0deg) - 0.6deg)) translate3d(-1px, 1px, 0);
+  }
+
+  75% {
+    transform: rotate(calc(var(--wiggle-base, 0deg) + 0.5deg)) translate3d(0.5px, 1px, 0);
+  }
+}
+
+body.about-view .about-page__elden {
+  animation: about-collage-wiggle 4.6s ease-in-out infinite;
+}
+
+body.about-view .about-page__controller {
+  animation: about-collage-wiggle 3.8s ease-in-out infinite;
+  animation-delay: -0.6s;
+}
+
+body.about-view .about-page__food {
+  animation: about-collage-wiggle 5.1s ease-in-out infinite;
+  animation-delay: -1.2s;
+}
+
+body.about-view .about-page__dumbbells {
+  animation: about-collage-wiggle 4.2s ease-in-out infinite;
+  animation-delay: -0.3s;
+}
+
+body.about-view .about-page__spotify {
+  animation: about-collage-wiggle 3.5s ease-in-out infinite;
+  animation-delay: -0.9s;
+}
+
+body.about-view .about-page__photo {
+  animation: about-collage-wiggle-subtle 6s ease-in-out infinite;
+  animation-delay: -1.5s;
+}
+
+@media (max-width: 900px) {
+  body.about-view .about-page {
+    background: #ffffff;
+  }
+
+  body.about--mobile-mini-title .about-page .detail__mini-title {
+    pointer-events: auto;
+    animation: detail-mini-title-slide-in 320ms cubic-bezier(0.22, 1, 0.32, 1) forwards;
+  }
+
+  body.about--mobile-landing .about-page .detail__title {
+    font-size: var(--about-title-fs, var(--detail-fs-title-max));
+    font-weight: 600;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .about-page {
+    transition-duration: 0.01ms;
+  }
+
+  body.about-view .about-page__elden,
+  body.about-view .about-page__controller,
+  body.about-view .about-page__food,
+  body.about-view .about-page__dumbbells,
+  body.about-view .about-page__spotify,
+  body.about-view .about-page__photo {
+    animation: none;
+    transform: rotate(var(--wiggle-base, 0deg));
+  }
+}

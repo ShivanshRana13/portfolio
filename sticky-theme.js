@@ -45,26 +45,13 @@ function initStickyTheme() {
     scene.classList.toggle("scene--patent-cube-active", active);
   };
 
-  const collageGroup = document.querySelector(".about-page__collage-group");
-  const aboutCollage = document.querySelector(".about-page__collage");
-  const MOBILE_COLLAGE_MAX_PX = 640;
-  const COLLAGE_SCALE_MIN = 0.45;
-  const COLLAGE_SCALE_MAX = 2.2;
-
-  const isMobileCollageViewport = () =>
-    window.matchMedia(`(max-width: ${MOBILE_COLLAGE_MAX_PX}px)`).matches;
-
-  const viewportMeta = document.querySelector('meta[name="viewport"]');
-  const DEFAULT_VIEWPORT = "width=device-width, initial-scale=1.0";
-  const LOCKED_VIEWPORT = "width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no";
-
-  const syncMobileAboutViewport = (aboutActive) => {
-    if (!(viewportMeta instanceof HTMLMetaElement)) return;
-    if (aboutActive && isMobileCollageViewport()) {
-      viewportMeta.setAttribute("content", LOCKED_VIEWPORT);
-      return;
+  const refreshAboutDetail = () => {
+    if (typeof window.__refreshAboutDetailScale === "function") {
+      window.__refreshAboutDetailScale();
     }
-    viewportMeta.setAttribute("content", DEFAULT_VIEWPORT);
+    if (typeof window.__refreshAboutDetailScroll === "function") {
+      window.__refreshAboutDetailScroll();
+    }
   };
 
   const syncAboutPage = () => {
@@ -73,96 +60,29 @@ function initStickyTheme() {
     if (scene instanceof HTMLElement) {
       scene.classList.toggle("scene--about-active", active);
     }
+    body.classList.toggle("about-view", active);
+    body.classList.toggle("theme-focus-light", active);
     if (aboutPage instanceof HTMLElement) {
       aboutPage.hidden = !active;
       aboutPage.setAttribute("aria-hidden", active ? "false" : "true");
     }
-    syncMobileAboutViewport(active);
-  };
-
-  window.addEventListener("resize", () => {
-    if (!body.classList.contains("theme-focus-light")) return;
-    syncMobileAboutViewport(true);
-  });
-
-  const clampCollage = (value, min, max) => Math.max(min, Math.min(max, value));
-
-  /** @type {Map<number, { x: number; y: number }>} */
-  const collagePointers = new Map();
-
-  let collageDragPointerId = null;
-  let collageDragStartX = 0;
-  let collageDragStartY = 0;
-  let collageOffsetX = 0;
-  let collageOffsetY = 0;
-  let collageScale = 1;
-  let collagePinchStartDistance = 0;
-  let collagePinchStartScale = 1;
-
-  const pointerDistance = (a, b) => Math.hypot(a.x - b.x, a.y - b.y);
-
-  const resetCollageDrag = () => {
-    collagePointers.clear();
-    collageDragPointerId = null;
-    collageOffsetX = 0;
-    collageOffsetY = 0;
-    collageScale = 1;
-    collagePinchStartDistance = 0;
-    if (collageGroup instanceof HTMLElement) {
-      collageGroup.classList.remove("about-page__collage-group--dragging");
-      collageGroup.style.setProperty("--collage-x", "0px");
-      collageGroup.style.setProperty("--collage-y", "0px");
-      collageGroup.style.setProperty("--collage-scale", "1");
+    if (active) {
+      window.requestAnimationFrame(refreshAboutDetail);
     }
-    syncMobileAboutViewport(body.classList.contains("theme-focus-light"));
-  };
-
-  const applyCollageTransform = () => {
-    if (!(collageGroup instanceof HTMLElement)) return;
-    collageGroup.style.setProperty("--collage-x", `${collageOffsetX}px`);
-    collageGroup.style.setProperty("--collage-y", `${collageOffsetY}px`);
-    collageGroup.style.setProperty("--collage-scale", String(collageScale));
-  };
-
-  const syncCollagePinch = () => {
-    if (collagePointers.size < 2) return;
-    const pts = Array.from(collagePointers.values());
-    const dist = pointerDistance(pts[0], pts[1]);
-    if (collagePinchStartDistance <= 0) return;
-    collageScale = clampCollage(
-      collagePinchStartScale * (dist / collagePinchStartDistance),
-      COLLAGE_SCALE_MIN,
-      COLLAGE_SCALE_MAX,
-    );
-    applyCollageTransform();
-  };
-
-  const beginCollageDragFromPointer = (pointerId) => {
-    const pt = collagePointers.get(pointerId);
-    if (!pt) return;
-    collageDragPointerId = pointerId;
-    collageDragStartX = pt.x - collageOffsetX;
-    collageDragStartY = pt.y - collageOffsetY;
-  };
-
-  const beginCollagePinch = () => {
-    collageDragPointerId = null;
-    const pts = Array.from(collagePointers.values());
-    if (pts.length < 2) return;
-    collagePinchStartDistance = pointerDistance(pts[0], pts[1]);
-    collagePinchStartScale = collageScale;
   };
 
   const clearSelection = () => {
     for (const el of stickies) el.classList.remove("is-selected");
     body.classList.remove("theme-dark");
     body.classList.remove("theme-focus-light");
+    body.classList.remove("about-view");
     syncScenePatentCube();
     syncAboutPage();
     syncStarStickyLabel();
     syncNowPlayingPill();
-    resetCollageDrag();
-    syncMobileAboutViewport(false);
+    if (typeof window.__resetAboutScroll === "function") {
+      window.__resetAboutScroll();
+    }
   };
 
   const setSelected = (target) => {
@@ -171,8 +91,10 @@ function initStickyTheme() {
     }
     body.classList.remove("theme-dark");
     body.classList.remove("theme-focus-light");
+    body.classList.remove("about-view");
     if (target === starSticky) {
       body.classList.add("theme-focus-light");
+      body.classList.add("about-view");
     } else {
       body.classList.add("theme-dark");
     }
@@ -180,6 +102,9 @@ function initStickyTheme() {
     syncAboutPage();
     syncStarStickyLabel();
     syncNowPlayingPill();
+    if (target === starSticky) {
+      window.requestAnimationFrame(refreshAboutDetail);
+    }
   };
 
   const activateSticky = (sticky) => {
@@ -208,7 +133,6 @@ function initStickyTheme() {
       if (!(e.target instanceof Element)) return;
       if (e.target.closest(".sticky-badge") !== null) return;
 
-      // Avoid treating drags as selections.
       const start = pressOrigin.get(sticky);
       if (!start) {
         activateSticky(sticky);
@@ -227,101 +151,9 @@ function initStickyTheme() {
     });
   }
 
-  const aboutBack = document.querySelector(".about-page__back");
-
-  const isAboutCollageInteractionActive = () =>
-    isMobileCollageViewport() && body.classList.contains("theme-focus-light") === true;
-
-  const bindCollageSurface = (surface) => {
-    if (!(surface instanceof HTMLElement)) return;
-
-    surface.addEventListener(
-      "touchmove",
-      (e) => {
-        if (!isAboutCollageInteractionActive()) return;
-        if (collagePointers.size > 0 || e.touches.length > 1) {
-          e.preventDefault();
-        }
-      },
-      { passive: false },
-    );
-
-    surface.addEventListener("pointerdown", (e) => {
-      if (!(e instanceof PointerEvent)) return;
-      if (!isAboutCollageInteractionActive()) return;
-
-      collagePointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
-      surface.setPointerCapture(e.pointerId);
-      if (collageGroup instanceof HTMLElement) {
-        collageGroup.classList.add("about-page__collage-group--dragging");
-      }
-
-      if (collagePointers.size === 1) {
-        beginCollageDragFromPointer(e.pointerId);
-      } else if (collagePointers.size === 2) {
-        beginCollagePinch();
-      }
-
-      e.preventDefault();
-      e.stopPropagation();
-    });
-
-    surface.addEventListener("pointermove", (e) => {
-      if (!(e instanceof PointerEvent)) return;
-      if (!collagePointers.has(e.pointerId)) return;
-
-      collagePointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
-
-      if (collagePointers.size >= 2) {
-        syncCollagePinch();
-        e.preventDefault();
-        return;
-      }
-
-      if (collageDragPointerId === null || e.pointerId !== collageDragPointerId) return;
-      collageOffsetX = e.clientX - collageDragStartX;
-      collageOffsetY = e.clientY - collageDragStartY;
-      applyCollageTransform();
-      e.preventDefault();
-    });
-
-    const endCollagePointer = (e) => {
-      if (!(e instanceof PointerEvent)) return;
-      if (!collagePointers.has(e.pointerId)) return;
-
-      try {
-        surface.releasePointerCapture(e.pointerId);
-      } catch {
-        // ignore
-      }
-
-      collagePointers.delete(e.pointerId);
-
-      if (collagePointers.size === 1) {
-        const remainingId = collagePointers.keys().next().value;
-        if (typeof remainingId === "number") {
-          beginCollageDragFromPointer(remainingId);
-        }
-        collagePinchStartDistance = 0;
-      } else if (collagePointers.size >= 2) {
-        beginCollagePinch();
-      } else {
-        collageDragPointerId = null;
-        collagePinchStartDistance = 0;
-        if (collageGroup instanceof HTMLElement) {
-          collageGroup.classList.remove("about-page__collage-group--dragging");
-        }
-      }
-    };
-
-    surface.addEventListener("pointerup", endCollagePointer);
-    surface.addEventListener("pointercancel", endCollagePointer);
-  };
-
-  bindCollageSurface(aboutCollage);
-
-  if (aboutBack instanceof HTMLButtonElement) {
-    aboutBack.addEventListener("click", (e) => {
+  for (const backBtn of document.querySelectorAll(".about-page__back")) {
+    if (!(backBtn instanceof HTMLButtonElement)) continue;
+    backBtn.addEventListener("click", (e) => {
       e.stopPropagation();
       clearSelection();
     });
@@ -332,18 +164,14 @@ function initStickyTheme() {
     const target = e.target;
     if (!(target instanceof Element)) return;
 
-    // About view — use the back button (or Escape), not empty-canvas clicks.
-    if (body.classList.contains("theme-focus-light")) return;
+    if (body.classList.contains("about-view")) return;
 
-    // Keep selection when interacting with a sticky or the 3D frame.
     if (target.closest(".sticky") !== null) return;
     if (target.closest(".patent-cube") !== null) return;
 
-    // Empty canvas / background — clear selection and return to light mode.
     clearSelection();
   });
 
-  // Escape clears selection (nice UX for keyboard users).
   document.addEventListener("keydown", (e) => {
     if (e.key !== "Escape") return;
     clearSelection();
