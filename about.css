@@ -125,13 +125,14 @@ body.about-view .footer {
   position: absolute;
   display: block;
   height: auto;
+  max-width: none;
   pointer-events: none;
   user-select: none;
   -webkit-user-drag: none;
 }
 
-/* Center hero — me + dog */
-.about-page__photo {
+/* Beat .detail__figure img { width: 100% } from detail.css */
+.about-page__collage-figure img.about-page__photo {
   left: 50%;
   top: 50%;
   width: 18%;
@@ -141,8 +142,7 @@ body.about-view .footer {
   z-index: 2;
 }
 
-/* Top right — controller 10%, elden 35% beside it */
-.about-page__controller {
+.about-page__collage-figure img.about-page__controller {
   top: 10%;
   right: 4%;
   left: auto;
@@ -153,7 +153,7 @@ body.about-view .footer {
   z-index: 3;
 }
 
-.about-page__elden {
+.about-page__collage-figure img.about-page__elden {
   top: 6%;
   right: 14%;
   left: auto;
@@ -164,8 +164,7 @@ body.about-view .footer {
   z-index: 1;
 }
 
-/* Bottom right — food 40% */
-.about-page__food {
+.about-page__collage-figure img.about-page__food {
   bottom: 6%;
   right: 0;
   left: auto;
@@ -177,8 +176,7 @@ body.about-view .footer {
   z-index: 1;
 }
 
-/* Bottom right on me — spotify 30% */
-.about-page__spotify {
+.about-page__collage-figure img.about-page__spotify {
   bottom: 18%;
   right: 10%;
   left: auto;
@@ -190,8 +188,7 @@ body.about-view .footer {
   z-index: 4;
 }
 
-/* Bottom left — dumbbells 20% */
-.about-page__dumbbells {
+.about-page__collage-figure img.about-page__dumbbells {
   bottom: 10%;
   left: 6%;
   top: auto;
