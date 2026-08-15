@@ -191,10 +191,10 @@ body.about-view .footer {
 
 .about-page__collage-figure img.about-page__dumbbells {
   bottom: 10%;
-  left: 6%;
+  left: 16%;
   top: auto;
   right: auto;
-  width: 24%;
+  width: 21.6%;
   --wiggle-base: 0deg;
   transform: rotate(var(--wiggle-base, 0deg));
   transform-origin: center center;
