@@ -669,15 +669,6 @@ body.theme-dark .scene.scene--patent-cube-active .patent-cube__viewport {
   opacity: 0;
 }
 
-/* Homepage About me: always smile inside the stack so hover-out doesn't flash default. */
-.sticky--star:not(.is-selected) .sticky-star__dog--default {
-  opacity: 0;
-}
-
-.sticky--star:not(.is-selected) .sticky-star__dog--smile {
-  opacity: 1;
-}
-
 .sticky-star__shape {
   position: relative;
   z-index: 1;
@@ -751,15 +742,18 @@ body.theme-dark .scene.scene--patent-cube-active .patent-cube__viewport {
   transform: translate(0, 0);
 }
 
-.sticky--star.is-selected .sticky-star__dog--default {
+/* Smile while pointer is on the button; default dog otherwise. */
+.sticky--star:hover .sticky-star__dog--default,
+.sticky--star.sticky--dragging .sticky-star__dog--default {
   opacity: 0;
 }
 
-.sticky--star.is-selected .sticky-star__dog--smile {
+.sticky--star:hover .sticky-star__dog--smile,
+.sticky--star.sticky--dragging .sticky-star__dog--smile {
   opacity: 1;
 }
 
-/* Touch / no-hover: dog stack only when selected or actively dragging. */
+/* Touch / no-hover: show stack when selected or dragging; smile only while dragging. */
 @media (hover: none) {
   .sticky--star:not(.is-selected):not(.sticky--dragging) .sticky-star__dog-stack {
     opacity: 0;
@@ -769,6 +763,14 @@ body.theme-dark .scene.scene--patent-cube-active .patent-cube__viewport {
   .sticky--star.sticky--dragging .sticky-star__dog-stack {
     opacity: 1;
     transform: translate(0, 0);
+  }
+
+  .sticky--star.is-selected.sticky--dragging .sticky-star__dog--default {
+    opacity: 0;
+  }
+
+  .sticky--star.is-selected.sticky--dragging .sticky-star__dog--smile {
+    opacity: 1;
   }
 }
 
