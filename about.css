@@ -89,10 +89,18 @@ body.about-view .footer {
   pointer-events: none;
 }
 
-/* Collage hero — Figma node 253:7775 (839×817); me centered, orbit items wiggle. */
+/* Collage hero — me centered in right-rail viewport; orbit sizes as % of stage width. */
+@media (min-width: 901px) {
+  .about-page .detail__right {
+    min-height: 100dvh;
+  }
+}
+
 .about-page__collage-figure {
   width: 100%;
-  max-width: min(100%, 839px);
+  max-width: none;
+  min-height: calc(100dvh - 128px);
+  height: calc(100dvh - 128px);
   margin: 0;
   overflow: visible;
 }
@@ -100,8 +108,8 @@ body.about-view .footer {
 .about-page__collage {
   position: relative;
   width: 100%;
-  max-width: 100%;
-  aspect-ratio: 839 / 817;
+  height: 100%;
+  min-height: inherit;
   margin: 0;
   overflow: visible;
 }
@@ -109,7 +117,7 @@ body.about-view .footer {
 .about-page__collage-group {
   position: absolute;
   inset: 0;
-  transform-origin: top left;
+  transform-origin: center center;
   overflow: visible;
 }
 
@@ -120,61 +128,79 @@ body.about-view .footer {
   pointer-events: none;
   user-select: none;
   -webkit-user-drag: none;
-  transform: rotate(var(--wiggle-base, 0deg));
 }
 
-.about-page__controller {
-  left: 16.367%;
-  top: 20.382%;
-  width: 16.652%;
-  --wiggle-base: 30deg;
+/* Center hero — me + dog */
+.about-page__photo {
+  left: 50%;
+  top: 50%;
+  width: 45%;
+  --wiggle-base: -9.22deg;
+  transform: translate(-50%, -50%) rotate(var(--wiggle-base, -9.22deg));
   transform-origin: center center;
   z-index: 2;
 }
 
-.about-page__elden {
-  left: 32.447%;
-  top: 0;
-  width: 35.649%;
-  --wiggle-base: 0deg;
-  transform-origin: center center;
-  z-index: 1;
-}
-
-.about-page__food {
-  left: 69.253%;
-  top: 12.521%;
-  width: 52.634%;
-  --wiggle-base: 12.9deg;
-  transform-origin: center center;
-  z-index: 1;
-}
-
-.about-page__photo {
-  left: 21.074%;
-  top: 35.524%;
-  width: 52.017%;
-  --wiggle-base: -9.22deg;
+/* Top right — controller 10%, elden 35% beside it */
+.about-page__controller {
+  top: 10%;
+  right: 4%;
+  left: auto;
+  width: 10%;
+  --wiggle-base: 30deg;
+  transform: rotate(var(--wiggle-base, 30deg));
   transform-origin: center center;
   z-index: 3;
 }
 
-.about-page__dumbbells {
-  left: 19.435%;
-  top: 76.529%;
-  width: 20.177%;
+.about-page__elden {
+  top: 6%;
+  right: 14%;
+  left: auto;
+  width: 35%;
   --wiggle-base: 0deg;
+  transform: rotate(var(--wiggle-base, 0deg));
   transform-origin: center center;
-  z-index: 2;
+  z-index: 1;
 }
 
-.about-page__spotify {
-  left: 51.255%;
-  top: 69.117%;
-  width: 26.791%;
-  --wiggle-base: 0deg;
+/* Bottom right — food 40% */
+.about-page__food {
+  bottom: 6%;
+  right: 0;
+  left: auto;
+  top: auto;
+  width: 40%;
+  --wiggle-base: 12.9deg;
+  transform: rotate(var(--wiggle-base, 12.9deg));
   transform-origin: center center;
-  z-index: 2;
+  z-index: 1;
+}
+
+/* Bottom right on me — spotify 30% */
+.about-page__spotify {
+  bottom: 18%;
+  right: 10%;
+  left: auto;
+  top: auto;
+  width: 30%;
+  --wiggle-base: 0deg;
+  transform: rotate(var(--wiggle-base, 0deg));
+  transform-origin: center center;
+  z-index: 4;
+}
+
+/* Bottom left — dumbbells 20% */
+.about-page__dumbbells {
+  bottom: 10%;
+  left: 6%;
+  top: auto;
+  right: auto;
+  width: 20%;
+  --wiggle-base: 0deg;
+  transform: rotate(var(--wiggle-base, 0deg));
+  transform-origin: center center;
+  z-index: 3;
 }
 
 @keyframes about-collage-wiggle {
@@ -240,7 +266,14 @@ body.about-view .about-page__spotify {
 }
 
 body.about-view .about-page__photo {
-  transform: rotate(var(--wiggle-base, -9.22deg));
+  transform: translate(-50%, -50%) rotate(var(--wiggle-base, -9.22deg));
+}
+
+@media (max-width: 900px) {
+  .about-page__collage-figure {
+    min-height: min(72vh, 640px);
+    height: min(72vh, 640px);
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -248,13 +281,16 @@ body.about-view .about-page__photo {
     transition-duration: 0.01ms;
   }
 
-  body.about-view .about-page__elden,
-  body.about-view .about-page__controller,
-  body.about-view .about-page__food,
-  body.about-view .about-page__dumbbells,
-  body.about-view .about-page__spotify,
   body.about-view .about-page__photo {
     animation: none;
-    transform: rotate(var(--wiggle-base, -9.22deg));
+    transform: translate(-50%, -50%) rotate(var(--wiggle-base, -9.22deg));
+  }
+
+  body.about-view .about-page__controller,
+  body.about-view .about-page__elden,
+  body.about-view .about-page__food,
+  body.about-view .about-page__dumbbells,
+  body.about-view .about-page__spotify {
+    animation: none;
   }
 }
