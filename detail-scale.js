@@ -285,7 +285,7 @@ function bootDetailScale() {
     const applyAbout = initDetailScaleInRoot(aboutPage, {
       artboardClass: "about--artboard-scale",
       isEnabled: () => document.body.classList.contains("about-view") === true,
-      scrollRoot: aboutPage,
+      scrollRoot: null,
       titleId: "about-title",
     });
     if (typeof applyAbout === "function") {

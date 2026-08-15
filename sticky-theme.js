@@ -57,10 +57,13 @@ function initStickyTheme() {
   const syncAboutPage = () => {
     const active =
       starSticky instanceof HTMLElement && starSticky.classList.contains("is-selected") === true;
+    const root = document.documentElement;
     if (scene instanceof HTMLElement) {
       scene.classList.toggle("scene--about-active", active);
     }
+    root.classList.toggle("about-view", active);
     body.classList.toggle("about-view", active);
+    body.classList.toggle("detail", active);
     body.classList.toggle("theme-focus-light", active);
     if (aboutPage instanceof HTMLElement) {
       aboutPage.hidden = !active;
@@ -76,6 +79,8 @@ function initStickyTheme() {
     body.classList.remove("theme-dark");
     body.classList.remove("theme-focus-light");
     body.classList.remove("about-view");
+    body.classList.remove("detail");
+    document.documentElement.classList.remove("about-view");
     syncScenePatentCube();
     syncAboutPage();
     syncStarStickyLabel();
@@ -92,9 +97,13 @@ function initStickyTheme() {
     body.classList.remove("theme-dark");
     body.classList.remove("theme-focus-light");
     body.classList.remove("about-view");
+    body.classList.remove("detail");
+    document.documentElement.classList.remove("about-view");
     if (target === starSticky) {
       body.classList.add("theme-focus-light");
       body.classList.add("about-view");
+      body.classList.add("detail");
+      document.documentElement.classList.add("about-view");
     } else {
       body.classList.add("theme-dark");
     }
@@ -104,6 +113,7 @@ function initStickyTheme() {
     syncNowPlayingPill();
     if (target === starSticky) {
       window.requestAnimationFrame(refreshAboutDetail);
+      window.scrollTo(0, 0);
     }
   };
 

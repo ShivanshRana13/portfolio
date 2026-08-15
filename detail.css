@@ -1,12 +1,15 @@
 /* Case / project detail — right rail + static media (Figma node 70:637 export) */
 
 html,
-body.detail {
+body.detail,
+html.about-view,
+body.about-view.detail {
   height: 100%;
   margin: 0;
 }
 
-body.detail {
+body.detail,
+body.about-view.detail {
   font-family: var(--font);
   overflow-x: visible;
   overflow-y: auto;
@@ -306,11 +309,13 @@ body.detail--artboard-scale .detail__grey-bleed {
 }
 
 @media (prefers-reduced-motion: reduce) and (max-width: 900px) {
-  body.detail--mobile-landing .detail__title {
+  body.detail--mobile-landing .detail__title,
+  body.about-view.detail--mobile-landing .detail__title {
     font-size: var(--detail-fs-title-max) !important;
   }
 
-  body.detail--mobile-mini-title .detail__mini-title {
+  body.detail--mobile-mini-title .detail__mini-title,
+  body.about-view.detail--mobile-mini-title .detail__mini-title {
     animation: none;
   }
 }
@@ -746,7 +751,8 @@ body.detail--artboard-scale .detail__grey-bleed {
 
 @media (max-width: 900px) {
   html,
-  body.detail {
+  body.detail,
+  body.about-view.detail {
     background: #ffffff;
   }
 
@@ -868,7 +874,8 @@ body.detail--artboard-scale .detail__grey-bleed {
     pointer-events: none;
   }
 
-  body.detail--mobile-mini-title .detail__mini-title {
+  body.detail--mobile-mini-title .detail__mini-title,
+  body.about-view.detail--mobile-mini-title .detail__mini-title {
     pointer-events: auto;
     animation: detail-mini-title-slide-in 320ms cubic-bezier(0.22, 1, 0.32, 1) forwards;
   }

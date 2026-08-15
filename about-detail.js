@@ -1,45 +1,69 @@
-/** About page — detail-rail scroll indicator + title shrink (mirrors detail.js). */
+/** About page — same scroll / title behaviour as detail.js (document scroll). */
 
-const ABOUT_TITLE_MIN_PX = 21;
-const ABOUT_SCROLL_END_THRESHOLD_PX = 4;
-const ABOUT_MOBILE_MINI_TITLE_HIDE_DOWN_PX = 2;
-const ABOUT_MOBILE_MINI_TITLE_REVEAL_UP_PX = 6;
-const ABOUT_MOBILE_HEADER_LANDING = "about--mobile-landing";
-const ABOUT_MOBILE_HEADER_MINI_TITLE = "about--mobile-mini-title";
+const TITLE_MIN_PX = 21;
+const SCROLL_END_THRESHOLD_PX = 4;
+const MOBILE_MINI_TITLE_HIDE_DOWN_PX = 2;
+const MOBILE_MINI_TITLE_REVEAL_UP_PX = 6;
+const MOBILE_HEADER_LANDING = "detail--mobile-landing";
+const MOBILE_HEADER_MINI_TITLE = "detail--mobile-mini-title";
 
-function getAboutScrollRoot() {
-  const root = document.querySelector(".about-page");
-  return root instanceof HTMLElement ? root : null;
+function getDetailScrollY() {
+  const w = window.scrollY || window.pageYOffset || 0;
+  const r = document.documentElement.scrollTop;
+  const bodyTop = document.body.scrollTop;
+  const se = document.scrollingElement;
+  const seTop = se !== null && typeof se.scrollTop === "number" ? se.scrollTop : 0;
+  const y = Math.max(w, r, bodyTop, seTop);
+  return y < 0 ? 0 : y;
 }
 
-function getAboutScrollY() {
-  const root = getAboutScrollRoot();
-  if (root !== null) {
-    return root.scrollTop < 0 ? 0 : root.scrollTop;
-  }
-  return 0;
-}
-
-function getAboutMaxScrollPx() {
-  const root = getAboutScrollRoot();
-  if (root === null) {
-    return 0;
-  }
+function getDetailMaxScrollPx() {
+  const el = document.documentElement;
+  const b = document.body;
+  const sh = Math.max(el.scrollHeight, b.scrollHeight);
   const vh =
     window.visualViewport !== undefined && typeof window.visualViewport.height === "number"
       ? window.visualViewport.height
       : window.innerHeight;
-  return Math.max(0, root.scrollHeight - vh);
+  return Math.max(0, sh - vh);
 }
 
-function scrollAboutToTop() {
-  const root = getAboutScrollRoot();
-  if (root === null) {
-    return;
+function bindDetailScroll(onScroll) {
+  window.addEventListener("scroll", onScroll, { passive: true, capture: true });
+  document.addEventListener("scroll", onScroll, { passive: true, capture: true });
+  document.documentElement.addEventListener("scroll", onScroll, { passive: true });
+  if (document.body !== null) {
+    document.body.addEventListener("scroll", onScroll, { passive: true });
   }
+}
+
+function scrollDetailToTop() {
   const reduceMotionMq = window.matchMedia("(prefers-reduced-motion: reduce)");
   const behavior = reduceMotionMq.matches === true ? "auto" : "smooth";
-  root.scrollTo({ top: 0, left: 0, behavior: behavior });
+  const scrollOpts = { top: 0, left: 0, behavior: behavior };
+
+  const firstFold =
+    document.querySelector(".about-page .detail__left-top") ||
+    document.querySelector(".about-page .detail-layout");
+  if (firstFold !== null) {
+    firstFold.scrollIntoView({ behavior: behavior, block: "start", inline: "nearest" });
+  }
+
+  const roots = [document.scrollingElement, document.documentElement, document.body];
+  for (let i = 0; i < roots.length; i += 1) {
+    const el = roots[i];
+    if (el === null) {
+      continue;
+    }
+    if (typeof el.scrollTo === "function") {
+      el.scrollTo(scrollOpts);
+    } else {
+      el.scrollTop = 0;
+      el.scrollLeft = 0;
+    }
+  }
+
+  window.scrollTo(scrollOpts);
 }
 
 function initAboutScrollLevelIndicator() {
@@ -57,7 +81,7 @@ function initAboutScrollLevelIndicator() {
   const completeClass = "detail__scroll-level--complete";
 
   if (scrollUpBtn !== null) {
-    scrollUpBtn.addEventListener("click", scrollAboutToTop);
+    scrollUpBtn.addEventListener("click", scrollDetailToTop);
   }
 
   function apply() {
@@ -65,15 +89,15 @@ function initAboutScrollLevelIndicator() {
       return;
     }
 
-    const maxScroll = getAboutMaxScrollPx();
-    const y = getAboutScrollY();
+    const maxScroll = getDetailMaxScrollPx();
+    const y = getDetailScrollY();
     let remaining = 1;
     if (maxScroll > 0.5) {
       const scrolled = Math.min(1, Math.max(0, y / maxScroll));
       remaining = 1 - scrolled;
     }
 
-    const atEnd = maxScroll > 0.5 && maxScroll - y <= ABOUT_SCROLL_END_THRESHOLD_PX;
+    const atEnd = maxScroll > 0.5 && maxScroll - y <= SCROLL_END_THRESHOLD_PX;
 
     wrapper.style.setProperty("--detail-scroll-remaining", remaining.toFixed(4));
     wrapper.classList.toggle(completeClass, atEnd);
@@ -132,7 +156,7 @@ function initAboutTitleScrollShrink() {
   let maxPx = 34;
   let lastScrollY = 0;
   let wasPastTitleSection = false;
-  let mobileHeaderMode = ABOUT_MOBILE_HEADER_LANDING;
+  let mobileHeaderMode = MOBILE_HEADER_LANDING;
   let miniTitleRevealCarryPx = 0;
 
   function getFirstFoldPx() {
@@ -147,12 +171,12 @@ function initAboutTitleScrollShrink() {
   }
 
   function clearTitleScrollVars() {
-    document.body.style.removeProperty("--about-title-fs");
-    document.body.style.removeProperty("--about-title-fw");
+    document.body.style.removeProperty("--detail-title-fs");
+    document.body.style.removeProperty("--detail-title-fw");
   }
 
   function clearMobileHeaderModes() {
-    document.body.classList.remove(ABOUT_MOBILE_HEADER_LANDING, ABOUT_MOBILE_HEADER_MINI_TITLE);
+    document.body.classList.remove(MOBILE_HEADER_LANDING, MOBILE_HEADER_MINI_TITLE);
   }
 
   function setMobileHeaderMode(nextMode) {
@@ -162,7 +186,7 @@ function initAboutTitleScrollShrink() {
     clearMobileHeaderModes();
     document.body.classList.add(nextMode);
     if (miniTitleEl !== null) {
-      const showMini = nextMode === ABOUT_MOBILE_HEADER_MINI_TITLE;
+      const showMini = nextMode === MOBILE_HEADER_MINI_TITLE;
       miniTitleEl.hidden = !showMini;
       miniTitleEl.setAttribute("aria-hidden", showMini ? "false" : "true");
     }
@@ -179,13 +203,13 @@ function initAboutTitleScrollShrink() {
     const wasMobileModes = narrowLayoutMq.matches === true;
     if (wasMobileModes) {
       clearMobileHeaderModes();
-      document.body.classList.add(ABOUT_MOBILE_HEADER_LANDING);
+      document.body.classList.add(MOBILE_HEADER_LANDING);
     } else {
       clearTitleScrollVars();
     }
     const px = parseFloat(window.getComputedStyle(titleEl).fontSize);
     const fallback = 34;
-    maxPx = Number.isFinite(px) && px > ABOUT_TITLE_MIN_PX ? px : fallback;
+    maxPx = Number.isFinite(px) && px > TITLE_MIN_PX ? px : fallback;
     if (wasMobileModes) {
       clearMobileHeaderModes();
     }
@@ -195,20 +219,20 @@ function initAboutTitleScrollShrink() {
     if (titleSectionEl === null) {
       wasPastTitleSection = false;
       miniTitleRevealCarryPx = 0;
-      mobileHeaderMode = ABOUT_MOBILE_HEADER_LANDING;
-      setMobileHeaderMode(ABOUT_MOBILE_HEADER_LANDING);
+      mobileHeaderMode = MOBILE_HEADER_LANDING;
+      setMobileHeaderMode(MOBILE_HEADER_LANDING);
       return;
     }
 
-    const y = getAboutScrollY();
+    const y = getDetailScrollY();
     const titleSectionH = getMobileTitleSectionHeightPx();
     const pastTitleSection = titleSectionH > 0 && y > titleSectionH;
 
     if (pastTitleSection !== true) {
       wasPastTitleSection = false;
       miniTitleRevealCarryPx = 0;
-      mobileHeaderMode = ABOUT_MOBILE_HEADER_LANDING;
-      setMobileHeaderMode(ABOUT_MOBILE_HEADER_LANDING);
+      mobileHeaderMode = MOBILE_HEADER_LANDING;
+      setMobileHeaderMode(MOBILE_HEADER_LANDING);
       lastScrollY = y;
       return;
     }
@@ -219,18 +243,18 @@ function initAboutTitleScrollShrink() {
     if (wasPastTitleSection === false) {
       wasPastTitleSection = true;
       miniTitleRevealCarryPx = 0;
-      mobileHeaderMode = ABOUT_MOBILE_HEADER_LANDING;
+      mobileHeaderMode = MOBILE_HEADER_LANDING;
       setMobileHeaderMode(mobileHeaderMode);
       return;
     }
 
-    if (deltaY > ABOUT_MOBILE_MINI_TITLE_HIDE_DOWN_PX) {
+    if (deltaY > MOBILE_MINI_TITLE_HIDE_DOWN_PX) {
       miniTitleRevealCarryPx = 0;
-      mobileHeaderMode = ABOUT_MOBILE_HEADER_LANDING;
+      mobileHeaderMode = MOBILE_HEADER_LANDING;
     } else if (deltaY < 0) {
       miniTitleRevealCarryPx += -deltaY;
-      if (miniTitleRevealCarryPx >= ABOUT_MOBILE_MINI_TITLE_REVEAL_UP_PX) {
-        mobileHeaderMode = ABOUT_MOBILE_HEADER_MINI_TITLE;
+      if (miniTitleRevealCarryPx >= MOBILE_MINI_TITLE_REVEAL_UP_PX) {
+        mobileHeaderMode = MOBILE_HEADER_MINI_TITLE;
       }
     }
 
@@ -238,7 +262,7 @@ function initAboutTitleScrollShrink() {
   }
 
   function applyDesktop() {
-    const y = getAboutScrollY();
+    const y = getDetailScrollY();
     const firstFoldPx = getFirstFoldPx();
     const shrinkStartPx = firstFoldPx * 0.5;
     const shrinkRangePx = firstFoldPx - shrinkStartPx;
@@ -247,8 +271,8 @@ function initAboutTitleScrollShrink() {
       const tRaw = (y - shrinkStartPx) / shrinkRangePx;
       t = tRaw <= 0 ? 0 : tRaw >= 1 ? 1 : tRaw;
     }
-    const fs = maxPx - (maxPx - ABOUT_TITLE_MIN_PX) * t;
-    document.body.style.setProperty("--about-title-fs", `${fs}px`);
+    const fs = maxPx - (maxPx - TITLE_MIN_PX) * t;
+    document.body.style.setProperty("--detail-title-fs", `${fs}px`);
   }
 
   function apply() {
@@ -265,7 +289,7 @@ function initAboutTitleScrollShrink() {
     if (reduceMotionMq.matches === true) {
       clearTitleScrollVars();
       if (narrowLayoutMq.matches === true) {
-        setMobileHeaderMode(ABOUT_MOBILE_HEADER_LANDING);
+        setMobileHeaderMode(MOBILE_HEADER_LANDING);
       } else {
         clearMobileHeaderModes();
       }
@@ -283,10 +307,10 @@ function initAboutTitleScrollShrink() {
 
   function scheduleMeasureAndApply() {
     window.requestAnimationFrame(() => {
-      lastScrollY = getAboutScrollY();
+      lastScrollY = getDetailScrollY();
       wasPastTitleSection = false;
       miniTitleRevealCarryPx = 0;
-      mobileHeaderMode = ABOUT_MOBILE_HEADER_LANDING;
+      mobileHeaderMode = MOBILE_HEADER_LANDING;
       measureTitleMaxPx();
       apply();
     });
@@ -301,8 +325,7 @@ function initAboutTitleScrollShrink() {
 }
 
 function initAboutDetailScroll() {
-  const aboutPage = getAboutScrollRoot();
-  if (aboutPage === null) {
+  if (document.querySelector(".about-page") === null) {
     return;
   }
 
@@ -328,7 +351,7 @@ function initAboutDetailScroll() {
     });
   }
 
-  aboutPage.addEventListener("scroll", onScroll, { passive: true });
+  bindDetailScroll(onScroll);
   window.addEventListener("resize", () => {
     window.requestAnimationFrame(onScrollFrame);
   });
@@ -346,13 +369,10 @@ function initAboutDetailScroll() {
 }
 
 function resetAboutScroll() {
-  const root = getAboutScrollRoot();
-  if (root !== null) {
-    root.scrollTop = 0;
-  }
-  document.body.style.removeProperty("--about-title-fs");
-  document.body.style.removeProperty("--about-title-fw");
-  document.body.classList.remove(ABOUT_MOBILE_HEADER_LANDING, ABOUT_MOBILE_HEADER_MINI_TITLE);
+  scrollDetailToTop();
+  document.body.style.removeProperty("--detail-title-fs");
+  document.body.style.removeProperty("--detail-title-fw");
+  document.body.classList.remove(MOBILE_HEADER_LANDING, MOBILE_HEADER_MINI_TITLE);
   const miniTitleEl = document.getElementById("about-mini-title");
   if (miniTitleEl !== null) {
     miniTitleEl.hidden = true;

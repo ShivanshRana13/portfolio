@@ -1,35 +1,50 @@
 /*
- * About page — detail-rail layout overlay (Figma detail node 70:637 pattern).
- * Star sticky + dog interaction stays on the homepage canvas (sticky-theme.js).
+ * About overlay — uses body.detail + detail.css for layout, gaps, and padding.
+ * Only overrides: scene/stage unlock for document scroll, star sticky stacking, collage.
  */
 
-body.about-view.theme-focus-light {
+html.about-view {
+  overflow-y: auto;
+  overflow-x: hidden;
+  max-height: none;
+  height: auto;
+}
+
+body.about-view.detail.theme-focus-light {
   --bg: #f6f6f6;
-  --detail-fs-body: 13px;
-  --detail-fs-section: 21px;
-  --detail-fs-title-min: 21px;
-  --detail-fs-title-max: 34px;
-  --detail-stack-gap: 32px;
+  overflow-x: visible;
+  overflow-y: auto;
+  height: auto;
+  max-height: none;
+  min-height: 100dvh;
+  background: #f6f6f6;
+  position: relative;
+}
+
+body.about-view .stage {
+  height: auto;
+  max-height: none;
+  min-height: 0;
+  align-items: flex-start;
 }
 
 body.about-view .scene {
   transform: none !important;
   width: 100% !important;
-  height: 100% !important;
+  height: auto !important;
+  min-height: 0;
   max-width: none;
 }
 
 .about-page {
-  position: fixed;
-  inset: 0;
+  position: relative;
   z-index: 50;
-  overflow-x: hidden;
-  overflow-y: auto;
-  -webkit-overflow-scrolling: touch;
+  width: 100%;
+  min-height: 100dvh;
+  overflow: visible;
   opacity: 0;
   visibility: hidden;
   pointer-events: none;
-  background: #f6f6f6;
   transition:
     opacity 280ms ease,
     visibility 280ms ease;
@@ -39,12 +54,6 @@ body.about-view .about-page {
   opacity: 1;
   visibility: visible;
   pointer-events: auto;
-}
-
-.about-page .detail-stage {
-  position: relative;
-  z-index: 1;
-  width: 100%;
 }
 
 .about-page .detail__back {
@@ -60,14 +69,18 @@ body.about--artboard-scale .about-page .detail__grey-bleed {
   display: block;
 }
 
-.about-page .detail__title {
-  font-size: var(
-    --about-title-fs,
-    clamp(var(--detail-fs-title-min), 5vw, var(--detail-fs-title-max))
-  );
+/* Star sticky + dog stay above the about detail layer */
+body.about-view .cards {
+  z-index: 200;
 }
 
-/* Collage hero in the right rail */
+body.about-view .footer {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+/* Collage hero in the right rail (full width like case study figures) */
 .about-page__collage-figure {
   width: 100%;
   max-width: none;
@@ -212,22 +225,6 @@ body.about-view .about-page__spotify {
 body.about-view .about-page__photo {
   animation: about-collage-wiggle-subtle 6s ease-in-out infinite;
   animation-delay: -1.5s;
-}
-
-@media (max-width: 900px) {
-  body.about-view .about-page {
-    background: #ffffff;
-  }
-
-  body.about--mobile-mini-title .about-page .detail__mini-title {
-    pointer-events: auto;
-    animation: detail-mini-title-slide-in 320ms cubic-bezier(0.22, 1, 0.32, 1) forwards;
-  }
-
-  body.about--mobile-landing .about-page .detail__title {
-    font-size: var(--about-title-fs, var(--detail-fs-title-max));
-    font-weight: 600;
-  }
 }
 
 @media (prefers-reduced-motion: reduce) {
