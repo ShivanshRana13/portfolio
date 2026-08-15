@@ -68,7 +68,11 @@ function initDetailPage() {
 /**
  * Scroll offset — the page (body) is the scroll container on the detail page.
  */
-function getDetailScrollY() {
+function getDetailScrollY(scrollRoot) {
+  if (scrollRoot instanceof HTMLElement) {
+    const y = scrollRoot.scrollTop;
+    return y < 0 ? 0 : y;
+  }
   const w = window.scrollY || window.pageYOffset || 0;
   const r = document.documentElement.scrollTop;
   const bodyTop = document.body.scrollTop;
@@ -78,7 +82,10 @@ function getDetailScrollY() {
   return y < 0 ? 0 : y;
 }
 
-function getDetailMaxScrollPx() {
+function getDetailMaxScrollPx(scrollRoot) {
+  if (scrollRoot instanceof HTMLElement) {
+    return Math.max(0, scrollRoot.scrollHeight - scrollRoot.clientHeight);
+  }
   const el = document.documentElement;
   const b = document.body;
   const sh = Math.max(el.scrollHeight, b.scrollHeight);
@@ -89,7 +96,11 @@ function getDetailMaxScrollPx() {
   return Math.max(0, sh - vh);
 }
 
-function bindDetailScroll(onScroll) {
+function bindDetailScroll(onScroll, scrollRoot) {
+  if (scrollRoot instanceof HTMLElement) {
+    scrollRoot.addEventListener("scroll", onScroll, { passive: true });
+    return;
+  }
   window.addEventListener("scroll", onScroll, { passive: true, capture: true });
   document.addEventListener("scroll", onScroll, { passive: true, capture: true });
   document.documentElement.addEventListener("scroll", onScroll, { passive: true });
@@ -108,6 +119,7 @@ function bindDetailScroll(onScroll) {
  *   miniTitleId?: string;
  *   titleSectionSelector?: string;
  *   scrollToTopSelector?: string;
+ *   getScrollRoot?: () => HTMLElement | null;
  *   onFrame?: () => void;
  * }} [config]
  */
@@ -121,12 +133,28 @@ function createDetailScrollBehavior(config = {}) {
   const titleSectionSelector = config.titleSectionSelector ?? ".detail__left-top";
   const scrollToTopSelector =
     config.scrollToTopSelector ?? ".detail__left-top, .detail-layout";
+  const getScrollRoot = config.getScrollRoot ?? (() => null);
   const onFrame = config.onFrame ?? null;
+
+  const resolveScrollRoot = () => {
+    const root = getScrollRoot();
+    return root instanceof HTMLElement ? root : null;
+  };
 
   const scrollDetailToTop = () => {
     const reduceMotionMq = window.matchMedia("(prefers-reduced-motion: reduce)");
     const behavior = reduceMotionMq.matches === true ? "auto" : "smooth";
     const scrollOpts = { top: 0, left: 0, behavior: behavior };
+    const scrollRoot = resolveScrollRoot();
+
+    if (scrollRoot instanceof HTMLElement) {
+      if (typeof scrollRoot.scrollTo === "function") {
+        scrollRoot.scrollTo(scrollOpts);
+      } else {
+        scrollRoot.scrollTop = 0;
+      }
+      return;
+    }
 
     const firstFold = document.querySelector(scrollToTopSelector);
     if (firstFold !== null) {
@@ -173,8 +201,9 @@ function createDetailScrollBehavior(config = {}) {
         return;
       }
 
-      const maxScroll = getDetailMaxScrollPx();
-      const y = getDetailScrollY();
+      const scrollRoot = resolveScrollRoot();
+      const maxScroll = getDetailMaxScrollPx(scrollRoot);
+      const y = getDetailScrollY(scrollRoot);
       let remaining = 1;
       if (maxScroll > 0.5) {
         const scrolled = Math.min(1, Math.max(0, y / maxScroll));
@@ -299,6 +328,10 @@ function createDetailScrollBehavior(config = {}) {
       }
     }
 
+    function getScrollY() {
+      return getDetailScrollY(resolveScrollRoot());
+    }
+
     function applyMobile() {
       if (titleSectionEl === null) {
         wasPastTitleSection = false;
@@ -308,7 +341,7 @@ function createDetailScrollBehavior(config = {}) {
         return;
       }
 
-      const y = getDetailScrollY();
+      const y = getScrollY();
       const titleSectionH = getMobileTitleSectionHeightPx();
       const pastTitleSection = titleSectionH > 0 && y > titleSectionH;
 
@@ -346,7 +379,7 @@ function createDetailScrollBehavior(config = {}) {
     }
 
     function applyDesktop() {
-      const y = getDetailScrollY();
+      const y = getScrollY();
       const firstFoldPx = getFirstFoldPx();
       const shrinkStartPx = firstFoldPx * 0.5;
       const shrinkRangePx = firstFoldPx - shrinkStartPx;
@@ -391,7 +424,7 @@ function createDetailScrollBehavior(config = {}) {
 
     function scheduleMeasureAndApply() {
       window.requestAnimationFrame(() => {
-        lastScrollY = getDetailScrollY();
+        lastScrollY = getScrollY();
         wasPastTitleSection = false;
         miniTitleRevealCarryPx = 0;
         mobileHeaderMode = MOBILE_HEADER_LANDING;
@@ -433,6 +466,38 @@ function createDetailScrollBehavior(config = {}) {
   }
 
   bindDetailScroll(onScroll);
+
+  const aboutRightRail = document.querySelector(".about-page .detail__right");
+  if (aboutRightRail instanceof HTMLElement && config.getScrollRoot !== undefined) {
+    aboutRightRail.addEventListener("scroll", onScroll, { passive: true });
+  }
+
+  const narrowLayoutMq = window.matchMedia("(max-width: 900px)");
+  if (config.getScrollRoot !== undefined) {
+    document.addEventListener(
+      "wheel",
+      (e) => {
+        if (isActive() !== true || narrowLayoutMq.matches === true) {
+          return;
+        }
+        const scrollRoot = resolveScrollRoot();
+        if (!(scrollRoot instanceof HTMLElement) || !(e instanceof WheelEvent)) {
+          return;
+        }
+        const target = e.target;
+        if (target instanceof Element && target.closest(".sticky--star") !== null) {
+          return;
+        }
+        if (target instanceof Node && scrollRoot.contains(target)) {
+          return;
+        }
+        e.preventDefault();
+        scrollRoot.scrollTop += e.deltaY;
+      },
+      { passive: false },
+    );
+  }
+
   window.addEventListener("resize", () => {
     window.requestAnimationFrame(onScrollFrame);
   });
@@ -484,6 +549,9 @@ function initAboutDetailScroll() {
     return;
   }
 
+  const aboutPage = document.querySelector(".about-page");
+  const narrowLayoutMq = window.matchMedia("(max-width: 900px)");
+
   const controller = createDetailScrollBehavior({
     isActive: () => document.body.classList.contains("about-view") === true,
     scrollLevelId: "about-scroll-level",
@@ -493,6 +561,13 @@ function initAboutDetailScroll() {
     miniTitleId: "about-mini-title",
     titleSectionSelector: ".about-page .detail__left-top",
     scrollToTopSelector: ".about-page .detail__left-top, .about-page .detail-layout",
+    getScrollRoot: () => {
+      if (narrowLayoutMq.matches === true || !(aboutPage instanceof HTMLElement)) {
+        return null;
+      }
+      const right = aboutPage.querySelector(".detail__right");
+      return right instanceof HTMLElement ? right : null;
+    },
     onFrame: () => {
       if (typeof window.__refreshAboutDetailScale === "function") {
         window.__refreshAboutDetailScale();

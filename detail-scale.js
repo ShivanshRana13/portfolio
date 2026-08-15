@@ -8,6 +8,7 @@ function clamp(n, min, max) {
  *   artboardClass?: string;
  *   isEnabled?: () => boolean;
  *   scrollRoot?: HTMLElement | null;
+ *   getScrollRoot?: () => HTMLElement | null;
  *   titleId?: string;
  * }} [config]
  * @returns {(() => void) | null}
@@ -15,8 +16,15 @@ function clamp(n, min, max) {
 function initDetailScaleInRoot(scope, config = {}) {
   const artboardClass = config.artboardClass ?? "detail--artboard-scale";
   const isEnabled = config.isEnabled ?? (() => true);
-  const scrollRoot = config.scrollRoot ?? null;
+  const getScrollRoot =
+    config.getScrollRoot ??
+    (() => (config.scrollRoot instanceof HTMLElement ? config.scrollRoot : null));
   const titleId = config.titleId ?? "detail-title";
+
+  const resolveScrollRoot = () => {
+    const root = getScrollRoot();
+    return root instanceof HTMLElement ? root : null;
+  };
 
   const stage = scope.querySelector(".detail-stage");
   const layout = scope.querySelector(".detail-layout");
@@ -100,6 +108,7 @@ function initDetailScaleInRoot(scope, config = {}) {
   };
 
   const getFillHeight = () => {
+    const scrollRoot = resolveScrollRoot();
     if (scrollRoot instanceof HTMLElement) {
       return scrollRoot.scrollHeight;
     }
@@ -147,7 +156,7 @@ function initDetailScaleInRoot(scope, config = {}) {
 
     layout.style.removeProperty("zoom");
     layout.style.removeProperty("--detail-scale");
-    if (scrollRoot === null) {
+    if (resolveScrollRoot() === null) {
       document.documentElement.style.removeProperty("--detail-scale");
     }
     stage.style.removeProperty("width");
@@ -166,7 +175,7 @@ function initDetailScaleInRoot(scope, config = {}) {
 
     if (vw < LARGE_MIN_W || vh < LARGE_MIN_H) {
       layout.dataset.scale = "1";
-      if (scrollRoot === null) {
+      if (resolveScrollRoot() === null) {
         document.documentElement.style.setProperty("--detail-scale", "1");
       }
       layout.style.setProperty("--detail-scale", "1");
@@ -192,7 +201,7 @@ function initDetailScaleInRoot(scope, config = {}) {
     scale = clamp(scale, 1, 2);
 
     layout.dataset.scale = String(scale);
-    if (scrollRoot === null) {
+    if (resolveScrollRoot() === null) {
       document.documentElement.style.setProperty("--detail-scale", String(scale));
     }
     layout.style.setProperty("--detail-scale", String(scale));
@@ -223,11 +232,10 @@ function initDetailScaleInRoot(scope, config = {}) {
     { passive: true },
   );
 
-  if (scrollRoot instanceof HTMLElement) {
-    scrollRoot.addEventListener("scroll", onScroll, { passive: true });
-  } else {
-    window.addEventListener("scroll", onScroll, { passive: true });
+  if (rightCol instanceof HTMLElement) {
+    rightCol.addEventListener("scroll", onScroll, { passive: true });
   }
+  window.addEventListener("scroll", onScroll, { passive: true });
 
   desktopRailMq.addEventListener("change", () => {
     window.requestAnimationFrame(apply);
@@ -259,8 +267,8 @@ function initDetailScaleInRoot(scope, config = {}) {
     if (titleEl instanceof HTMLElement) {
       observer.observe(titleEl);
     }
-    if (scrollRoot instanceof HTMLElement) {
-      observer.observe(scrollRoot);
+    if (rightCol instanceof HTMLElement) {
+      observer.observe(rightCol);
     }
   }
 
@@ -282,10 +290,17 @@ function bootDetailScale() {
 
   const aboutPage = document.querySelector(".about-page");
   if (aboutPage instanceof HTMLElement) {
+    const aboutNarrowMq = window.matchMedia("(max-width: 900px)");
     const applyAbout = initDetailScaleInRoot(aboutPage, {
       artboardClass: "about--artboard-scale",
       isEnabled: () => document.body.classList.contains("about-view") === true,
-      scrollRoot: null,
+      getScrollRoot: () => {
+        if (aboutNarrowMq.matches === true) {
+          return null;
+        }
+        const right = aboutPage.querySelector(".detail__right");
+        return right instanceof HTMLElement ? right : null;
+      },
       titleId: "about-title",
     });
     if (typeof applyAbout === "function") {

@@ -4,38 +4,108 @@
  */
 
 html.about-view {
-  overflow-y: auto;
   overflow-x: hidden;
-  max-height: none;
-  height: auto;
 }
 
 body.about-view.detail.theme-focus-light {
   --bg: #f6f6f6;
   overflow-x: visible;
-  overflow-y: auto;
-  height: auto;
-  max-height: none;
-  min-height: 100dvh;
   background: #f6f6f6;
   position: relative;
 }
 
-body.about-view .stage {
-  height: auto;
-  max-height: none;
-  min-height: 0;
-  overflow: visible;
-  align-items: flex-start;
+/* Desktop: lock document scroll; only the right rail scrolls (like case study left rail). */
+@media (min-width: 901px) {
+  html.about-view {
+    overflow: hidden;
+    height: 100dvh;
+    max-height: 100dvh;
+  }
+
+  body.about-view.detail.theme-focus-light {
+    overflow: hidden;
+    height: 100dvh;
+    max-height: 100dvh;
+    min-height: 0;
+  }
+
+  body.about-view .stage {
+    height: 100dvh;
+    max-height: 100dvh;
+    min-height: 0;
+    overflow: hidden;
+    align-items: stretch;
+  }
+
+  body.about-view .scene {
+    height: 100dvh;
+    max-height: 100dvh;
+    min-height: 0;
+    overflow: hidden;
+  }
+
+  body.about-view .about-page {
+    height: 100dvh;
+    max-height: 100dvh;
+    min-height: 0;
+    overflow: hidden;
+  }
+
+  .about-page .detail-layout {
+    height: 100dvh;
+    max-height: 100dvh;
+    min-height: 0;
+    overflow: hidden;
+  }
+
+  .about-page .detail__right {
+    height: 100dvh;
+    max-height: 100dvh;
+    min-height: 0;
+    overflow-x: hidden;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
+/* Mobile: document scroll (same as case study). */
+@media (max-width: 900px) {
+  html.about-view {
+    overflow-y: auto;
+    max-height: none;
+    height: auto;
+  }
+
+  body.about-view.detail.theme-focus-light {
+    overflow-y: auto;
+    height: auto;
+    max-height: none;
+    min-height: 100dvh;
+  }
+
+  body.about-view .stage {
+    height: auto;
+    max-height: none;
+    min-height: 0;
+    overflow: visible;
+    align-items: flex-start;
+  }
+
+  body.about-view .scene {
+    height: auto !important;
+    min-height: 0;
+    overflow: visible;
+    transform: none !important;
+    width: 100% !important;
+    max-width: none;
+  }
 }
 
 body.about-view .scene {
   transform: none !important;
   width: 100% !important;
-  height: auto !important;
-  min-height: 0;
   max-width: none;
-  overflow: visible;
 }
 
 body.about-view .scene > .intro,
@@ -106,7 +176,7 @@ body.about-view .now-playing-pill {
 /* About hero — layered collage treated as one composed image (sizes = % of stage width). */
 @media (min-width: 901px) {
   .about-page .detail__right {
-    min-height: 100dvh;
+    min-height: 0;
   }
 }
 

@@ -137,7 +137,9 @@ function initStickyTheme() {
     syncNowPlayingPill();
     if (target === starSticky) {
       window.requestAnimationFrame(refreshAboutDetail);
-      window.scrollTo(0, 0);
+      if (typeof window.__resetAboutScroll === "function") {
+        window.__resetAboutScroll();
+      }
     }
   };
 
