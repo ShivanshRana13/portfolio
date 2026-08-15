@@ -626,7 +626,7 @@ body.detail--artboard-scale .detail__grey-bleed {
   flex-direction: column;
   gap: 16px;
   width: 100%;
-  max-width: none;
+  max-width: 839px;
   margin: 0;
 }
 
@@ -675,7 +675,7 @@ body.detail--artboard-scale .detail__grey-bleed {
 .detail__figure {
   margin: 0;
   width: 100%;
-  max-width: none;
+  max-width: 839px;
   line-height: 0;
 }
 
@@ -683,6 +683,8 @@ body.detail--artboard-scale .detail__grey-bleed {
   display: block;
   width: 100%;
   height: auto;
+  /* Prefer crisp downscaling of high-DPI assets (avoid legacy pixelated modes). */
+  image-rendering: auto;
 }
 
 .detail__discovery-image,
@@ -701,7 +703,7 @@ body.detail--artboard-scale .detail__grey-bleed {
 }
 
 /*
- * Full width of the right rail; srcset in markup supplies 2× assets for sharp scaling.
+ * Full width of the right rail up to Figma frame width; srcset supplies @4× for retina + zoom.
  */
 .detail__media.detail__media--static {
   width: 100%;

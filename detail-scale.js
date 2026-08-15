@@ -126,6 +126,7 @@ function initDetailScale() {
 
     layout.style.removeProperty("zoom");
     layout.style.removeProperty("--detail-scale");
+    document.documentElement.style.removeProperty("--detail-scale");
     stage.style.removeProperty("width");
     stage.style.removeProperty("min-height");
     stage.style.removeProperty("margin-left");
@@ -134,6 +135,7 @@ function initDetailScale() {
 
     if (vw < LARGE_MIN_W || vh < LARGE_MIN_H) {
       layout.dataset.scale = "1";
+      document.documentElement.style.setProperty("--detail-scale", "1");
       layout.style.setProperty("--detail-scale", "1");
       syncLeftRailAnchors();
       updateEdgeBleeds();
@@ -143,7 +145,8 @@ function initDetailScale() {
     const scaleW = vw / BASE_W;
     const scaleH = vh / BASE_H;
     let scale = Math.min(scaleW, scaleH);
-    scale = clamp(scale, 1, 3);
+    /* Cap at 2× so 839px frames + native @4x assets stay sharp on retina (2 zoom × 2 DPR). */
+    scale = clamp(scale, 1, 2);
 
     let scaledW = BASE_W * scale;
     let scaledH = BASE_H * scale;
@@ -154,8 +157,10 @@ function initDetailScale() {
     }
 
     scale = Math.max(scale, 1);
+    scale = clamp(scale, 1, 2);
 
     layout.dataset.scale = String(scale);
+    document.documentElement.style.setProperty("--detail-scale", String(scale));
     layout.style.setProperty("--detail-scale", String(scale));
 
     stage.style.width = "100%";
