@@ -155,8 +155,8 @@ body.about-view .footer {
 }
 
 .about-page__collage-figure img.about-page__elden {
-  top: calc(50% - 45.9cqw * 436 / 411 / 2);
-  left: calc(50% - 31.5% / 2);
+  top: calc(50% - 45.9cqw * 436 / 411 / 2 - 31.5cqw * 433 / 326 / 2);
+  left: calc(50% - 31.5cqw / 2);
   right: auto;
   width: 31.5%;
   --wiggle-base: 0deg;
