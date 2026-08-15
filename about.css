@@ -25,6 +25,7 @@ body.about-view .stage {
   height: auto;
   max-height: none;
   min-height: 0;
+  overflow: visible;
   align-items: flex-start;
 }
 
@@ -34,6 +35,13 @@ body.about-view .scene {
   height: auto !important;
   min-height: 0;
   max-width: none;
+  overflow: visible;
+}
+
+body.about-view .scene > .intro,
+body.about-view .scene > .patent-cube,
+body.about-view .scene > .now-playing-pill {
+  display: none !important;
 }
 
 .about-page {

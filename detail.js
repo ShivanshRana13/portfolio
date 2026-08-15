@@ -36,6 +36,12 @@ const MOBILE_MINI_TITLE_HIDE_DOWN_PX = 2;
 /** Cumulative upward movement before revealing mini title section. */
 const MOBILE_MINI_TITLE_REVEAL_UP_PX = 6;
 
+/** Pixels from the bottom treated as “scroll complete” for the scroll-up control. */
+const SCROLL_END_THRESHOLD_PX = 4;
+
+const MOBILE_HEADER_LANDING = "detail--mobile-landing";
+const MOBILE_HEADER_MINI_TITLE = "detail--mobile-mini-title";
+
 function initDetailPage() {
   const params = new URLSearchParams(window.location.search);
   let tile = params.get("tile") || "education";
@@ -92,317 +98,328 @@ function bindDetailScroll(onScroll) {
   }
 }
 
-/** Pixels from the bottom treated as “scroll complete” for the scroll-up control. */
-const SCROLL_END_THRESHOLD_PX = 4;
-
 /**
- * Scroll back to the first fold (top of the detail page / hero rail).
+ * @param {{
+ *   isActive?: () => boolean;
+ *   scrollLevelId?: string;
+ *   scrollTrackId?: string;
+ *   scrollUpId?: string;
+ *   titleId?: string;
+ *   miniTitleId?: string;
+ *   titleSectionSelector?: string;
+ *   scrollToTopSelector?: string;
+ *   onFrame?: () => void;
+ * }} [config]
  */
-function scrollDetailToTop() {
-  const reduceMotionMq = window.matchMedia("(prefers-reduced-motion: reduce)");
-  const behavior = reduceMotionMq.matches === true ? "auto" : "smooth";
-  const scrollOpts = { top: 0, left: 0, behavior: behavior };
+function createDetailScrollBehavior(config = {}) {
+  const isActive = config.isActive ?? (() => document.body.classList.contains("detail") === true);
+  const scrollLevelId = config.scrollLevelId ?? "detail-scroll-level";
+  const scrollTrackId = config.scrollTrackId ?? "detail-scroll-track";
+  const scrollUpId = config.scrollUpId ?? "detail-scroll-up";
+  const titleId = config.titleId ?? "detail-title";
+  const miniTitleId = config.miniTitleId ?? "detail-mini-title";
+  const titleSectionSelector = config.titleSectionSelector ?? ".detail__left-top";
+  const scrollToTopSelector =
+    config.scrollToTopSelector ?? ".detail__left-top, .detail-layout";
+  const onFrame = config.onFrame ?? null;
 
-  const firstFold =
-    document.querySelector(".detail__left-top") ||
-    document.querySelector(".detail-layout");
-  if (firstFold !== null) {
-    firstFold.scrollIntoView({ behavior: behavior, block: "start", inline: "nearest" });
-  }
+  const scrollDetailToTop = () => {
+    const reduceMotionMq = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const behavior = reduceMotionMq.matches === true ? "auto" : "smooth";
+    const scrollOpts = { top: 0, left: 0, behavior: behavior };
 
-  const roots = [document.scrollingElement, document.documentElement, document.body];
-  for (let i = 0; i < roots.length; i += 1) {
-    const el = roots[i];
-    if (el === null) {
-      continue;
-    }
-    if (typeof el.scrollTo === "function") {
-      el.scrollTo(scrollOpts);
-    } else {
-      el.scrollTop = 0;
-      el.scrollLeft = 0;
-    }
-  }
-
-  window.scrollTo(scrollOpts);
-}
-
-/**
- * Figma 97:2081 — bar width = unread portion; at end → Figma 102:2105 scroll-up pill (desktop + mobile).
- */
-function initScrollLevelIndicator() {
-  const noop = function () {};
-
-  if (!document.body.classList.contains("detail")) {
-    return noop;
-  }
-
-  const wrapper = document.getElementById("detail-scroll-level");
-  const track = document.getElementById("detail-scroll-track");
-  const scrollUpBtn = document.getElementById("detail-scroll-up");
-  if (wrapper === null) {
-    return noop;
-  }
-
-  const narrowLayoutMq = window.matchMedia("(max-width: 900px)");
-  const visibleClass = "detail__scroll-level--visible";
-  const completeClass = "detail__scroll-level--complete";
-
-  if (scrollUpBtn !== null) {
-    scrollUpBtn.addEventListener("click", scrollDetailToTop);
-  }
-
-  function apply() {
-    const maxScroll = getDetailMaxScrollPx();
-    const y = getDetailScrollY();
-    let remaining = 1;
-    if (maxScroll > 0.5) {
-      const scrolled = Math.min(1, Math.max(0, y / maxScroll));
-      remaining = 1 - scrolled;
+    const firstFold = document.querySelector(scrollToTopSelector);
+    if (firstFold !== null) {
+      firstFold.scrollIntoView({ behavior: behavior, block: "start", inline: "nearest" });
     }
 
-    const atEnd =
-      maxScroll > 0.5 && maxScroll - y <= SCROLL_END_THRESHOLD_PX;
+    const roots = [document.scrollingElement, document.documentElement, document.body];
+    for (let i = 0; i < roots.length; i += 1) {
+      const el = roots[i];
+      if (el === null) {
+        continue;
+      }
+      if (typeof el.scrollTo === "function") {
+        el.scrollTo(scrollOpts);
+      } else {
+        el.scrollTop = 0;
+        el.scrollLeft = 0;
+      }
+    }
 
-    wrapper.style.setProperty("--detail-scroll-remaining", remaining.toFixed(4));
-    wrapper.classList.toggle(completeClass, atEnd);
+    window.scrollTo(scrollOpts);
+  };
+
+  const initScrollLevelIndicator = () => {
+    const noop = function () {};
+
+    const wrapper = document.getElementById(scrollLevelId);
+    const track = document.getElementById(scrollTrackId);
+    const scrollUpBtn = document.getElementById(scrollUpId);
+    if (wrapper === null) {
+      return noop;
+    }
+
+    const narrowLayoutMq = window.matchMedia("(max-width: 900px)");
+    const visibleClass = "detail__scroll-level--visible";
+    const completeClass = "detail__scroll-level--complete";
 
     if (scrollUpBtn !== null) {
-      if (narrowLayoutMq.matches === true) {
-        scrollUpBtn.hidden = !atEnd;
-        scrollUpBtn.removeAttribute("tabindex");
+      scrollUpBtn.addEventListener("click", scrollDetailToTop);
+    }
+
+    function apply() {
+      if (isActive() !== true) {
+        return;
+      }
+
+      const maxScroll = getDetailMaxScrollPx();
+      const y = getDetailScrollY();
+      let remaining = 1;
+      if (maxScroll > 0.5) {
+        const scrolled = Math.min(1, Math.max(0, y / maxScroll));
+        remaining = 1 - scrolled;
+      }
+
+      const atEnd = maxScroll > 0.5 && maxScroll - y <= SCROLL_END_THRESHOLD_PX;
+
+      wrapper.style.setProperty("--detail-scroll-remaining", remaining.toFixed(4));
+      wrapper.classList.toggle(completeClass, atEnd);
+
+      if (scrollUpBtn !== null) {
+        if (narrowLayoutMq.matches === true) {
+          scrollUpBtn.hidden = !atEnd;
+          scrollUpBtn.removeAttribute("tabindex");
+        } else {
+          scrollUpBtn.hidden = false;
+          scrollUpBtn.setAttribute("aria-hidden", atEnd ? "false" : "true");
+          scrollUpBtn.tabIndex = atEnd ? 0 : -1;
+        }
+      }
+
+      if (track !== null) {
+        track.setAttribute("aria-hidden", atEnd ? "true" : "false");
+      }
+
+      if (atEnd) {
+        wrapper.removeAttribute("role");
+        wrapper.removeAttribute("aria-valuemin");
+        wrapper.removeAttribute("aria-valuemax");
+        wrapper.removeAttribute("aria-valuenow");
+        wrapper.removeAttribute("aria-label");
       } else {
-        scrollUpBtn.hidden = false;
-        scrollUpBtn.setAttribute("aria-hidden", atEnd ? "false" : "true");
-        scrollUpBtn.tabIndex = atEnd ? 0 : -1;
+        const pct = Math.max(0, Math.min(100, Math.round(remaining * 100)));
+        wrapper.setAttribute("role", "progressbar");
+        wrapper.setAttribute("aria-valuemin", "0");
+        wrapper.setAttribute("aria-valuemax", "100");
+        wrapper.setAttribute("aria-valuenow", String(pct));
+        wrapper.setAttribute("aria-label", "How much content is left to scroll");
+      }
+
+      const hasScrolled = y > 0;
+      wrapper.classList.toggle(visibleClass, hasScrolled);
+      wrapper.setAttribute("aria-hidden", hasScrolled || atEnd ? "false" : "true");
+    }
+
+    return apply;
+  };
+
+  const initTitleScrollShrink = () => {
+    const noop = function () {};
+
+    const titleEl = document.getElementById(titleId);
+    const titleSectionEl = document.querySelector(titleSectionSelector);
+    const miniTitleEl = document.getElementById(miniTitleId);
+    if (titleEl === null) {
+      return noop;
+    }
+
+    const reduceMotionMq = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const narrowLayoutMq = window.matchMedia("(max-width: 900px)");
+
+    let maxPx = 34;
+    let lastScrollY = 0;
+    let wasPastTitleSection = false;
+    let mobileHeaderMode = MOBILE_HEADER_LANDING;
+    let miniTitleRevealCarryPx = 0;
+
+    function getFirstFoldPx() {
+      if (
+        window.visualViewport !== undefined &&
+        window.visualViewport !== null &&
+        typeof window.visualViewport.height === "number"
+      ) {
+        return window.visualViewport.height;
+      }
+      return window.innerHeight;
+    }
+
+    function clearTitleScrollVars() {
+      document.body.style.removeProperty("--detail-title-fs");
+      document.body.style.removeProperty("--detail-title-fw");
+    }
+
+    function clearMobileHeaderModes() {
+      document.body.classList.remove(MOBILE_HEADER_LANDING, MOBILE_HEADER_MINI_TITLE);
+    }
+
+    function setMobileHeaderMode(nextMode) {
+      if (document.body.classList.contains(nextMode) === true) {
+        return;
+      }
+      clearMobileHeaderModes();
+      document.body.classList.add(nextMode);
+      if (miniTitleEl !== null) {
+        const showMini = nextMode === MOBILE_HEADER_MINI_TITLE;
+        miniTitleEl.hidden = !showMini;
+        miniTitleEl.setAttribute("aria-hidden", showMini ? "false" : "true");
       }
     }
 
-    if (track !== null) {
-      track.setAttribute("aria-hidden", atEnd ? "true" : "false");
-    }
-
-    if (atEnd) {
-      wrapper.removeAttribute("role");
-      wrapper.removeAttribute("aria-valuemin");
-      wrapper.removeAttribute("aria-valuemax");
-      wrapper.removeAttribute("aria-valuenow");
-      wrapper.removeAttribute("aria-label");
-    } else {
-      const pct = Math.max(0, Math.min(100, Math.round(remaining * 100)));
-      wrapper.setAttribute("role", "progressbar");
-      wrapper.setAttribute("aria-valuemin", "0");
-      wrapper.setAttribute("aria-valuemax", "100");
-      wrapper.setAttribute("aria-valuenow", String(pct));
-      wrapper.setAttribute("aria-label", "How much content is left to scroll");
-    }
-
-    const hasScrolled = y > 0;
-    wrapper.classList.toggle(visibleClass, hasScrolled);
-    wrapper.setAttribute("aria-hidden", hasScrolled || atEnd ? "false" : "true");
-  }
-
-  return apply;
-}
-
-const MOBILE_HEADER_LANDING = "detail--mobile-landing";
-const MOBILE_HEADER_MINI_TITLE = "detail--mobile-mini-title";
-
-/**
- * Desktop: hero title stays at max until 50% of the first fold, then shrinks gradually to 21px by 100%.
- * Mobile: mini title section (Figma 105:203) only while scrolling up past title section.
- */
-function initTitleScrollShrink() {
-  const noop = function () {};
-
-  if (!document.body.classList.contains("detail")) {
-    return noop;
-  }
-
-  const titleEl = document.getElementById("detail-title");
-  const titleSectionEl = document.querySelector(".detail__left-top");
-  const miniTitleEl = document.getElementById("detail-mini-title");
-  if (titleEl === null) {
-    return noop;
-  }
-
-  const reduceMotionMq = window.matchMedia("(prefers-reduced-motion: reduce)");
-  const narrowLayoutMq = window.matchMedia("(max-width: 900px)");
-
-  let maxPx = 34;
-  let lastScrollY = 0;
-  let wasPastTitleSection = false;
-  let mobileHeaderMode = MOBILE_HEADER_LANDING;
-  let miniTitleRevealCarryPx = 0;
-
-  function getFirstFoldPx() {
-    if (
-      window.visualViewport !== undefined &&
-      window.visualViewport !== null &&
-      typeof window.visualViewport.height === "number"
-    ) {
-      return window.visualViewport.height;
-    }
-    return window.innerHeight;
-  }
-
-  function clearTitleScrollVars() {
-    document.body.style.removeProperty("--detail-title-fs");
-    document.body.style.removeProperty("--detail-title-fw");
-  }
-
-  function clearMobileHeaderModes() {
-    document.body.classList.remove(MOBILE_HEADER_LANDING, MOBILE_HEADER_MINI_TITLE);
-  }
-
-  /** Only swap mobile header class when mode changes — avoids replaying CSS transitions every scroll tick. */
-  function setMobileHeaderMode(nextMode) {
-    if (document.body.classList.contains(nextMode) === true) {
-      return;
-    }
-    clearMobileHeaderModes();
-    document.body.classList.add(nextMode);
-    if (miniTitleEl !== null) {
-      const showMini = nextMode === MOBILE_HEADER_MINI_TITLE;
-      miniTitleEl.hidden = !showMini;
-      miniTitleEl.setAttribute("aria-hidden", showMini ? "false" : "true");
-    }
-  }
-
-  function getMobileTitleSectionHeightPx() {
-    if (titleSectionEl === null) {
-      return 0;
-    }
-    return titleSectionEl.offsetHeight;
-  }
-
-  function measureTitleMaxPx() {
-    const wasMobileModes = narrowLayoutMq.matches === true;
-    if (wasMobileModes) {
-      clearMobileHeaderModes();
-      document.body.classList.add(MOBILE_HEADER_LANDING);
-    } else {
-      clearTitleScrollVars();
-    }
-    const px = parseFloat(window.getComputedStyle(titleEl).fontSize);
-    const fallback = 34;
-    maxPx = Number.isFinite(px) && px > TITLE_MIN_PX ? px : fallback;
-    if (wasMobileModes) {
-      clearMobileHeaderModes();
-    }
-  }
-
-  function applyMobile() {
-    if (titleSectionEl === null) {
-      wasPastTitleSection = false;
-      miniTitleRevealCarryPx = 0;
-      mobileHeaderMode = MOBILE_HEADER_LANDING;
-      setMobileHeaderMode(MOBILE_HEADER_LANDING);
-      return;
-    }
-
-    const y = getDetailScrollY();
-    const titleSectionH = getMobileTitleSectionHeightPx();
-    const pastTitleSection = titleSectionH > 0 && y > titleSectionH;
-
-    if (pastTitleSection !== true) {
-      wasPastTitleSection = false;
-      miniTitleRevealCarryPx = 0;
-      mobileHeaderMode = MOBILE_HEADER_LANDING;
-      setMobileHeaderMode(MOBILE_HEADER_LANDING);
-      lastScrollY = y;
-      return;
-    }
-
-    const deltaY = y - lastScrollY;
-    lastScrollY = y;
-
-    if (wasPastTitleSection === false) {
-      wasPastTitleSection = true;
-      miniTitleRevealCarryPx = 0;
-      mobileHeaderMode = MOBILE_HEADER_LANDING;
-      setMobileHeaderMode(mobileHeaderMode);
-      return;
-    }
-
-    if (deltaY > MOBILE_MINI_TITLE_HIDE_DOWN_PX) {
-      miniTitleRevealCarryPx = 0;
-      mobileHeaderMode = MOBILE_HEADER_LANDING;
-    } else if (deltaY < 0) {
-      miniTitleRevealCarryPx += -deltaY;
-      if (miniTitleRevealCarryPx >= MOBILE_MINI_TITLE_REVEAL_UP_PX) {
-        mobileHeaderMode = MOBILE_HEADER_MINI_TITLE;
+    function getMobileTitleSectionHeightPx() {
+      if (titleSectionEl === null) {
+        return 0;
       }
+      return titleSectionEl.offsetHeight;
     }
 
-    setMobileHeaderMode(mobileHeaderMode);
-  }
-
-  function applyDesktop() {
-    const y = getDetailScrollY();
-    const firstFoldPx = getFirstFoldPx();
-    const shrinkStartPx = firstFoldPx * 0.5;
-    const shrinkRangePx = firstFoldPx - shrinkStartPx;
-    let t = 0;
-    if (y > shrinkStartPx && shrinkRangePx > 0) {
-      const tRaw = (y - shrinkStartPx) / shrinkRangePx;
-      t = tRaw <= 0 ? 0 : tRaw >= 1 ? 1 : tRaw;
-    }
-    const fs = maxPx - (maxPx - TITLE_MIN_PX) * t;
-    document.body.style.setProperty("--detail-title-fs", `${fs}px`);
-  }
-
-  function apply() {
-    if (reduceMotionMq.matches === true) {
-      clearTitleScrollVars();
-      if (narrowLayoutMq.matches === true) {
-        setMobileHeaderMode(MOBILE_HEADER_LANDING);
+    function measureTitleMaxPx() {
+      const wasMobileModes = narrowLayoutMq.matches === true;
+      if (wasMobileModes) {
+        clearMobileHeaderModes();
+        document.body.classList.add(MOBILE_HEADER_LANDING);
       } else {
+        clearTitleScrollVars();
+      }
+      const px = parseFloat(window.getComputedStyle(titleEl).fontSize);
+      const fallback = 34;
+      maxPx = Number.isFinite(px) && px > TITLE_MIN_PX ? px : fallback;
+      if (wasMobileModes) {
         clearMobileHeaderModes();
       }
-      return;
     }
 
-    if (narrowLayoutMq.matches === true) {
-      applyMobile();
-      return;
+    function applyMobile() {
+      if (titleSectionEl === null) {
+        wasPastTitleSection = false;
+        miniTitleRevealCarryPx = 0;
+        mobileHeaderMode = MOBILE_HEADER_LANDING;
+        setMobileHeaderMode(MOBILE_HEADER_LANDING);
+        return;
+      }
+
+      const y = getDetailScrollY();
+      const titleSectionH = getMobileTitleSectionHeightPx();
+      const pastTitleSection = titleSectionH > 0 && y > titleSectionH;
+
+      if (pastTitleSection !== true) {
+        wasPastTitleSection = false;
+        miniTitleRevealCarryPx = 0;
+        mobileHeaderMode = MOBILE_HEADER_LANDING;
+        setMobileHeaderMode(MOBILE_HEADER_LANDING);
+        lastScrollY = y;
+        return;
+      }
+
+      const deltaY = y - lastScrollY;
+      lastScrollY = y;
+
+      if (wasPastTitleSection === false) {
+        wasPastTitleSection = true;
+        miniTitleRevealCarryPx = 0;
+        mobileHeaderMode = MOBILE_HEADER_LANDING;
+        setMobileHeaderMode(mobileHeaderMode);
+        return;
+      }
+
+      if (deltaY > MOBILE_MINI_TITLE_HIDE_DOWN_PX) {
+        miniTitleRevealCarryPx = 0;
+        mobileHeaderMode = MOBILE_HEADER_LANDING;
+      } else if (deltaY < 0) {
+        miniTitleRevealCarryPx += -deltaY;
+        if (miniTitleRevealCarryPx >= MOBILE_MINI_TITLE_REVEAL_UP_PX) {
+          mobileHeaderMode = MOBILE_HEADER_MINI_TITLE;
+        }
+      }
+
+      setMobileHeaderMode(mobileHeaderMode);
     }
 
-    clearMobileHeaderModes();
-    applyDesktop();
-  }
+    function applyDesktop() {
+      const y = getDetailScrollY();
+      const firstFoldPx = getFirstFoldPx();
+      const shrinkStartPx = firstFoldPx * 0.5;
+      const shrinkRangePx = firstFoldPx - shrinkStartPx;
+      let t = 0;
+      if (y > shrinkStartPx && shrinkRangePx > 0) {
+        const tRaw = (y - shrinkStartPx) / shrinkRangePx;
+        t = tRaw <= 0 ? 0 : tRaw >= 1 ? 1 : tRaw;
+      }
+      const fs = maxPx - (maxPx - TITLE_MIN_PX) * t;
+      document.body.style.setProperty("--detail-title-fs", `${fs}px`);
+    }
 
-  function scheduleMeasureAndApply() {
-    window.requestAnimationFrame(() => {
-      lastScrollY = getDetailScrollY();
-      wasPastTitleSection = false;
-      miniTitleRevealCarryPx = 0;
-      mobileHeaderMode = MOBILE_HEADER_LANDING;
-      measureTitleMaxPx();
-      apply();
-    });
-  }
+    function apply() {
+      if (isActive() !== true) {
+        clearTitleScrollVars();
+        clearMobileHeaderModes();
+        if (miniTitleEl !== null) {
+          miniTitleEl.hidden = true;
+          miniTitleEl.setAttribute("aria-hidden", "true");
+        }
+        return;
+      }
 
-  scheduleMeasureAndApply();
-  reduceMotionMq.addEventListener("change", scheduleMeasureAndApply);
-  narrowLayoutMq.addEventListener("change", scheduleMeasureAndApply);
-  window.addEventListener("resize", scheduleMeasureAndApply);
+      if (reduceMotionMq.matches === true) {
+        clearTitleScrollVars();
+        if (narrowLayoutMq.matches === true) {
+          setMobileHeaderMode(MOBILE_HEADER_LANDING);
+        } else {
+          clearMobileHeaderModes();
+        }
+        return;
+      }
 
-  return apply;
-}
+      if (narrowLayoutMq.matches === true) {
+        applyMobile();
+        return;
+      }
 
-function initDetailScroll() {
-  if (!document.body.classList.contains("detail")) {
-    return;
-  }
+      clearMobileHeaderModes();
+      applyDesktop();
+    }
+
+    function scheduleMeasureAndApply() {
+      window.requestAnimationFrame(() => {
+        lastScrollY = getDetailScrollY();
+        wasPastTitleSection = false;
+        miniTitleRevealCarryPx = 0;
+        mobileHeaderMode = MOBILE_HEADER_LANDING;
+        measureTitleMaxPx();
+        apply();
+      });
+    }
+
+    scheduleMeasureAndApply();
+    reduceMotionMq.addEventListener("change", scheduleMeasureAndApply);
+    narrowLayoutMq.addEventListener("change", scheduleMeasureAndApply);
+    window.addEventListener("resize", scheduleMeasureAndApply);
+
+    return { apply, scheduleMeasureAndApply };
+  };
 
   const applyScrollLevel = initScrollLevelIndicator();
-  const applyTitle = initTitleScrollShrink();
+  const titleController = initTitleScrollShrink();
+  const applyTitle = titleController.apply;
+  const scheduleMeasureAndApply = titleController.scheduleMeasureAndApply;
   let rafId = 0;
 
   function onScrollFrame() {
     applyScrollLevel();
     applyTitle();
+    if (typeof onFrame === "function") {
+      onFrame();
+    }
   }
 
   function onScroll() {
@@ -429,11 +446,73 @@ function initDetailScroll() {
   }
 
   window.requestAnimationFrame(onScrollFrame);
+
+  function reset() {
+    scrollDetailToTop();
+    document.body.style.removeProperty("--detail-title-fs");
+    document.body.style.removeProperty("--detail-title-fw");
+    document.body.classList.remove(MOBILE_HEADER_LANDING, MOBILE_HEADER_MINI_TITLE);
+    if (miniTitleId !== null) {
+      const miniTitleEl = document.getElementById(miniTitleId);
+      if (miniTitleEl !== null) {
+        miniTitleEl.hidden = true;
+        miniTitleEl.setAttribute("aria-hidden", "true");
+      }
+    }
+    onScrollFrame();
+  }
+
+  return {
+    refresh: onScrollFrame,
+    reset,
+    scheduleMeasureAndApply,
+  };
+}
+
+function initDetailScroll() {
+  if (document.body.classList.contains("detail") !== true) {
+    return;
+  }
+
+  createDetailScrollBehavior({
+    isActive: () => document.body.classList.contains("detail") === true,
+  });
+}
+
+function initAboutDetailScroll() {
+  if (document.querySelector(".about-page") === null) {
+    return;
+  }
+
+  const controller = createDetailScrollBehavior({
+    isActive: () => document.body.classList.contains("about-view") === true,
+    scrollLevelId: "about-scroll-level",
+    scrollTrackId: "about-scroll-track",
+    scrollUpId: "about-scroll-up",
+    titleId: "about-title",
+    miniTitleId: "about-mini-title",
+    titleSectionSelector: ".about-page .detail__left-top",
+    scrollToTopSelector: ".about-page .detail__left-top, .about-page .detail-layout",
+    onFrame: () => {
+      if (typeof window.__refreshAboutDetailScale === "function") {
+        window.__refreshAboutDetailScale();
+      }
+    },
+  });
+
+  window.__refreshAboutDetailScroll = () => {
+    controller.scheduleMeasureAndApply();
+    controller.refresh();
+  };
+  window.__resetAboutScroll = controller.reset;
 }
 
 function boot() {
-  initDetailPage();
-  initDetailScroll();
+  if (document.body.classList.contains("detail") === true) {
+    initDetailPage();
+    initDetailScroll();
+  }
+  initAboutDetailScroll();
 }
 
 if (document.readyState === "loading") {
