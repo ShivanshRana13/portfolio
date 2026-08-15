@@ -135,7 +135,7 @@ body.about-view .footer {
 .about-page__collage-figure img.about-page__photo {
   left: 50%;
   top: 50%;
-  width: 18%;
+  width: 30.6%;
   --wiggle-base: -9.22deg;
   transform: translate(-50%, -50%) rotate(var(--wiggle-base, -9.22deg));
   transform-origin: center center;
