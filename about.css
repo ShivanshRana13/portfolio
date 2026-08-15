@@ -89,16 +89,17 @@ body.about-view .footer {
   pointer-events: none;
 }
 
-/* Collage hero in the right rail (full width like case study figures) */
+/* Collage hero — same max width as case study body copy (525px). */
 .about-page__collage-figure {
   width: 100%;
-  max-width: none;
+  max-width: 32.8125rem;
   margin: 0;
 }
 
 .about-page__collage {
   position: relative;
   width: 100%;
+  max-width: 100%;
   aspect-ratio: 792 / 865;
   margin: 0;
 }
