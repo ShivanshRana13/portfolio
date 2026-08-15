@@ -307,6 +307,12 @@ function initStickyNotes() {
   function constrainBoundsSize() {
     const target = cards instanceof HTMLElement ? cards : stage;
     const r = target.getBoundingClientRect();
+    if (document.body.classList.contains("about-view") === true) {
+      return {
+        width: window.innerWidth,
+        height: window.innerHeight,
+      };
+    }
     return { width: r.width, height: r.height };
   }
 
