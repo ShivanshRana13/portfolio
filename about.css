@@ -89,25 +89,28 @@ body.about-view .footer {
   pointer-events: none;
 }
 
-/* Collage hero — same max width as case study body copy (525px). */
+/* Collage hero — Figma node 253:7775 (839×817); me centered, orbit items wiggle. */
 .about-page__collage-figure {
   width: 100%;
-  max-width: 32.8125rem;
+  max-width: min(100%, 839px);
   margin: 0;
+  overflow: visible;
 }
 
 .about-page__collage {
   position: relative;
   width: 100%;
   max-width: 100%;
-  aspect-ratio: 792 / 865;
+  aspect-ratio: 839 / 817;
   margin: 0;
+  overflow: visible;
 }
 
 .about-page__collage-group {
   position: absolute;
   inset: 0;
   transform-origin: top left;
+  overflow: visible;
 }
 
 .about-page__collage-group img {
@@ -117,57 +120,61 @@ body.about-view .footer {
   pointer-events: none;
   user-select: none;
   -webkit-user-drag: none;
-}
-
-.about-page__elden {
-  left: 24%;
-  top: 0;
-  width: 41.162%;
-  --wiggle-base: 0deg;
-  transform-origin: center center;
+  transform: rotate(var(--wiggle-base, 0deg));
 }
 
 .about-page__controller {
-  left: 0;
-  top: 27.341%;
-  width: 19.949%;
-  --wiggle-base: -45deg;
+  left: 16.367%;
+  top: 20.382%;
+  width: 16.652%;
+  --wiggle-base: 30deg;
   transform-origin: center center;
+  z-index: 2;
 }
 
-.about-page__food {
-  left: 52.374%;
-  top: 19.179%;
-  width: 47.727%;
-  --wiggle-base: 12.9deg;
-  transform-origin: center center;
-}
-
-.about-page__photo {
-  left: 10.909%;
-  top: 35.272%;
-  width: 51.894%;
-  --wiggle-base: 5deg;
+.about-page__elden {
+  left: 32.447%;
+  top: 0;
+  width: 35.649%;
+  --wiggle-base: 0deg;
   transform-origin: center center;
   z-index: 1;
 }
 
+.about-page__food {
+  left: 69.253%;
+  top: 12.521%;
+  width: 52.634%;
+  --wiggle-base: 12.9deg;
+  transform-origin: center center;
+  z-index: 1;
+}
+
+.about-page__photo {
+  left: 21.074%;
+  top: 35.524%;
+  width: 52.017%;
+  --wiggle-base: -9.22deg;
+  transform-origin: center center;
+  z-index: 3;
+}
+
 .about-page__dumbbells {
-  left: 9.141%;
-  top: 75.873%;
-  width: 23.359%;
-  z-index: 2;
+  left: 19.435%;
+  top: 76.529%;
+  width: 20.177%;
   --wiggle-base: 0deg;
   transform-origin: center center;
+  z-index: 2;
 }
 
 .about-page__spotify {
-  left: 45.846%;
-  top: 68.775%;
-  width: 30.934%;
-  z-index: 2;
+  left: 51.255%;
+  top: 69.117%;
+  width: 26.791%;
   --wiggle-base: 0deg;
   transform-origin: center center;
+  z-index: 2;
 }
 
 @keyframes about-collage-wiggle {
@@ -233,8 +240,7 @@ body.about-view .about-page__spotify {
 }
 
 body.about-view .about-page__photo {
-  animation: about-collage-wiggle-subtle 6s ease-in-out infinite;
-  animation-delay: -1.5s;
+  transform: rotate(var(--wiggle-base, -9.22deg));
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -249,6 +255,6 @@ body.about-view .about-page__photo {
   body.about-view .about-page__spotify,
   body.about-view .about-page__photo {
     animation: none;
-    transform: rotate(var(--wiggle-base, 0deg));
+    transform: rotate(var(--wiggle-base, -9.22deg));
   }
 }
