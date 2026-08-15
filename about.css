@@ -148,8 +148,8 @@ body.about-view .footer {
   left: calc(50% - 45.9cqw / 2 - 12cqw);
   right: auto;
   width: 18%;
-  --wiggle-base: -25deg;
-  transform: rotate(var(--wiggle-base, -25deg));
+  --wiggle-base: -20deg;
+  transform: rotate(var(--wiggle-base, -20deg));
   transform-origin: center center;
   z-index: 3;
 }
