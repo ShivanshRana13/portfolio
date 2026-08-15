@@ -144,9 +144,9 @@ body.about-view .footer {
 }
 
 .about-page__collage-figure img.about-page__controller {
-  top: 10%;
-  right: 4%;
-  left: auto;
+  top: calc(50% - 45.9cqw * 436 / 411 / 2);
+  left: calc(50% - 45.9cqw / 2);
+  right: auto;
   width: 18%;
   --wiggle-base: 30deg;
   transform: rotate(var(--wiggle-base, 30deg));
