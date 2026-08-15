@@ -146,7 +146,7 @@ body.about-view .footer {
   top: 10%;
   right: 4%;
   left: auto;
-  width: 4%;
+  width: 12%;
   --wiggle-base: 30deg;
   transform: rotate(var(--wiggle-base, 30deg));
   transform-origin: center center;
@@ -157,7 +157,7 @@ body.about-view .footer {
   top: 6%;
   right: 14%;
   left: auto;
-  width: 14%;
+  width: 42%;
   --wiggle-base: 0deg;
   transform: rotate(var(--wiggle-base, 0deg));
   transform-origin: center center;
@@ -169,7 +169,7 @@ body.about-view .footer {
   right: 0;
   left: auto;
   top: auto;
-  width: 32%;
+  width: 96%;
   --wiggle-base: 12.9deg;
   transform: rotate(var(--wiggle-base, 12.9deg));
   transform-origin: center center;
@@ -181,7 +181,7 @@ body.about-view .footer {
   right: 10%;
   left: auto;
   top: auto;
-  width: 12%;
+  width: 36%;
   --wiggle-base: 0deg;
   transform: rotate(var(--wiggle-base, 0deg));
   transform-origin: center center;
@@ -193,7 +193,7 @@ body.about-view .footer {
   left: 6%;
   top: auto;
   right: auto;
-  width: 8%;
+  width: 24%;
   --wiggle-base: 0deg;
   transform: rotate(var(--wiggle-base, 0deg));
   transform-origin: center center;
