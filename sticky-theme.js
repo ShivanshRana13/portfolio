@@ -15,6 +15,25 @@ function initStickyTheme() {
   const nowPlayingPill = document.querySelector(".now-playing-pill");
   const starLabel = starSticky?.querySelector(".sticky-star__label");
   const CALENDLY_URL = "https://calendly.com/shivanshrana13/coffee-chat-w-shivansh";
+  const ABOUT_HASH = "about";
+  let syncingAboutUrl = false;
+
+  const isAboutHash = () => location.hash === `#${ABOUT_HASH}`;
+
+  const syncAboutUrl = (active) => {
+    if (syncingAboutUrl) return;
+    syncingAboutUrl = true;
+    try {
+      const base = `${location.pathname}${location.search}`;
+      if (active === true && isAboutHash() !== true) {
+        history.pushState({ about: true }, "", `${base}#${ABOUT_HASH}`);
+      } else if (active !== true && isAboutHash() === true) {
+        history.replaceState(null, "", base);
+      }
+    } finally {
+      syncingAboutUrl = false;
+    }
+  };
 
   const syncNowPlayingPill = () => {
     if (!(nowPlayingPill instanceof HTMLElement)) return;
@@ -54,7 +73,7 @@ function initStickyTheme() {
     }
   };
 
-  const syncAboutPage = () => {
+  const syncAboutPage = (skipUrlSync = false) => {
     const active =
       starSticky instanceof HTMLElement && starSticky.classList.contains("is-selected") === true;
     const root = document.documentElement;
@@ -72,9 +91,13 @@ function initStickyTheme() {
     if (active) {
       window.requestAnimationFrame(refreshAboutDetail);
     }
+    if (skipUrlSync !== true) {
+      syncAboutUrl(active);
+    }
   };
 
-  const clearSelection = () => {
+  const clearSelection = (options = {}) => {
+    const skipUrlSync = options.skipUrlSync === true;
     for (const el of stickies) el.classList.remove("is-selected");
     body.classList.remove("theme-dark");
     body.classList.remove("theme-focus-light");
@@ -82,7 +105,7 @@ function initStickyTheme() {
     body.classList.remove("detail");
     document.documentElement.classList.remove("about-view");
     syncScenePatentCube();
-    syncAboutPage();
+    syncAboutPage(skipUrlSync);
     syncStarStickyLabel();
     syncNowPlayingPill();
     if (typeof window.__resetAboutScroll === "function") {
@@ -187,10 +210,30 @@ function initStickyTheme() {
     clearSelection();
   });
 
+  const syncAboutFromUrl = () => {
+    if (syncingAboutUrl) return;
+    const shouldShowAbout = isAboutHash();
+    const showingAbout = body.classList.contains("about-view");
+    if (shouldShowAbout && !showingAbout && starSticky instanceof HTMLElement) {
+      setSelected(starSticky);
+      return;
+    }
+    if (!shouldShowAbout && showingAbout) {
+      clearSelection({ skipUrlSync: true });
+    }
+  };
+
+  window.addEventListener("hashchange", syncAboutFromUrl);
+  window.addEventListener("popstate", syncAboutFromUrl);
+
   syncScenePatentCube();
-  syncAboutPage();
-  syncStarStickyLabel();
-  syncNowPlayingPill();
+  if (isAboutHash() && starSticky instanceof HTMLElement) {
+    setSelected(starSticky);
+  } else {
+    syncAboutPage();
+    syncStarStickyLabel();
+    syncNowPlayingPill();
+  }
 }
 
 if (document.readyState === "loading") {

@@ -7,6 +7,12 @@
 
   const es = new EventSource("/__live");
   es.addEventListener("reload", () => {
+    if (document.body.classList.contains("about-view") === true) {
+      const base = `${location.pathname}${location.search}`;
+      if (location.hash !== "#about") {
+        history.replaceState({ about: true }, "", `${base}#about`);
+      }
+    }
     location.reload();
   });
 })();
