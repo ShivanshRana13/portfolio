@@ -155,10 +155,10 @@ body.about-view .footer {
 }
 
 .about-page__collage-figure img.about-page__elden {
-  top: calc(50% - 45.9cqw * 436 / 411 / 2 - 23.625cqw * 433 / 326 / 2);
-  left: calc(50% - 23.625cqw / 2);
+  top: calc(50% - 45.9cqw * 436 / 411 / 2 - 26.775cqw * 433 / 326 / 2);
+  left: calc(50% - 26.775cqw / 2);
   right: auto;
-  width: 23.625%;
+  width: 26.775%;
   --wiggle-base: 0deg;
   transform: rotate(var(--wiggle-base, 0deg));
   transform-origin: center center;
