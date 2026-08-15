@@ -263,10 +263,6 @@ body.about-view .now-playing-pill {
   overflow: visible;
 }
 
-.about-page__collage-group picture {
-  display: contents;
-}
-
 .about-page__hero-layers img,
 .about-page__collage-group img {
   position: absolute;

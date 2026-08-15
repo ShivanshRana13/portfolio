@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Regenerate about-page rasters from native Figma 4× exports (-src.png).
+"""Regenerate about page image 2 from a native Figma 4× export (-src.png).
 
 Requires: pip install --user Pillow
 
@@ -22,12 +22,6 @@ WEBP_METHOD = 6
 
 # (src filename, output base, 1× width, 1× height)
 ASSETS = (
-    ("me-src.png", "me", 411, 436),
-    ("controller-src.png", "controller", 125, 88),
-    ("elden-ring-src.png", "elden-ring", 326, 433),
-    ("food-src.png", "food", 378, 504),
-    ("dumbbells-src.png", "dumbbells", 185, 209),
-    ("spotify-src.png", "spotify", 245, 245),
     ("image-2-src.png", "image-2", 839, 839),
 )
 
