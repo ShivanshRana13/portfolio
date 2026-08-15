@@ -5,7 +5,7 @@ const TILE_COPY = {
     meta: "Case study | 2026",
   },
   "case-tilt": {
-    title: "Designing a patent pending intuitive manipulator for future generation of 3d tools",
+    title: "Designing a patent-pending, intuitive manipulator for the next generation of 3D tools",
     meta: "Autodesk - Project Falcon | 2026",
   },
   case: {

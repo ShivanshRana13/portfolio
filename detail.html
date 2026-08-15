@@ -85,7 +85,7 @@
               </span>
             </a>
             <h1 class="detail__title" id="detail-title">
-              Designing a patent pending intuitive manipulator for future generation of 3d tools
+              Designing a patent-pending, intuitive manipulator for the next generation of 3D tools
             </h1>
           </div>
           <p class="detail__meta" id="detail-meta">Autodesk - Project Falcon | 2026</p>
@@ -131,25 +131,25 @@
           commonly include move, rotate, and scale functions, which provide intuitive and precise
           control over object transformations. To learn more,
           <a href="https://www.youtube.com/watch?v=vfeYIsGbjyY" target="_blank" rel="noopener noreferrer">watch</a>
-          this short tutorial video online.
+          this short tutorial video.
         </p>
 
         <section class="detail__section" aria-labelledby="detail-problem-heading">
           <h2 class="detail__section-heading" id="detail-problem-heading">The Problem</h2>
           <div class="detail__section-body">
             <p>
-              The problem with existing gizmos in majority of other 3d tools is that they are
-              inaccessible under bright background conditions or if the object is of a bright colour
-              it submerges the colourful gizmo.
+              The problem with existing gizmos in the majority of other 3D tools is that they are
+              inaccessible on bright backgrounds, or when an object is a bright colour the colourful
+              gizmo gets lost against it.
             </p>
             <p>
-              Additionally, they are complex tools that are designed to perform 3 transform actions
-              (move, rotate and scale) in a compact space so that users don’t have to move their
-              cursor to and from the attribute editor where they can manually adjust these transform
-              action through input fields and sliders, and gizmos help get the job done in a small
-              space. They are functional and intuitive but for more advanced user group who are
-              already familiar with gizmos. But a new user, who doesn’t have as much experience or
-              if any, would get lost in figuring it out without proper tutorial or guidance.
+              Additionally, they are complex tools designed to perform three transform actions
+              (move, rotate, and scale) in a compact space so that users don’t have to move their
+              cursor back and forth to the attribute editor, where they can manually adjust these
+              transforms through input fields and sliders. Gizmos help get the job done in a small
+              space. They are functional and intuitive for a more advanced user group already
+              familiar with gizmos, but a new user—with little or no experience—can get lost without
+              proper tutorials or guidance.
             </p>
           </div>
 
@@ -235,13 +235,13 @@
         </section>
 
         <section class="detail__section" aria-labelledby="detail-challenge-heading">
-          <h2 class="detail__section-heading" id="detail-challenge-heading">The Challange</h2>
+          <h2 class="detail__section-heading" id="detail-challenge-heading">The Challenge</h2>
           <p class="detail__section-body">
             The challenge in designing gizmos is that we need to account not only for the ability to
-            perform move, rotate and scale transformations but to perform these actions in
-            combination of positive and negative x, y and z axis, and the feedback mechanism that
-            guides and helps a new users about the actions without unnecessarily confusing them with
-            information which is irrelevant at the moment.
+            perform move, rotate, and scale transformations, but also to perform these actions along
+            combinations of the positive and negative x, y, and z axes—and for the feedback mechanism
+            that guides and helps new users understand the actions without unnecessarily confusing
+            them with information that is irrelevant in the moment.
           </p>
         </section>
 
@@ -249,14 +249,14 @@
           <h2 class="detail__section-heading" id="detail-discovery-heading">Discovery</h2>
           <div class="detail__section-body">
             <p>
-              Over the period of a week we explored the sh!t of out every tool out there that had a
-              gizmo. Our explorations didn’t just end on 3d tools but also the games that required
-              the use of a transform manipulators. We wanted to understand how games are turning a
-              boring 3d transform manipulator into a fun interactive tool.
+              Over the course of a week we explored just about every tool out there that had a
+              gizmo. Our explorations didn’t stop at 3D tools—we also looked at games that use
+              transform manipulators. We wanted to understand how games turn a boring 3D transform
+              manipulator into a fun, interactive tool.
             </p>
             <p>
-              We then took the team votes on what we liked and disliked in each of the tools and came
-              up with a list of features that we would want for our manipulator.
+              We then took a team vote on what we liked and disliked in each tool and came up with a
+              list of features we wanted for our manipulator.
             </p>
           </div>
 
@@ -290,9 +290,9 @@
         <section class="detail__section" aria-labelledby="detail-principles-heading">
           <h2 class="detail__section-heading" id="detail-principles-heading">The Guiding Principles</h2>
           <p class="detail__section-body">
-            Along with the features we also solidified our learnings into core principles that would
-            eventually guide us on each of our interaction and visual decisions we would take. We
-            listed them in order of importance:
+            Along with the features, we also solidified our learnings into core principles that would
+            guide each of our interaction and visual decisions. We listed them in order of
+            importance:
           </p>
 
           <figure class="detail__figure detail__principles-image">
@@ -328,27 +328,27 @@
             <p>My exploration included different types of contextual gizmo combinations:</p>
             <ol>
               <li>
-                3d coloured gizmo + bounding box: A 3d gizmo with different colours for three axis
-                (x, y, z). And a bounding box that would surround the selected object/s which would
-                additionally act as a manipulator itself to do different actions.
+                3D coloured gizmo + bounding box: A 3D gizmo with different colours for three axes
+                (x, y, z), and a bounding box that surrounds the selected object(s) and additionally
+                acts as a manipulator for different actions.
               </li>
               <li>
-                2d gizmo without colour: A simple 2d (flat) gizmo that changes from move and rotate
-                to scale using contextual toolbar underneath it.
+                2D gizmo without colour: A simple 2D (flat) gizmo that switches between move, rotate,
+                and scale using a contextual toolbar underneath it.
               </li>
               <li>
-                3d gizmo without colour: A simple 3d gizmo that has the same functionalities like the
-                2d gizmo but has a more traditional three dimensional shape but without colours for
-                different axis.
+                3D gizmo without colour: A simple 3D gizmo with the same functionality as the 2D
+                gizmo but in a more traditional three-dimensional shape, without colours for
+                different axes.
               </li>
             </ol>
             <p>
-              After constant feedback and iteration loops with the stakeholders we landed on the
-              option 3 due to it’s simpler yet resembling design with the traditional gizmo for more
-              versatile usage. Which would provide a simpler and cleaner user experience for the new
-              users while providing an on-ramp experience for the same users if they preferred to
-              start learning more advanced 3d tools like Maya or 3ds Max. It would reduce the
-              learning curve required in advancing their 3d tool learning journey.
+              After constant feedback and iteration loops with stakeholders, we landed on option 3
+              due to its simpler design that still resembles the traditional gizmo for more versatile
+              usage. It would provide a simpler and cleaner user experience for new users while
+              offering an on-ramp if they later preferred to learn more advanced 3D tools like Maya
+              or 3ds Max. It would reduce the learning curve required to advance their 3D tool
+              learning journey.
             </p>
           </div>
 
@@ -384,26 +384,25 @@
           <div class="detail__section-body">
             <p>
               My hypothesis for the design of the manipulator was to make the elements in the gizmo
-              appear contextually when asked for which would in turn keep the gizmo at any given
-              point in time simple and reduce the overall complexity to only perform the actions
-              necessary to achieve a certain transform.
+              appear contextually when needed, which would in turn keep the gizmo at any given point
+              in time simple and reduce the overall complexity to only the actions necessary to
+              achieve a certain transform.
             </p>
             <p>
-              After a lot of explorations and feedback sessions we divided gizmo into three
+              After a lot of exploration and feedback sessions, we divided the gizmo into three
               contextual sections:
             </p>
             <ol>
               <li>
-                Mini Gizmo: This is a default manipulator that could perform moving, rotating and
-                scaling actions on a high-level, fast-paced way.
+                Mini Gizmo: This is the default manipulator that performs move, rotate, and scale
+                actions in a high-level, fast-paced way.
               </li>
               <li>
-                Move &amp; Rotate Gizmo: This is a manipulator that could perform moving and rotating
-                actions in a precise fashion.
+                Move &amp; Rotate Gizmo: This manipulator performs move and rotate actions with
+                precision.
               </li>
               <li>
-                Rotate Gizmo: This is a manipulator that could perform rotating actions in a precise
-                fashion.
+                Scale Gizmo: This manipulator performs scale actions with precision.
               </li>
             </ol>
           </div>
@@ -435,12 +434,12 @@
           </figure>
 
           <p class="detail__section-body">
-            But designing a manipulator that works regardless of the surface it’s put on needed a
-            neutral colour for the body of the manipulator but what happens when the background is the
-            same as that neutral colour itself? Answer is, you wouldn’t be able to see it! For that
-            reason I decided to add a silhouette of the other neutral colour (Black) to create that
-            separation between the background and the body of the manipulator which creates enough
-            contrast between them.
+            But designing a manipulator that works regardless of the surface it’s placed on required a
+            neutral colour for the body of the manipulator—but what happens when the background is
+            the same as that neutral colour? The answer is that you wouldn’t be able to see it. For
+            that reason, I added a silhouette in the other neutral colour (black) to create separation
+            between the background and the body of the manipulator, which creates enough contrast
+            between them.
           </p>
 
           <figure class="detail__figure detail__design-image">
@@ -471,9 +470,9 @@
         </section>
 
         <p class="detail__body">
-          I could have decided to do it the other way around where body is black and the silhouette
-          is white but due to a flaw in our eye sight known as chromatic dilation effect that would
-          it look noisy on coloured backgrounds.
+          I could have done it the other way around, where the body is black and the silhouette is
+          white, but due to a flaw in our eyesight known as the chromatic dilation effect, that would
+          make it look noisy on coloured backgrounds.
         </p>
 
         <figure class="detail__figure detail__design-image">
@@ -506,15 +505,15 @@
           <h2 class="detail__section-heading" id="detail-mini-gizmo-heading">Mini Gizmo</h2>
           <div class="detail__section-body">
             <p>
-              The move interaction starts by hovering on the arrowhead and then based on weather a
-              user moves it slow or fast the supporting element required to perform the particular
-              moving appear or disappear.
+              The move interaction starts by hovering on the arrowhead. Based on whether a user moves
+              it slowly or quickly, the supporting elements required to perform the move appear or
+              disappear.
             </p>
             <p>
-              If a user is moving is fast that means they are most likely trying to eye-ball their 3d
-              objects and won’t require the use of precise snapping functionality hence it doesn’t
-              appear in that case. However, if decided to move slow, they would be most likely trying
-              to move it precisely and hence would get the precise snapping points tool.
+              If a user is moving quickly, they are most likely trying to eyeball their 3D objects and
+              won’t need precise snapping functionality, so it doesn’t appear in that case. However,
+              if they decide to move slowly, they are most likely trying to move precisely and will
+              get the precise snapping points tool.
             </p>
           </div>
 
@@ -546,9 +545,9 @@
         </section>
 
         <p class="detail__body">
-          Similar to moving, scaling follows the same set of rules but the only difference it that
-          moving the virtual point (blue dot) up, it upscales the object and moving the point down
-          below the pivot point it downscales the object.
+          Similar to moving, scaling follows the same set of rules, but the only difference is that
+          moving the virtual point (blue dot) up upscales the object, and moving the point below the
+          pivot point downscales the object.
         </p>
 
         <figure class="detail__figure detail__mini-gizmo-image">
@@ -578,11 +577,11 @@
         </figure>
 
         <p class="detail__body">
-          For the rotate interaction, we also have the precise vs fast capabilities. A user could
-          free rotate by rotating the virtual point (Blue dot) outside the ring. And precisely
-          control by snapping the virtual point on the dots inside of the ring — which by default
-          are set to the increments of 15 degrees but users can adjust the snapping increment value
-          from the properties panel if they decide to do so.
+          For the rotate interaction, we also have precise-versus-fast capabilities. A user can free
+          rotate by rotating the virtual point (blue dot) outside the ring, or precisely control
+          rotation by snapping the virtual point to the dots inside the ring—which by default are set
+          to 15-degree increments, though users can adjust the snapping increment from the properties
+          panel if they choose.
         </p>
 
         <figure class="detail__figure detail__mini-gizmo-image">
@@ -614,10 +613,10 @@
         <section class="detail__section" aria-labelledby="detail-precision-heading">
           <h2 class="detail__section-heading" id="detail-precision-heading">Precision Gizmos</h2>
           <p class="detail__section-body">
-            Move precision gizmo gets activated either form the toolbar, which just by default
-            enables the use of precise gizmo or by double clicking on the move arrow head of the
-            mini gizmo to enable the precise gizmo. Users could go back to using the mini gizmo by
-            toggling it off the toolbar or by deselecting and re-selecting the object.
+            The move precision gizmo is activated either from the toolbar, which by default enables
+            the precise gizmo, or by double-clicking the move arrowhead on the mini gizmo. Users can
+            return to the mini gizmo by toggling it off in the toolbar or by deselecting and
+            re-selecting the object.
           </p>
 
           <figure class="detail__figure detail__precision-gizmo-image">
@@ -648,9 +647,9 @@
         </section>
 
         <p class="detail__body">
-          Double clicking the scale manipulator from the mini gizmo or from the toolbar just like the
-          move and rotate interaction explained above activates precision scaling mode where a user
-          can do precise scaling actions like move and rotate from a context focused manipulator.
+          Double-clicking the scale manipulator on the mini gizmo or from the toolbar—as with the
+          move and rotate interactions described above—activates precision scaling mode, where a user
+          can perform precise scaling from a context-focused manipulator.
         </p>
 
         <figure class="detail__figure detail__precision-scale-image">
@@ -683,15 +682,15 @@
           <h2 class="detail__section-heading" id="detail-handoff-heading">Design Handoff</h2>
           <div class="detail__section-body">
             <p>
-              Handing off something that is to be used in a 3d space needs to be designed in 3d.
-              However, doing everything in figma first made getting stakeholder feedback on the
-              interactions the visual design easier and faster.
+              Handing off something meant to be used in 3D space needs to be designed in 3D.
+              However, prototyping everything in Figma first made getting stakeholder feedback on
+              the interactions and visual design easier and faster.
             </p>
             <p>
-              Next, once everything was finalized, i replicated figma designs in a 3d tool which i
-              handed off in .usd file to the developers to implement. They followed the figma design
-              files to read the interaction flows and the colour values for different interaction
-              states.
+              Next, once everything was finalized, I replicated the Figma designs in a 3D tool and
+              handed them off in a .usd file to the developers to implement. They followed the Figma
+              design files to read the interaction flows and the colour values for different
+              interaction states.
             </p>
           </div>
 
@@ -723,10 +722,10 @@
         </section>
 
         <p class="detail__body">
-          Since the click targets are quite lean, It is a good practice to add some buffer around
-          the gizmo elements so that it gets easier to click on the areas users want to click on
-          even if their cursor sometimes is not on the actual shape. We call them hit boxes in 3d
-          lingo, they provide room for error and less room for false positives and negatives.
+          Since the click targets are quite lean, it is good practice to add some buffer around the
+          gizmo elements so it is easier to click the areas users intend to click, even when their
+          cursor is not exactly on the shape. We call these hit boxes in 3D parlance—they provide
+          room for error and less room for false positives and negatives.
         </p>
 
         <figure class="detail__figure detail__hitbox-image">
@@ -760,21 +759,20 @@
           <div class="detail__section-body">
             <p>Our team ended up patenting this new gizmo before the launch.</p>
             <p>
-              After our launch though in May of this year, we now have over 10k monthly active
-              users using this tool and constantly providing feedback on
+              After our launch in May of this year, we now have over 10k monthly active users using
+              this tool and constantly providing feedback on
               <a
                 href="https://forums.autodesk.com/t5/project-falcon-forums/ct-p/project-falcon-en"
                 target="_blank"
                 rel="noopener noreferrer"
-                >autodesk forums</a
+                >Autodesk forums</a
               >
               to help improve the tool.
             </p>
             <p>
-              We’ll continue improving the tool as we get more feedback but so far we have a
-              positive user sentiment overall regarding the intuitiveness and usefulness of this new
-              gizmo which is a great motivational booster and reassuring that we are doing a great
-              job at meeting the user expectations.
+              We’ll continue improving the tool as we get more feedback, but so far we have positive
+              user sentiment overall regarding the intuitiveness and usefulness of this new gizmo—a
+              great morale booster and reassurance that we are meeting user expectations.
             </p>
           </div>
         </section>
@@ -783,6 +781,6 @@
     </div>
     <script src="./cursor.js" defer></script>
     <script src="./detail-scale.js?v=16" defer></script>
-    <script src="./detail.js?v=39" defer></script>
+    <script src="./detail.js?v=40" defer></script>
   </body>
 </html>
