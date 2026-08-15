@@ -14,7 +14,7 @@
       rel="stylesheet"
     />
     <link rel="stylesheet" href="./styles.css?v=93" />
-    <link rel="stylesheet" href="./detail.css?v=119" />
+    <link rel="stylesheet" href="./detail.css?v=120" />
   </head>
   <body class="detail">
     <script>
@@ -619,6 +619,32 @@
             mini gizmo to enable the precise gizmo. Users could go back to using the mini gizmo by
             toggling it off the toolbar or by deselecting and re-selecting the object.
           </p>
+
+          <figure class="detail__figure detail__precision-gizmo-image">
+            <picture>
+              <source
+                type="image/webp"
+                srcset="
+                  ./assets/detail/precision-gizmo-839@4x.webp 3356w,
+                  ./assets/detail/precision-gizmo-839.webp 839w
+                "
+                sizes="(max-width: 900px) calc(100vw - 48px), calc((100vw - var(--detail-left-w, 473px) - 128px) * var(--detail-scale, 1))"
+              />
+              <img
+                src="./assets/detail/precision-gizmo-839.png"
+                srcset="
+                  ./assets/detail/precision-gizmo-839@4x.png 3356w,
+                  ./assets/detail/precision-gizmo-839.png 839w
+                "
+                sizes="(max-width: 900px) calc(100vw - 48px), calc((100vw - var(--detail-left-w, 473px) - 128px) * var(--detail-scale, 1))"
+                width="839"
+                height="2805"
+                alt="Precision gizmo interaction flow from mini gizmo activation through two-axis moving, snapping, single-axis moving, free moving, and free rotating."
+                loading="lazy"
+                decoding="async"
+              />
+            </picture>
+          </figure>
         </section>
 
         <p class="detail__body">

@@ -693,7 +693,8 @@ body.detail--artboard-scale .detail__grey-bleed {
 .detail__principles-image,
 .detail__exploration-image,
 .detail__design-image,
-.detail__mini-gizmo-image {
+.detail__mini-gizmo-image,
+.detail__precision-gizmo-image {
   margin: 0;
 }
 
