@@ -155,14 +155,14 @@ body.about-view .footer {
 }
 
 .about-page__collage-figure img.about-page__elden {
-  top: 6%;
-  right: 14%;
-  left: auto;
-  width: 42%;
+  top: calc(50% - 45.9cqw * 436 / 411 / 2);
+  left: calc(50% - 31.5% / 2);
+  right: auto;
+  width: 31.5%;
   --wiggle-base: 0deg;
   transform: rotate(var(--wiggle-base, 0deg));
   transform-origin: center center;
-  z-index: 1;
+  z-index: 3;
 }
 
 .about-page__collage-figure img.about-page__food {
