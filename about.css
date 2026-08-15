@@ -145,7 +145,7 @@ body.about-view .footer {
 
 .about-page__collage-figure img.about-page__controller {
   top: calc(50% - 45.9cqw * 436 / 411 / 2);
-  left: calc(50% - 45.9cqw / 2);
+  left: calc(50% - 45.9cqw / 2 - 6cqw);
   right: auto;
   width: 18%;
   --wiggle-base: 30deg;
