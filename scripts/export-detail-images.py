@@ -37,6 +37,7 @@ ASSETS = (
     ("precision-gizmo-839-src.png", "precision-gizmo-839", 839, 2805),
     ("precision-scale-839-src.png", "precision-scale-839", 839, 3155),
     ("design-handoff-839-src.png", "design-handoff-839", 839, 511),
+    ("hitbox-839-src.png", "hitbox-839", 839, 408),
 )
 
 

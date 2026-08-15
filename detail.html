@@ -14,7 +14,7 @@
       rel="stylesheet"
     />
     <link rel="stylesheet" href="./styles.css?v=93" />
-    <link rel="stylesheet" href="./detail.css?v=122" />
+    <link rel="stylesheet" href="./detail.css?v=123" />
   </head>
   <body class="detail">
     <script>
@@ -728,6 +728,32 @@
           even if their cursor sometimes is not on the actual shape. We call them hit boxes in 3d
           lingo, they provide room for error and less room for false positives and negatives.
         </p>
+
+        <figure class="detail__figure detail__hitbox-image">
+          <picture>
+            <source
+              type="image/webp"
+              srcset="
+                ./assets/detail/hitbox-839@4x.webp 3356w,
+                ./assets/detail/hitbox-839.webp 839w
+              "
+              sizes="(max-width: 900px) calc(100vw - 48px), calc((100vw - var(--detail-left-w, 473px) - 128px) * var(--detail-scale, 1))"
+            />
+            <img
+              src="./assets/detail/hitbox-839.png"
+              srcset="
+                ./assets/detail/hitbox-839@4x.png 3356w,
+                ./assets/detail/hitbox-839.png 839w
+              "
+              sizes="(max-width: 900px) calc(100vw - 48px), calc((100vw - var(--detail-left-w, 473px) - 128px) * var(--detail-scale, 1))"
+              width="839"
+              height="408"
+              alt="Gizmo hit box buffers shown around lean click targets on mini, move and rotate, and scale manipulators."
+              loading="lazy"
+              decoding="async"
+            />
+          </picture>
+        </figure>
 
         <section class="detail__section" aria-labelledby="detail-impact-heading">
           <h2 class="detail__section-heading" id="detail-impact-heading">The Impact</h2>
