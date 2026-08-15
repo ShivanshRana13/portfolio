@@ -207,6 +207,7 @@ body.about-view .now-playing-pill {
   line-height: 0;
 }
 
+.about-page__image-2 picture,
 .about-page__image-2 img {
   display: block;
   width: 100%;
@@ -260,6 +261,10 @@ body.about-view .now-playing-pill {
   inset: 0;
   transform-origin: center center;
   overflow: visible;
+}
+
+.about-page__collage-group picture {
+  display: contents;
 }
 
 .about-page__hero-layers img,

@@ -15,7 +15,7 @@
     />
     <link rel="stylesheet" href="./styles.css?v=98" />
     <link rel="stylesheet" href="./detail.css?v=125" />
-    <link rel="stylesheet" href="./about.css?v=47" />
+    <link rel="stylesheet" href="./about.css?v=48" />
     <script type="importmap">
       {
         "imports": {
@@ -454,68 +454,173 @@
                 >
                   <div class="about-page__hero-stage about-page__collage" aria-hidden="true">
                     <div class="about-page__hero-layers about-page__collage-group">
-                      <img
-                        class="about-page__photo"
-                        src="./assets/me.png"
-                        alt=""
-                        width="411"
-                        height="436"
-                        draggable="false"
-                      />
-                      <img
-                        class="about-page__controller"
-                        src="./assets/controller.png"
-                        alt=""
-                        width="125"
-                        height="88"
-                        draggable="false"
-                      />
-                      <img
-                        class="about-page__elden"
-                        src="./assets/elden-ring.png"
-                        alt=""
-                        width="326"
-                        height="433"
-                        draggable="false"
-                      />
-                      <img
-                        class="about-page__food"
-                        src="./assets/food.png"
-                        alt=""
-                        width="378"
-                        height="504"
-                        draggable="false"
-                      />
-                      <img
-                        class="about-page__dumbbells"
-                        src="./assets/dumbells.png"
-                        alt=""
-                        width="185"
-                        height="209"
-                        draggable="false"
-                      />
-                      <img
-                        class="about-page__spotify"
-                        src="./assets/spotify.png"
-                        alt=""
-                        width="245"
-                        height="245"
-                        draggable="false"
-                      />
+                      <picture>
+                        <source
+                          type="image/webp"
+                          srcset="
+                            ./assets/about/me@4x.webp 1644w,
+                            ./assets/about/me.webp 411w
+                          "
+                          sizes="(max-width: 900px) 46vw, calc((100vw - var(--detail-left-w, 473px) - 128px) * 0.459 * var(--detail-scale, 1))"
+                        />
+                        <img
+                          class="about-page__photo"
+                          src="./assets/about/me.png"
+                          srcset="
+                            ./assets/about/me@4x.png 1644w,
+                            ./assets/about/me.png 411w
+                          "
+                          sizes="(max-width: 900px) 46vw, calc((100vw - var(--detail-left-w, 473px) - 128px) * 0.459 * var(--detail-scale, 1))"
+                          alt=""
+                          width="411"
+                          height="436"
+                          draggable="false"
+                        />
+                      </picture>
+                      <picture>
+                        <source
+                          type="image/webp"
+                          srcset="
+                            ./assets/about/controller@4x.webp 500w,
+                            ./assets/about/controller.webp 125w
+                          "
+                          sizes="(max-width: 900px) 18vw, calc((100vw - var(--detail-left-w, 473px) - 128px) * 0.18 * var(--detail-scale, 1))"
+                        />
+                        <img
+                          class="about-page__controller"
+                          src="./assets/about/controller.png"
+                          srcset="
+                            ./assets/about/controller@4x.png 500w,
+                            ./assets/about/controller.png 125w
+                          "
+                          sizes="(max-width: 900px) 18vw, calc((100vw - var(--detail-left-w, 473px) - 128px) * 0.18 * var(--detail-scale, 1))"
+                          alt=""
+                          width="125"
+                          height="88"
+                          draggable="false"
+                        />
+                      </picture>
+                      <picture>
+                        <source
+                          type="image/webp"
+                          srcset="
+                            ./assets/about/elden-ring@4x.webp 1304w,
+                            ./assets/about/elden-ring.webp 326w
+                          "
+                          sizes="(max-width: 900px) 24vw, calc((100vw - var(--detail-left-w, 473px) - 128px) * 0.240975 * var(--detail-scale, 1))"
+                        />
+                        <img
+                          class="about-page__elden"
+                          src="./assets/about/elden-ring.png"
+                          srcset="
+                            ./assets/about/elden-ring@4x.png 1304w,
+                            ./assets/about/elden-ring.png 326w
+                          "
+                          sizes="(max-width: 900px) 24vw, calc((100vw - var(--detail-left-w, 473px) - 128px) * 0.240975 * var(--detail-scale, 1))"
+                          alt=""
+                          width="326"
+                          height="433"
+                          draggable="false"
+                        />
+                      </picture>
+                      <picture>
+                        <source
+                          type="image/webp"
+                          srcset="
+                            ./assets/about/food@4x.webp 1512w,
+                            ./assets/about/food.webp 378w
+                          "
+                          sizes="(max-width: 900px) 40vw, calc((100vw - var(--detail-left-w, 473px) - 128px) * 0.405 * var(--detail-scale, 1))"
+                        />
+                        <img
+                          class="about-page__food"
+                          src="./assets/about/food.png"
+                          srcset="
+                            ./assets/about/food@4x.png 1512w,
+                            ./assets/about/food.png 378w
+                          "
+                          sizes="(max-width: 900px) 40vw, calc((100vw - var(--detail-left-w, 473px) - 128px) * 0.405 * var(--detail-scale, 1))"
+                          alt=""
+                          width="378"
+                          height="504"
+                          draggable="false"
+                        />
+                      </picture>
+                      <picture>
+                        <source
+                          type="image/webp"
+                          srcset="
+                            ./assets/about/dumbbells@4x.webp 740w,
+                            ./assets/about/dumbbells.webp 185w
+                          "
+                          sizes="(max-width: 900px) 22vw, calc((100vw - var(--detail-left-w, 473px) - 128px) * 0.216 * var(--detail-scale, 1))"
+                        />
+                        <img
+                          class="about-page__dumbbells"
+                          src="./assets/about/dumbbells.png"
+                          srcset="
+                            ./assets/about/dumbbells@4x.png 740w,
+                            ./assets/about/dumbbells.png 185w
+                          "
+                          sizes="(max-width: 900px) 22vw, calc((100vw - var(--detail-left-w, 473px) - 128px) * 0.216 * var(--detail-scale, 1))"
+                          alt=""
+                          width="185"
+                          height="209"
+                          draggable="false"
+                        />
+                      </picture>
+                      <picture>
+                        <source
+                          type="image/webp"
+                          srcset="
+                            ./assets/about/spotify@4x.webp 980w,
+                            ./assets/about/spotify.webp 245w
+                          "
+                          sizes="(max-width: 900px) 27vw, calc((100vw - var(--detail-left-w, 473px) - 128px) * 0.27 * var(--detail-scale, 1))"
+                        />
+                        <img
+                          class="about-page__spotify"
+                          src="./assets/about/spotify.png"
+                          srcset="
+                            ./assets/about/spotify@4x.png 980w,
+                            ./assets/about/spotify.png 245w
+                          "
+                          sizes="(max-width: 900px) 27vw, calc((100vw - var(--detail-left-w, 473px) - 128px) * 0.27 * var(--detail-scale, 1))"
+                          alt=""
+                          width="245"
+                          height="245"
+                          draggable="false"
+                        />
+                      </picture>
                     </div>
                   </div>
                 </figure>
 
                 <figure class="detail__figure about-page__image-2">
-                  <img
-                    src="./assets/about/image-2.png"
-                    width="839"
-                    height="839"
-                    alt="TROP website design case study mockups showing hero and product sections"
-                    loading="lazy"
-                    decoding="async"
-                    draggable="false"
-                  />
+                  <picture>
+                    <source
+                      type="image/webp"
+                      srcset="
+                        ./assets/about/image-2@4x.webp 3356w,
+                        ./assets/about/image-2.webp 839w
+                      "
+                      sizes="(max-width: 900px) calc(100vw - 48px), calc((100vw - var(--detail-left-w, 473px) - 128px) * var(--detail-scale, 1))"
+                    />
+                    <img
+                      src="./assets/about/image-2.png"
+                      srcset="
+                        ./assets/about/image-2@4x.png 3356w,
+                        ./assets/about/image-2.png 839w
+                      "
+                      sizes="(max-width: 900px) calc(100vw - 48px), calc((100vw - var(--detail-left-w, 473px) - 128px) * var(--detail-scale, 1))"
+                      width="839"
+                      height="839"
+                      alt="TROP website design case study mockups showing hero and product sections"
+                      loading="lazy"
+                      decoding="async"
+                      draggable="false"
+                    />
+                  </picture>
                 </figure>
               </main>
             </div>
