@@ -695,7 +695,8 @@ body.detail--artboard-scale .detail__grey-bleed {
 .detail__design-image,
 .detail__mini-gizmo-image,
 .detail__precision-gizmo-image,
-.detail__precision-scale-image {
+.detail__precision-scale-image,
+.detail__handoff-image {
   margin: 0;
 }
 
