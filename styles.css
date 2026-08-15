@@ -734,44 +734,17 @@ body.theme-dark .scene.scene--patent-cube-active .patent-cube__viewport {
   outline-color: var(--sticky-selected-ink);
 }
 
-.sticky--star:hover .sticky-star__dog-stack,
-.sticky--star.sticky--dragging .sticky-star__dog-stack,
-.sticky--star:focus-visible .sticky-star__dog-stack,
-.sticky--star.is-selected .sticky-star__dog-stack {
+.sticky--star.sticky--dragging .sticky-star__dog-stack {
   opacity: 1;
   transform: translate(0, 0);
 }
 
-/* Smile while pointer is on the button; default dog otherwise. */
-.sticky--star:hover .sticky-star__dog--default,
 .sticky--star.sticky--dragging .sticky-star__dog--default {
   opacity: 0;
 }
 
-.sticky--star:hover .sticky-star__dog--smile,
 .sticky--star.sticky--dragging .sticky-star__dog--smile {
   opacity: 1;
-}
-
-/* Touch / no-hover: show stack when selected or dragging; smile only while dragging. */
-@media (hover: none) {
-  .sticky--star:not(.is-selected):not(.sticky--dragging) .sticky-star__dog-stack {
-    opacity: 0;
-    transform: translate(12px, -12px);
-  }
-
-  .sticky--star.sticky--dragging .sticky-star__dog-stack {
-    opacity: 1;
-    transform: translate(0, 0);
-  }
-
-  .sticky--star.is-selected.sticky--dragging .sticky-star__dog--default {
-    opacity: 0;
-  }
-
-  .sticky--star.is-selected.sticky--dragging .sticky-star__dog--smile {
-    opacity: 1;
-  }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -953,6 +926,10 @@ body.theme-dark .sticky:not(.sticky--star):not(:hover):not(:focus-visible):not(.
     top: 0;
     width: 246px;
     height: 246px;
+    pointer-events: auto;
+  }
+
+  .sticky--star {
     pointer-events: auto;
   }
 

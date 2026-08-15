@@ -395,11 +395,13 @@ function initStickyNotes() {
 
   function attachDrag(note) {
     let pointerId = null;
+    let dragStarted = false;
     let startX = 0;
     let startY = 0;
     let originX = 0;
     let originY = 0;
     const rot = getNumberAttr(note, "data-rot", 0);
+    const DRAG_START_THRESHOLD_PX = 8;
 
     /** @type {Array<{ t: number; x: number; y: number }>} */
     let samples = [];
@@ -521,17 +523,31 @@ function initStickyNotes() {
       return true;
     };
 
+    const maybeStartDrag = (e) => {
+      if (dragStarted === true || pointerId === null || e.pointerId !== pointerId) {
+        return;
+      }
+      const s = getSceneScale();
+      const dx = (e.clientX - startX) / s;
+      const dy = (e.clientY - startY) / s;
+      if (Math.hypot(dx, dy) < DRAG_START_THRESHOLD_PX) {
+        return;
+      }
+
+      dragStarted = true;
+      note.setPointerCapture(pointerId);
+      note.classList.add("sticky--dragging");
+      setZ(note, topZ++);
+    };
+
     const onPointerDown = (e) => {
       if (!(e instanceof PointerEvent)) return;
       if (pointerId !== null) return;
       pointerId = e.pointerId;
-      note.setPointerCapture(pointerId);
+      dragStarted = false;
 
       stopSettle();
       samples = [];
-
-      note.classList.add("sticky--dragging");
-      setZ(note, topZ++);
 
       startX = e.clientX;
       startY = e.clientY;
@@ -543,6 +559,8 @@ function initStickyNotes() {
 
     const onPointerMove = (e) => {
       if (pointerId === null || e.pointerId !== pointerId) return;
+      maybeStartDrag(e);
+      if (dragStarted !== true) return;
       const s = getSceneScale();
       const dx = (e.clientX - startX) / s;
       const dy = (e.clientY - startY) / s;
@@ -555,26 +573,31 @@ function initStickyNotes() {
 
     const endDrag = (e) => {
       if (pointerId === null || e.pointerId !== pointerId) return;
-      try {
-        note.releasePointerCapture(pointerId);
-      } catch {
-        // ignore
-      }
-      pointerId = null;
-      note.classList.remove("sticky--dragging");
 
-      const { vx, vy } = estimateReleaseVelocityPxPerMs();
-      const settled = settleFromVelocity(vx, vy);
-      if (settled !== true) {
-        persistDraggedPosition(note);
-        requestAnimationFrame(() => {
-          layoutNotes();
-        });
-      } else if (pendingLayout === true) {
-        requestAnimationFrame(() => {
-          layoutNotes();
-        });
+      if (dragStarted === true) {
+        try {
+          note.releasePointerCapture(pointerId);
+        } catch {
+          // ignore
+        }
+        note.classList.remove("sticky--dragging");
+
+        const { vx, vy } = estimateReleaseVelocityPxPerMs();
+        const settled = settleFromVelocity(vx, vy);
+        if (settled !== true) {
+          persistDraggedPosition(note);
+          requestAnimationFrame(() => {
+            layoutNotes();
+          });
+        } else if (pendingLayout === true) {
+          requestAnimationFrame(() => {
+            layoutNotes();
+          });
+        }
       }
+
+      pointerId = null;
+      dragStarted = false;
     };
 
     note.addEventListener("pointerdown", onPointerDown);
