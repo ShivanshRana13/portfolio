@@ -102,15 +102,37 @@ body.about-view .now-playing-pill {
   }
 }
 
+.about-page .detail__right {
+  gap: var(--detail-stack-gap);
+}
+
 .about-page__hero.about-page__collage-figure,
 .about-page__collage-figure {
   container-type: size;
   width: 100%;
   max-width: none;
+  flex: 0 0 auto;
   min-height: calc(100dvh - 128px);
   height: calc(100dvh - 128px);
   margin: 0;
   overflow: visible;
+}
+
+.about-page__image-2 {
+  flex: 0 0 auto;
+  margin: 0;
+  width: 100%;
+  max-width: none;
+  border-radius: clamp(24px, 6.91vw, 58px);
+  overflow: hidden;
+  background: #f9f9f9;
+  line-height: 0;
+}
+
+.about-page__image-2 img {
+  display: block;
+  width: 100%;
+  height: auto;
 }
 
 .about-page__hero-stage.about-page__collage,
