@@ -162,7 +162,7 @@ body.about-view .footer {
   --wiggle-base: 0deg;
   transform: rotate(var(--wiggle-base, 0deg));
   transform-origin: center center;
-  z-index: 3;
+  z-index: 1;
 }
 
 .about-page__collage-figure img.about-page__food {
