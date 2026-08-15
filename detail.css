@@ -209,6 +209,15 @@ body.detail--artboard-scale .detail__grey-bleed {
     grid-row: 1;
     width: 100%;
     min-width: 0;
+    --detail-rail-pad-x: 64px;
+    padding: 64px var(--detail-rail-pad-x) 80px;
+    align-items: flex-end;
+  }
+
+  /* Figma right rail: 839px content column, 64px from the viewport edge. */
+  .detail__right > * {
+    width: 100%;
+    max-width: 839px;
   }
 }
 
