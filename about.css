@@ -169,7 +169,7 @@ body.about-view .footer {
   right: 0;
   left: auto;
   top: auto;
-  width: 16%;
+  width: 32%;
   --wiggle-base: 12.9deg;
   transform: rotate(var(--wiggle-base, 12.9deg));
   transform-origin: center center;
