@@ -166,11 +166,11 @@ body.about-view .footer {
 }
 
 .about-page__collage-figure img.about-page__food {
-  bottom: 6%;
+  bottom: 14%;
   right: 0;
   left: auto;
   top: auto;
-  width: 54%;
+  width: 40.5%;
   --wiggle-base: 12.9deg;
   transform: rotate(var(--wiggle-base, 12.9deg));
   transform-origin: center center;
