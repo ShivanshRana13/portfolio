@@ -211,13 +211,6 @@ body.detail--artboard-scale .detail__grey-bleed {
     min-width: 0;
     --detail-rail-pad-x: 64px;
     padding: 64px var(--detail-rail-pad-x) 80px;
-    align-items: flex-end;
-  }
-
-  /* Figma right rail: 839px content column, 64px from the viewport edge. */
-  .detail__right > * {
-    width: 100%;
-    max-width: 839px;
   }
 }
 
@@ -635,7 +628,7 @@ body.detail--artboard-scale .detail__grey-bleed {
   flex-direction: column;
   gap: 16px;
   width: 100%;
-  max-width: 839px;
+  max-width: none;
   margin: 0;
 }
 
@@ -684,7 +677,7 @@ body.detail--artboard-scale .detail__grey-bleed {
 .detail__figure {
   margin: 0;
   width: 100%;
-  max-width: 839px;
+  max-width: none;
   line-height: 0;
 }
 
@@ -712,7 +705,7 @@ body.detail--artboard-scale .detail__grey-bleed {
 }
 
 /*
- * Full width of the right rail up to Figma frame width; srcset supplies @4× for retina + zoom.
+ * Full width of the right rail (64px inset); srcset supplies @4× for retina + zoom.
  */
 .detail__media.detail__media--static {
   width: 100%;
