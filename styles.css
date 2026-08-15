@@ -728,8 +728,9 @@ body.theme-dark .scene.scene--patent-cube-active .patent-cube__viewport {
 }
 
 @media (hover: hover) {
-  .sticky--star.is-selected:has(.sticky-star__path:hover) .sticky-star__path,
-  .sticky--star.is-selected:focus-visible .sticky-star__path {
+  .sticky--star.is-selected:hover .sticky-star__path,
+  .sticky--star.is-selected:focus-visible .sticky-star__path,
+  .sticky--star.is-selected.sticky--dragging .sticky-star__path {
     fill: #ffffff;
   }
 }
@@ -742,40 +743,32 @@ body.theme-dark .scene.scene--patent-cube-active .patent-cube__viewport {
   outline-color: var(--sticky-selected-ink);
 }
 
-.sticky--star:has(.sticky-star__path:hover) .sticky-star__dog-stack,
+.sticky--star:hover .sticky-star__dog-stack,
+.sticky--star.sticky--dragging .sticky-star__dog-stack,
 .sticky--star:focus-visible .sticky-star__dog-stack,
 .sticky--star.is-selected .sticky-star__dog-stack {
   opacity: 1;
   transform: translate(0, 0);
 }
 
-@media (hover: hover) {
-  .sticky--star.is-selected:has(.sticky-star__path:hover) .sticky-star__dog--default,
-  .sticky--star.is-selected:focus-visible .sticky-star__dog--default {
-    opacity: 0;
-  }
-
-  .sticky--star.is-selected:has(.sticky-star__path:hover) .sticky-star__dog--smile,
-  .sticky--star.is-selected:focus-visible .sticky-star__dog--smile {
-    opacity: 1;
-  }
+.sticky--star.is-selected .sticky-star__dog--default {
+  opacity: 0;
 }
 
-/* Touch / no-hover: dog only after About me is selected; smile only. */
+.sticky--star.is-selected .sticky-star__dog--smile {
+  opacity: 1;
+}
+
+/* Touch / no-hover: dog stack only when selected or actively dragging. */
 @media (hover: none) {
-  .sticky--star:not(.is-selected) .sticky-star__dog-stack,
-  .sticky--star:not(.is-selected):focus-visible .sticky-star__dog-stack,
-  .sticky--star:not(.is-selected):has(.sticky-star__path:hover) .sticky-star__dog-stack {
+  .sticky--star:not(.is-selected):not(.sticky--dragging) .sticky-star__dog-stack {
     opacity: 0;
     transform: translate(12px, -12px);
   }
 
-  .sticky--star.is-selected .sticky-star__dog--default {
-    opacity: 0;
-  }
-
-  .sticky--star.is-selected .sticky-star__dog--smile {
+  .sticky--star.sticky--dragging .sticky-star__dog-stack {
     opacity: 1;
+    transform: translate(0, 0);
   }
 }
 
