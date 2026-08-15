@@ -38,6 +38,7 @@ function initStickyTheme() {
   const syncNowPlayingPill = () => {
     if (!(nowPlayingPill instanceof HTMLElement)) return;
     const onHomepage =
+      body.classList.contains("about-view") === false &&
       body.classList.contains("theme-dark") === false &&
       body.classList.contains("theme-focus-light") === false;
     nowPlayingPill.hidden = !onHomepage;

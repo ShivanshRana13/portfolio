@@ -89,6 +89,12 @@ body.about-view .footer {
   pointer-events: none;
 }
 
+body.about-view .now-playing-pill {
+  display: none !important;
+  visibility: hidden;
+  pointer-events: none;
+}
+
 /* About hero — layered collage treated as one composed image (sizes = % of stage width). */
 @media (min-width: 901px) {
   .about-page .detail__right {
