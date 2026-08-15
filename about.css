@@ -173,7 +173,7 @@ body.about-view .now-playing-pill {
   pointer-events: none;
 }
 
-/* About hero — layered collage treated as one composed image (sizes = % of stage width). */
+/* About hero — Figma 253:7775 artboard; uniform scale, locked layer transforms. */
 @media (min-width: 901px) {
   .about-page .detail__right {
     min-height: 0;
@@ -194,6 +194,110 @@ body.about-view .now-playing-pill {
   height: calc(100dvh - 128px);
   margin: 0;
   overflow: visible;
+  display: grid;
+  place-items: center;
+}
+
+.about-page__hero-stage.about-page__collage,
+.about-page__collage {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  height: 100%;
+  min-height: inherit;
+  margin: 0;
+  overflow: visible;
+}
+
+.about-page__hero-layers.about-page__collage-group,
+.about-page__collage-group {
+  /*
+   * Figma node 253:7775 — fixed 839×817 artboard; layers use % of this box only.
+   * The group scales uniformly (contain) so positions never drift at any viewport.
+   */
+  --hero-artboard-w: 839;
+  --hero-artboard-h: 817;
+  position: relative;
+  width: min(100cqw, calc(100cqh * var(--hero-artboard-w) / var(--hero-artboard-h)));
+  height: min(100cqh, calc(100cqw * var(--hero-artboard-h) / var(--hero-artboard-w)));
+  aspect-ratio: 839 / 817;
+  transform-origin: center center;
+  overflow: visible;
+}
+
+.about-page__hero-layers img,
+.about-page__collage-group img {
+  position: absolute;
+  display: block;
+  height: auto;
+  max-width: none;
+  pointer-events: none;
+  user-select: none;
+  -webkit-user-drag: none;
+  transform-origin: center center;
+}
+
+/* Beat .detail__figure img { width: 100% } from detail.css */
+.about-page__collage-figure img.about-page__photo {
+  left: 50%;
+  top: 50%;
+  width: 45.9%;
+  --wiggle-base: -9.22deg;
+  transform: translate(-50%, -50%) rotate(var(--wiggle-base, -9.22deg));
+  z-index: 2;
+}
+
+.about-page__collage-figure img.about-page__controller {
+  top: 25.65%;
+  left: 15.05%;
+  right: auto;
+  width: 18%;
+  --wiggle-base: -20deg;
+  transform: rotate(var(--wiggle-base, -20deg));
+  z-index: 3;
+}
+
+.about-page__collage-figure img.about-page__elden {
+  top: 0.07%;
+  left: 37.95%;
+  right: auto;
+  width: 24.0975%;
+  --wiggle-base: 0deg;
+  transform: rotate(var(--wiggle-base, 0deg));
+  z-index: 1;
+}
+
+.about-page__collage-figure img.about-page__food {
+  bottom: 38%;
+  right: -3%;
+  left: auto;
+  top: auto;
+  width: 40.5%;
+  --wiggle-base: 12.9deg;
+  transform: rotate(var(--wiggle-base, 12.9deg));
+  z-index: 1;
+}
+
+.about-page__collage-figure img.about-page__spotify {
+  bottom: 2%;
+  right: 24%;
+  left: auto;
+  top: auto;
+  width: 27%;
+  --wiggle-base: 0deg;
+  transform: rotate(var(--wiggle-base, 0deg));
+  z-index: 4;
+}
+
+.about-page__collage-figure img.about-page__dumbbells {
+  bottom: 10%;
+  left: 16%;
+  top: auto;
+  right: auto;
+  width: 21.6%;
+  --wiggle-base: 0deg;
+  transform: rotate(var(--wiggle-base, 0deg));
+  z-index: 3;
 }
 
 .about-page__image-2 {
@@ -212,138 +316,6 @@ body.about-view .now-playing-pill {
   display: block;
   width: 100%;
   height: auto;
-}
-
-.about-page__hero-stage.about-page__collage,
-.about-page__collage {
-  position: relative;
-  width: 100%;
-  height: 100%;
-  min-height: inherit;
-  margin: 0;
-  overflow: visible;
-}
-
-.about-page__hero-layers.about-page__collage-group,
-.about-page__collage-group {
-  /*
-   * Canonical hero layout — update tokens here to move/scale the whole composition.
-   * me.png is the anchor; orbit layers are positioned relative to its bounds.
-   */
-  --hero-me-w: 45.9%;
-  --hero-me-cqw: 45.9cqw;
-  --hero-me-aspect: calc(436 / 411);
-  --hero-me-rotate: -9.22deg;
-
-  --hero-controller-w: 18%;
-  --hero-controller-left: 12cqw;
-  --hero-controller-rotate: -20deg;
-
-  --hero-elden-w: 24.0975%;
-  --hero-elden-cqw: 24.0975cqw;
-  --hero-elden-aspect: calc(433 / 326);
-  --hero-elden-lift: 5cqw;
-
-  --hero-food-w: 40.5%;
-  --hero-food-bottom: 38%;
-  --hero-food-right: -3cqw;
-  --hero-food-rotate: 12.9deg;
-
-  --hero-spotify-w: 27%;
-  --hero-spotify-bottom: 2%;
-  --hero-spotify-right: 24%;
-
-  --hero-dumbbells-w: 21.6%;
-  --hero-dumbbells-bottom: 10%;
-  --hero-dumbbells-left: 16%;
-
-  position: absolute;
-  inset: 0;
-  transform-origin: center center;
-  overflow: visible;
-}
-
-.about-page__hero-layers img,
-.about-page__collage-group img {
-  position: absolute;
-  display: block;
-  height: auto;
-  max-width: none;
-  pointer-events: none;
-  user-select: none;
-  -webkit-user-drag: none;
-}
-
-/* Beat .detail__figure img { width: 100% } from detail.css */
-.about-page__collage-figure img.about-page__photo {
-  left: 50%;
-  top: 50%;
-  width: var(--hero-me-w);
-  --wiggle-base: var(--hero-me-rotate);
-  transform: translate(-50%, -50%) rotate(var(--wiggle-base, -9.22deg));
-  transform-origin: center center;
-  z-index: 2;
-}
-
-.about-page__collage-figure img.about-page__controller {
-  top: calc(50% - var(--hero-me-cqw) * var(--hero-me-aspect) / 2);
-  left: calc(50% - var(--hero-me-cqw) / 2 - var(--hero-controller-left));
-  right: auto;
-  width: var(--hero-controller-w);
-  --wiggle-base: var(--hero-controller-rotate);
-  transform: rotate(var(--wiggle-base, -20deg));
-  transform-origin: center center;
-  z-index: 3;
-}
-
-.about-page__collage-figure img.about-page__elden {
-  top: calc(
-    50% - var(--hero-me-cqw) * var(--hero-me-aspect) / 2 - var(--hero-elden-cqw) *
-      var(--hero-elden-aspect) / 2 - var(--hero-elden-lift)
-  );
-  left: calc(50% - var(--hero-elden-cqw) / 2);
-  right: auto;
-  width: var(--hero-elden-w);
-  --wiggle-base: 0deg;
-  transform: rotate(var(--wiggle-base, 0deg));
-  transform-origin: center center;
-  z-index: 1;
-}
-
-.about-page__collage-figure img.about-page__food {
-  bottom: var(--hero-food-bottom);
-  right: var(--hero-food-right);
-  left: auto;
-  top: auto;
-  width: var(--hero-food-w);
-  --wiggle-base: var(--hero-food-rotate);
-  transform: rotate(var(--wiggle-base, 12.9deg));
-  transform-origin: center center;
-  z-index: 1;
-}
-
-.about-page__collage-figure img.about-page__spotify {
-  bottom: var(--hero-spotify-bottom);
-  right: var(--hero-spotify-right);
-  left: auto;
-  top: auto;
-  width: var(--hero-spotify-w);
-  --wiggle-base: 0deg;
-  transform: rotate(var(--wiggle-base, 0deg));
-  transform-origin: center center;
-  z-index: 4;
-}
-
-.about-page__collage-figure img.about-page__dumbbells {
-  bottom: var(--hero-dumbbells-bottom);
-  left: var(--hero-dumbbells-left);
-  top: auto;
-  right: auto;
-  width: var(--hero-dumbbells-w);
-  --wiggle-base: 0deg;
-  transform: rotate(var(--wiggle-base, 0deg));
-  transform-origin: center center;
-  z-index: 3;
 }
 
 @keyframes about-collage-wiggle {
