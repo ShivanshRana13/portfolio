@@ -134,7 +134,7 @@ body.about-view .footer {
 .about-page__photo {
   left: 50%;
   top: 50%;
-  width: 45%;
+  width: 18%;
   --wiggle-base: -9.22deg;
   transform: translate(-50%, -50%) rotate(var(--wiggle-base, -9.22deg));
   transform-origin: center center;
@@ -146,7 +146,7 @@ body.about-view .footer {
   top: 10%;
   right: 4%;
   left: auto;
-  width: 10%;
+  width: 4%;
   --wiggle-base: 30deg;
   transform: rotate(var(--wiggle-base, 30deg));
   transform-origin: center center;
@@ -157,7 +157,7 @@ body.about-view .footer {
   top: 6%;
   right: 14%;
   left: auto;
-  width: 35%;
+  width: 14%;
   --wiggle-base: 0deg;
   transform: rotate(var(--wiggle-base, 0deg));
   transform-origin: center center;
@@ -170,7 +170,7 @@ body.about-view .footer {
   right: 0;
   left: auto;
   top: auto;
-  width: 40%;
+  width: 16%;
   --wiggle-base: 12.9deg;
   transform: rotate(var(--wiggle-base, 12.9deg));
   transform-origin: center center;
@@ -183,7 +183,7 @@ body.about-view .footer {
   right: 10%;
   left: auto;
   top: auto;
-  width: 30%;
+  width: 12%;
   --wiggle-base: 0deg;
   transform: rotate(var(--wiggle-base, 0deg));
   transform-origin: center center;
@@ -196,7 +196,7 @@ body.about-view .footer {
   left: 6%;
   top: auto;
   right: auto;
-  width: 20%;
+  width: 8%;
   --wiggle-base: 0deg;
   transform: rotate(var(--wiggle-base, 0deg));
   transform-origin: center center;
