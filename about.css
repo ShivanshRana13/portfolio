@@ -89,16 +89,12 @@ body.about-view .footer {
   pointer-events: none;
 }
 
-.about-spotify-player {
+.about-audio {
   position: fixed;
-  width: 300px;
-  height: 80px;
-  left: -9999px;
-  top: 0;
+  width: 0;
+  height: 0;
   opacity: 0;
   pointer-events: none;
-  overflow: hidden;
-  z-index: -1;
 }
 
 .about-page__collage-figure img.about-page__spotify {
