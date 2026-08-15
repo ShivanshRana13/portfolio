@@ -33,6 +33,7 @@ ASSETS = (
     ("design-chromatic-839-src.png", "design-chromatic-839", 839, 408),
     ("mini-gizmo-839-src.png", "mini-gizmo-839", 839, 762),
     ("mini-gizmo-2-839-src.png", "mini-gizmo-2-839", 839, 849),
+    ("mini-gizmo-3-839-src.png", "mini-gizmo-3-839", 839, 540),
 )
 
 
