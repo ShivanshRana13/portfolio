@@ -90,11 +90,6 @@ function initStickyTheme() {
     }
     if (active) {
       window.requestAnimationFrame(refreshAboutDetail);
-      if (typeof window.__playAboutSpotify === "function") {
-        window.__playAboutSpotify();
-      }
-    } else if (typeof window.__pauseAboutSpotify === "function") {
-      window.__pauseAboutSpotify();
     }
     if (skipUrlSync !== true) {
       syncAboutUrl(active);

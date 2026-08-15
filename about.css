@@ -89,19 +89,6 @@ body.about-view .footer {
   pointer-events: none;
 }
 
-.about-audio {
-  position: fixed;
-  width: 0;
-  height: 0;
-  opacity: 0;
-  pointer-events: none;
-}
-
-.about-page__collage-figure img.about-page__spotify {
-  pointer-events: auto;
-  cursor: pointer;
-}
-
 /* About hero — layered collage treated as one composed image (sizes = % of stage width). */
 @media (min-width: 901px) {
   .about-page .detail__right {
