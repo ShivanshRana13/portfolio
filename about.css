@@ -97,6 +97,7 @@ body.about-view .footer {
 }
 
 .about-page__collage-figure {
+  container-type: size;
   width: 100%;
   max-width: none;
   min-height: calc(100dvh - 128px);
