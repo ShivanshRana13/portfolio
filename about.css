@@ -71,6 +71,12 @@ body.about-view.detail.theme-focus-light {
 
 /* Mobile: document scroll (same as case study). */
 @media (max-width: 900px) {
+  html.about-view,
+  body.about-view.detail.theme-focus-light {
+    --bg: #ffffff;
+    background: #ffffff;
+  }
+
   html.about-view {
     overflow-y: auto;
     max-height: none;
@@ -82,6 +88,12 @@ body.about-view.detail.theme-focus-light {
     height: auto;
     max-height: none;
     min-height: 100dvh;
+  }
+
+  body.about-view .stage,
+  body.about-view .scene,
+  body.about-view .about-page {
+    background: #ffffff;
   }
 
   body.about-view .stage {
