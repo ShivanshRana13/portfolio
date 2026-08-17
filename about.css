@@ -218,7 +218,8 @@ body.about-view .now-playing-pill {
 @media (min-width: 901px) {
   .about-page .detail__right {
     min-height: 0;
-    padding-top: 0;
+    padding: 0 0 80px;
+    align-items: center;
   }
 }
 
@@ -260,7 +261,6 @@ body.about-view .now-playing-pill {
   --hero-artboard-w: 839;
   --hero-artboard-h: 817;
   --hero-collage-scale: 1.25;
-  --hero-collage-offset-y: -6%;
   position: relative;
   width: min(
     calc(100cqw * var(--hero-collage-scale)),
@@ -272,7 +272,6 @@ body.about-view .now-playing-pill {
   );
   aspect-ratio: 839 / 817;
   transform-origin: center center;
-  translate: 0 var(--hero-collage-offset-y);
   overflow: visible;
 }
 
@@ -348,6 +347,8 @@ body.about-view .now-playing-pill {
   margin: 0;
   width: 100%;
   max-width: none;
+  box-sizing: border-box;
+  padding-inline: var(--detail-rail-pad-x, clamp(24px, 5vw, 64px));
   border-radius: clamp(24px, 6.91vw, 58px);
   overflow: hidden;
   background: #f9f9f9;
@@ -457,12 +458,19 @@ body.about-view .about-page__photo {
 
 @media (max-width: 900px) {
   body.about-view .about-page .detail__right {
-    padding-top: 0;
+    padding: 0 0 max(80px, env(safe-area-inset-bottom, 0px));
+    align-items: center;
   }
 
   .about-page__collage-figure {
+    width: 100%;
     min-height: min(72vh, 640px);
     height: min(72vh, 640px);
+  }
+
+  .about-page__image-2 {
+    padding-inline: max(24px, env(safe-area-inset-left, 0px))
+      max(24px, env(safe-area-inset-right, 0px));
   }
 
   /* Beat later collage rules that set overflow: visible (higher class specificity). */
