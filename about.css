@@ -1,6 +1,6 @@
 /*
- * About overlay — uses body.detail + detail.css for layout, gaps, and padding.
- * Only overrides: scene/stage unlock for document scroll, star sticky stacking, about hero collage.
+ * About overlay — uses body.detail + detail.css for layout, gaps, padding, and type.
+ * Match case study spacing on mobile; only override scroll, star sticky, and hero collage.
  */
 
 html.about-view {
