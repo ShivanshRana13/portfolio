@@ -59,9 +59,10 @@ body.about-view.theme-focus-light {
 }
 
 @media (max-width: 900px) {
-  html:not(.about-view):not(:has(body.detail)),
-  body:not(.about-view):not(.detail) {
+  html:not(.about-view):has(.about-page),
+  body:not(.about-view):has(.about-page) {
     background-color: #f6f6f6;
+    --bg: #f6f6f6;
   }
 
   body:not(.about-view):not(.theme-dark) .stage,

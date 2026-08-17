@@ -77,6 +77,26 @@ function initStickyTheme() {
     }
   };
 
+  const resetAboutViewState = () => {
+    const root = document.documentElement;
+    root.classList.remove("about-view");
+    body.classList.remove(
+      "about-view",
+      "detail",
+      "theme-focus-light",
+      "theme-dark",
+      "detail--mobile-landing",
+      "detail--mobile-mini-title",
+    );
+    if (scene instanceof HTMLElement) {
+      scene.classList.remove("scene--about-active");
+    }
+    if (aboutPage instanceof HTMLElement) {
+      aboutPage.hidden = true;
+      aboutPage.setAttribute("aria-hidden", "true");
+    }
+  };
+
   const syncAboutPage = (skipUrlSync = false) => {
     const active =
       starSticky instanceof HTMLElement && starSticky.classList.contains("is-selected") === true;
@@ -103,11 +123,7 @@ function initStickyTheme() {
   const clearSelection = (options = {}) => {
     const skipUrlSync = options.skipUrlSync === true;
     for (const el of stickies) el.classList.remove("is-selected");
-    body.classList.remove("theme-dark");
-    body.classList.remove("theme-focus-light");
-    body.classList.remove("about-view");
-    body.classList.remove("detail");
-    document.documentElement.classList.remove("about-view");
+    resetAboutViewState();
     syncScenePatentCube();
     syncAboutPage(skipUrlSync);
     syncStarStickyLabel();
@@ -194,6 +210,10 @@ function initStickyTheme() {
     if (!(backBtn instanceof HTMLButtonElement)) continue;
     backBtn.addEventListener("click", (e) => {
       e.stopPropagation();
+      if (isAboutHash() === true || history.state?.about === true) {
+        history.back();
+        return;
+      }
       clearSelection();
     });
   }

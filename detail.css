@@ -752,7 +752,8 @@ body.detail--artboard-scale .detail__grey-bleed {
 @media (max-width: 900px) {
   html.about-view,
   body.about-view.detail,
-  body.detail:not(.about-view) {
+  /* Case study pages only — index.html always contains `.about-page`. */
+  body.detail:not(.about-view):not(:has(.about-page)) {
     background: #ffffff;
   }
 
@@ -768,17 +769,17 @@ body.detail--artboard-scale .detail__grey-bleed {
     display: none !important;
   }
 
-  body.detail .detail-stage {
+  body.detail:not(:has(.about-page)) .detail-stage {
     background: #ffffff;
   }
 
-  body.detail .detail-layout {
+  body.detail:not(:has(.about-page)) .detail-layout {
     grid-template-columns: 1fr;
     column-gap: 0;
     background: #ffffff;
   }
 
-  body.detail .detail__left {
+  body.detail:not(:has(.about-page)) .detail__left {
     position: relative;
     left: auto;
     width: auto;
