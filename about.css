@@ -344,15 +344,20 @@ body.about-view .now-playing-pill {
 
 .about-page__image-2 {
   flex: 0 0 auto;
-  margin: 0;
-  width: 100%;
-  max-width: none;
   box-sizing: border-box;
-  padding-inline: var(--detail-rail-pad-x, clamp(24px, 5vw, 64px));
+  width: calc(100% - 2 * var(--about-image-2-gutter, 24px));
+  margin-inline: auto;
+  padding: 0;
   border-radius: clamp(24px, 6.91vw, 58px);
   overflow: hidden;
-  background: #f9f9f9;
+  background: transparent;
   line-height: 0;
+}
+
+@media (min-width: 901px) {
+  .about-page__image-2 {
+    --about-image-2-gutter: var(--detail-rail-pad-x, 64px);
+  }
 }
 
 .about-page__image-2 picture,
@@ -466,11 +471,6 @@ body.about-view .about-page__photo {
     width: 100%;
     min-height: min(72vh, 640px);
     height: min(72vh, 640px);
-  }
-
-  .about-page__image-2 {
-    padding-inline: max(24px, env(safe-area-inset-left, 0px))
-      max(24px, env(safe-area-inset-right, 0px));
   }
 
   /* Beat later collage rules that set overflow: visible (higher class specificity). */
