@@ -218,6 +218,7 @@ body.about-view .now-playing-pill {
 @media (min-width: 901px) {
   .about-page .detail__right {
     min-height: 0;
+    padding-top: 0;
   }
 }
 
@@ -231,8 +232,8 @@ body.about-view .now-playing-pill {
   width: 100%;
   max-width: none;
   flex: 0 0 auto;
-  min-height: calc(100dvh - 128px);
-  height: calc(100dvh - 128px);
+  min-height: 100dvh;
+  height: 100dvh;
   margin: 0;
   overflow: visible;
   display: grid;
@@ -259,6 +260,7 @@ body.about-view .now-playing-pill {
   --hero-artboard-w: 839;
   --hero-artboard-h: 817;
   --hero-collage-scale: 1.25;
+  --hero-collage-offset-y: -6%;
   position: relative;
   width: min(
     calc(100cqw * var(--hero-collage-scale)),
@@ -270,6 +272,7 @@ body.about-view .now-playing-pill {
   );
   aspect-ratio: 839 / 817;
   transform-origin: center center;
+  translate: 0 var(--hero-collage-offset-y);
   overflow: visible;
 }
 
@@ -453,6 +456,10 @@ body.about-view .about-page__photo {
 }
 
 @media (max-width: 900px) {
+  body.about-view .about-page .detail__right {
+    padding-top: 0;
+  }
+
   .about-page__collage-figure {
     min-height: min(72vh, 640px);
     height: min(72vh, 640px);
