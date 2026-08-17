@@ -9,7 +9,7 @@ html.about-view {
 
 body.about-view.detail.theme-focus-light {
   --bg: #f6f6f6;
-  overflow-x: visible;
+  overflow-x: hidden;
   background: #f6f6f6;
   position: relative;
 }
@@ -69,7 +69,7 @@ body.about-view.detail.theme-focus-light {
   }
 }
 
-/* Mobile: document scroll (same as case study). */
+/* Mobile: lock the document; scroll inside the about stage (prevents iOS horizontal rubber-band). */
 @media (max-width: 900px) {
   html.about-view,
   body.about-view.detail.theme-focus-light {
@@ -78,46 +78,75 @@ body.about-view.detail.theme-focus-light {
   }
 
   html.about-view {
-    overflow-y: auto;
-    max-height: none;
-    height: auto;
+    overflow: hidden;
+    height: 100dvh;
+    max-height: 100dvh;
   }
 
   body.about-view.detail.theme-focus-light {
-    overflow-y: auto;
-    height: auto;
-    max-height: none;
-    min-height: 100dvh;
+    overflow: hidden;
+    height: 100dvh;
+    max-height: 100dvh;
+    min-height: 0;
   }
 
   body.about-view .stage,
   body.about-view .scene,
   body.about-view .about-page {
+    height: 100dvh;
+    max-height: 100dvh;
+    min-height: 0;
+    overflow: hidden;
     background: #ffffff;
   }
 
-  body.about-view .stage {
-    height: auto;
-    max-height: none;
-    min-height: 0;
-    overflow: visible;
-    align-items: flex-start;
-  }
-
   body.about-view .scene {
-    height: auto !important;
-    min-height: 0;
-    overflow: visible;
     transform: none !important;
     width: 100% !important;
-    max-width: none;
+    max-width: 100%;
+  }
+
+  body.about-view .detail-stage {
+    height: 100dvh;
+    max-height: 100dvh;
+    min-height: 0;
+    overflow-x: hidden;
+    overflow-y: auto;
+    overscroll-behavior-x: none;
+    overscroll-behavior-y: contain;
+    -webkit-overflow-scrolling: touch;
+    touch-action: pan-y pinch-zoom;
+  }
+
+  body.about-view .detail-layout,
+  body.about-view .detail__right {
+    overflow-x: hidden;
+    max-width: 100%;
+  }
+
+  body.about-view .cards {
+    overflow: hidden;
+    contain: paint;
+  }
+
+  body.about-view .cards .sticky:not(.sticky--star) {
+    display: none !important;
+  }
+
+  body.about-view .sticky--star {
+    overflow: hidden;
+  }
+
+  body.about-view .intro,
+  body.about-view .footer {
+    display: none !important;
   }
 }
 
 body.about-view .scene {
   transform: none !important;
   width: 100% !important;
-  max-width: none;
+  max-width: 100%;
 }
 
 body.about-view .scene > .intro,
@@ -247,68 +276,60 @@ body.about-view .now-playing-pill {
   user-select: none;
   -webkit-user-drag: none;
   transform-origin: center center;
+  right: auto;
+  bottom: auto;
+  transform: translate(-50%, -50%) rotate(var(--wiggle-base, 0deg));
 }
 
-/* Beat .detail__figure img { width: 100% } from detail.css */
+/*
+ * Figma 253:7775 — center-anchored % of the artboard box so layers stay locked
+ * when the collage scales (contain). Rotation lives in --wiggle-base + transform.
+ */
 .about-page__collage-figure img.about-page__photo {
   left: 50%;
   top: 50%;
   width: 45.9%;
   --wiggle-base: -9.22deg;
-  transform: translate(-50%, -50%) rotate(var(--wiggle-base, -9.22deg));
   z-index: 2;
 }
 
 .about-page__collage-figure img.about-page__controller {
-  top: 25.65%;
-  left: 15.05%;
-  right: auto;
+  left: 24.05%;
+  top: 32.12%;
   width: 18%;
   --wiggle-base: -20deg;
-  transform: rotate(var(--wiggle-base, -20deg));
   z-index: 3;
 }
 
 .about-page__collage-figure img.about-page__elden {
-  top: 0.07%;
-  left: 37.95%;
-  right: auto;
+  left: 50.05%;
+  top: 16.51%;
   width: 24.0975%;
   --wiggle-base: 0deg;
-  transform: rotate(var(--wiggle-base, 0deg));
   z-index: 1;
 }
 
 .about-page__collage-figure img.about-page__food {
-  bottom: 38%;
-  right: -3%;
-  left: auto;
-  top: auto;
+  left: 82.75%;
+  top: 34.25%;
   width: 40.5%;
   --wiggle-base: 12.9deg;
-  transform: rotate(var(--wiggle-base, 12.9deg));
   z-index: 1;
 }
 
 .about-page__collage-figure img.about-page__spotify {
-  bottom: 2%;
-  right: 24%;
-  left: auto;
-  top: auto;
-  width: 27%;
+  left: 64.65%;
+  top: 78.76%;
+  width: 26.79%;
   --wiggle-base: 0deg;
-  transform: rotate(var(--wiggle-base, 0deg));
   z-index: 4;
 }
 
 .about-page__collage-figure img.about-page__dumbbells {
-  bottom: 10%;
-  left: 16%;
-  top: auto;
-  right: auto;
-  width: 21.6%;
+  left: 31.09%;
+  top: 73.68%;
+  width: 20.18%;
   --wiggle-base: 0deg;
-  transform: rotate(var(--wiggle-base, 0deg));
   z-index: 3;
 }
 
@@ -333,38 +354,66 @@ body.about-view .now-playing-pill {
 @keyframes about-collage-wiggle {
   0%,
   100% {
-    transform: rotate(var(--wiggle-base, 0deg)) translate3d(0, 0, 0);
+    transform: translate(-50%, -50%) rotate(var(--wiggle-base, 0deg)) translate3d(0, 0, 0);
   }
 
   25% {
-    transform: rotate(calc(var(--wiggle-base, 0deg) + 2.5deg)) translate3d(2px, -3px, 0);
+    transform: translate(-50%, -50%) rotate(calc(var(--wiggle-base, 0deg) + 2.5deg))
+      translate3d(2px, -3px, 0);
   }
 
   50% {
-    transform: rotate(calc(var(--wiggle-base, 0deg) - 2deg)) translate3d(-2px, 2px, 0);
+    transform: translate(-50%, -50%) rotate(calc(var(--wiggle-base, 0deg) - 2deg))
+      translate3d(-2px, 2px, 0);
   }
 
   75% {
-    transform: rotate(calc(var(--wiggle-base, 0deg) + 1.5deg)) translate3d(1px, 2px, 0);
+    transform: translate(-50%, -50%) rotate(calc(var(--wiggle-base, 0deg) + 1.5deg))
+      translate3d(1px, 2px, 0);
+  }
+}
+
+@keyframes about-collage-wiggle-y {
+  0%,
+  100% {
+    transform: translate(-50%, -50%) rotate(var(--wiggle-base, 0deg)) translate3d(0, 0, 0);
+  }
+
+  25% {
+    transform: translate(-50%, -50%) rotate(calc(var(--wiggle-base, 0deg) + 2.5deg))
+      translate3d(0, -3px, 0);
+  }
+
+  50% {
+    transform: translate(-50%, -50%) rotate(calc(var(--wiggle-base, 0deg) - 2deg))
+      translate3d(0, 2px, 0);
+  }
+
+  75% {
+    transform: translate(-50%, -50%) rotate(calc(var(--wiggle-base, 0deg) + 1.5deg))
+      translate3d(0, 2px, 0);
   }
 }
 
 @keyframes about-collage-wiggle-subtle {
   0%,
   100% {
-    transform: rotate(var(--wiggle-base, 0deg)) translate3d(0, 0, 0);
+    transform: translate(-50%, -50%) rotate(var(--wiggle-base, 0deg)) translate3d(0, 0, 0);
   }
 
   25% {
-    transform: rotate(calc(var(--wiggle-base, 0deg) + 0.8deg)) translate3d(1px, -1px, 0);
+    transform: translate(-50%, -50%) rotate(calc(var(--wiggle-base, 0deg) + 0.8deg))
+      translate3d(1px, -1px, 0);
   }
 
   50% {
-    transform: rotate(calc(var(--wiggle-base, 0deg) - 0.6deg)) translate3d(-1px, 1px, 0);
+    transform: translate(-50%, -50%) rotate(calc(var(--wiggle-base, 0deg) - 0.6deg))
+      translate3d(-1px, 1px, 0);
   }
 
   75% {
-    transform: rotate(calc(var(--wiggle-base, 0deg) + 0.5deg)) translate3d(0.5px, 1px, 0);
+    transform: translate(-50%, -50%) rotate(calc(var(--wiggle-base, 0deg) + 0.5deg))
+      translate3d(0.5px, 1px, 0);
   }
 }
 
@@ -401,6 +450,32 @@ body.about-view .about-page__photo {
     min-height: min(72vh, 640px);
     height: min(72vh, 640px);
   }
+
+  /* Beat later collage rules that set overflow: visible (higher class specificity). */
+  body.about-view .about-page__hero.about-page__collage-figure,
+  body.about-view .about-page__collage-figure,
+  body.about-view .about-page__hero-stage.about-page__collage,
+  body.about-view .about-page__collage,
+  body.about-view .about-page__hero-layers.about-page__collage-group,
+  body.about-view .about-page__collage-group {
+    overflow: hidden;
+  }
+
+  body.about-view .about-page__controller,
+  body.about-view .about-page__elden,
+  body.about-view .about-page__food {
+    animation: none;
+  }
+
+  body.about-view .about-page__dumbbells {
+    animation: about-collage-wiggle-y 4.2s ease-in-out infinite;
+    animation-delay: -0.3s;
+  }
+
+  body.about-view .about-page__spotify {
+    animation: about-collage-wiggle-y 3.5s ease-in-out infinite;
+    animation-delay: -0.9s;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -416,8 +491,13 @@ body.about-view .about-page__photo {
   body.about-view .about-page__controller,
   body.about-view .about-page__elden,
   body.about-view .about-page__food,
-  body.about-view .about-page__dumbbells,
   body.about-view .about-page__spotify {
     animation: none;
+    transform: translate(-50%, -50%) rotate(var(--wiggle-base, 0deg));
+  }
+
+  body.about-view .about-page__dumbbells {
+    animation: none;
+    transform: translate(-50%, -50%) rotate(var(--wiggle-base, 0deg));
   }
 }

@@ -465,11 +465,26 @@ function createDetailScrollBehavior(config = {}) {
     });
   }
 
-  bindDetailScroll(onScroll);
+  bindDetailScroll(onScroll, resolveScrollRoot());
 
-  const aboutRightRail = document.querySelector(".about-page .detail__right");
-  if (aboutRightRail instanceof HTMLElement && config.getScrollRoot !== undefined) {
-    aboutRightRail.addEventListener("scroll", onScroll, { passive: true });
+  let boundScrollRoot = resolveScrollRoot();
+  const syncScrollRootListener = () => {
+    const nextRoot = resolveScrollRoot();
+    if (nextRoot === boundScrollRoot) {
+      return;
+    }
+    if (boundScrollRoot instanceof HTMLElement) {
+      boundScrollRoot.removeEventListener("scroll", onScroll);
+    }
+    boundScrollRoot = nextRoot;
+    if (boundScrollRoot instanceof HTMLElement) {
+      boundScrollRoot.addEventListener("scroll", onScroll, { passive: true });
+    }
+  };
+
+  if (config.getScrollRoot !== undefined) {
+    const scrollRootMq = window.matchMedia("(max-width: 900px)");
+    scrollRootMq.addEventListener("change", syncScrollRootListener);
   }
 
   const narrowLayoutMq = window.matchMedia("(max-width: 900px)");
@@ -544,6 +559,54 @@ function initDetailScroll() {
   });
 }
 
+function initAboutHorizontalScrollLock() {
+  const narrowLayoutMq = window.matchMedia("(max-width: 900px)");
+
+  const clampHorizontalScroll = () => {
+    if (
+      document.body.classList.contains("about-view") !== true ||
+      narrowLayoutMq.matches !== true
+    ) {
+      return;
+    }
+    if (window.scrollX !== 0) {
+      window.scrollTo(0, window.scrollY);
+    }
+  };
+
+  window.addEventListener("scroll", clampHorizontalScroll, { passive: true });
+}
+
+function initAboutHorizontalScrollLock() {
+  const narrowLayoutMq = window.matchMedia("(max-width: 900px)");
+
+  const clampHorizontalScroll = () => {
+    if (
+      document.body.classList.contains("about-view") !== true ||
+      narrowLayoutMq.matches !== true
+    ) {
+      return;
+    }
+    const aboutPage = document.querySelector(".about-page");
+    const stage =
+      aboutPage instanceof HTMLElement ? aboutPage.querySelector(".detail-stage") : null;
+    if (stage instanceof HTMLElement && stage.scrollLeft !== 0) {
+      stage.scrollLeft = 0;
+    }
+    if (window.scrollX !== 0) {
+      window.scrollTo(0, window.scrollY);
+    }
+  };
+
+  window.addEventListener("scroll", clampHorizontalScroll, { passive: true });
+  const aboutPage = document.querySelector(".about-page");
+  const stage =
+    aboutPage instanceof HTMLElement ? aboutPage.querySelector(".detail-stage") : null;
+  if (stage instanceof HTMLElement) {
+    stage.addEventListener("scroll", clampHorizontalScroll, { passive: true });
+  }
+}
+
 function initAboutDetailScroll() {
   if (document.querySelector(".about-page") === null) {
     return;
@@ -551,6 +614,18 @@ function initAboutDetailScroll() {
 
   const aboutPage = document.querySelector(".about-page");
   const narrowLayoutMq = window.matchMedia("(max-width: 900px)");
+
+  const resolveAboutScrollRoot = () => {
+    if (!(aboutPage instanceof HTMLElement)) {
+      return null;
+    }
+    if (narrowLayoutMq.matches === true) {
+      const stage = aboutPage.querySelector(".detail-stage");
+      return stage instanceof HTMLElement ? stage : null;
+    }
+    const right = aboutPage.querySelector(".detail__right");
+    return right instanceof HTMLElement ? right : null;
+  };
 
   const controller = createDetailScrollBehavior({
     isActive: () => document.body.classList.contains("about-view") === true,
@@ -561,13 +636,7 @@ function initAboutDetailScroll() {
     miniTitleId: "about-mini-title",
     titleSectionSelector: ".about-page .detail__left-top",
     scrollToTopSelector: ".about-page .detail__left-top, .about-page .detail-layout",
-    getScrollRoot: () => {
-      if (narrowLayoutMq.matches === true || !(aboutPage instanceof HTMLElement)) {
-        return null;
-      }
-      const right = aboutPage.querySelector(".detail__right");
-      return right instanceof HTMLElement ? right : null;
-    },
+    getScrollRoot: resolveAboutScrollRoot,
     onFrame: () => {
       if (typeof window.__refreshAboutDetailScale === "function") {
         window.__refreshAboutDetailScale();
@@ -587,6 +656,7 @@ function boot() {
     initDetailPage();
     initDetailScroll();
   }
+  initAboutHorizontalScrollLock();
   initAboutDetailScroll();
 }
 

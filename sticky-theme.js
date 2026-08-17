@@ -72,6 +72,9 @@ function initStickyTheme() {
     if (typeof window.__refreshAboutDetailScroll === "function") {
       window.__refreshAboutDetailScroll();
     }
+    if (typeof window.__layoutStickyNotes === "function") {
+      window.__layoutStickyNotes();
+    }
   };
 
   const syncAboutPage = (skipUrlSync = false) => {

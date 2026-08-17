@@ -295,8 +295,12 @@ function bootDetailScale() {
       artboardClass: "about--artboard-scale",
       isEnabled: () => document.body.classList.contains("about-view") === true,
       getScrollRoot: () => {
-        if (aboutNarrowMq.matches === true) {
+        if (document.body.classList.contains("about-view") !== true) {
           return null;
+        }
+        if (aboutNarrowMq.matches === true) {
+          const stage = aboutPage.querySelector(".detail-stage");
+          return stage instanceof HTMLElement ? stage : null;
         }
         const right = aboutPage.querySelector(".detail__right");
         return right instanceof HTMLElement ? right : null;

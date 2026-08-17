@@ -157,6 +157,7 @@ function initStickyNotes() {
     if (narrow) {
       const left = padL;
       const right = padL + innerW;
+      const onAboutView = document.body.classList.contains("about-view") === true;
 
       for (let iter = 0; iter < 8; iter += 1) {
         let changed = false;
@@ -170,7 +171,8 @@ function initStickyNotes() {
 
           const bb0 = axisAlignedBoundsForRotatedSquare(rot, 0, 0, size);
           const aw = bb0.maxX - bb0.minX;
-          const slack = EDGE_OVERFLOW_FRACTION * aw;
+          const slack =
+            onAboutView === true ? 0 : EDGE_OVERFLOW_FRACTION * aw;
           const innerLeft = left - slack;
           const innerRight = right + slack;
 
@@ -318,13 +320,14 @@ function initStickyNotes() {
 
   function constrainToStage(noteEl, x, y) {
     const sb = constrainBoundsSize();
+    const onAboutView = document.body.classList.contains("about-view") === true;
     const rot = getNumberAttr(noteEl, "data-rot", 0);
     const size = noteSizePx(noteEl);
     const bb0 = axisAlignedBoundsForRotatedSquare(rot, 0, 0, size);
     const w = bb0.maxX - bb0.minX;
     const h = bb0.maxY - bb0.minY;
-    const sx = EDGE_OVERFLOW_FRACTION * w;
-    const sy = EDGE_OVERFLOW_FRACTION * h;
+    const sx = onAboutView === true ? 0 : EDGE_OVERFLOW_FRACTION * w;
+    const sy = onAboutView === true ? 0 : EDGE_OVERFLOW_FRACTION * h;
 
     const minTx = -sx - bb0.minX;
     const maxTx = sb.width + sx - bb0.maxX;
@@ -607,6 +610,11 @@ function initStickyNotes() {
   }
 
   for (const note of notes) attachDrag(note);
+
+  window.__layoutStickyNotes = () => {
+    applyStickyStackOrder();
+    layoutNotes();
+  };
 }
 
 if (document.readyState === "loading") {

@@ -756,6 +756,13 @@ body.detail--artboard-scale .detail__grey-bleed {
     background: #ffffff;
   }
 
+  html.about-view,
+  body.about-view.detail {
+    overflow-x: hidden;
+    overscroll-behavior-x: none;
+    touch-action: pan-y pinch-zoom;
+  }
+
   .detail__grey-bleed,
   .detail__white-bleed {
     display: none !important;
@@ -924,12 +931,12 @@ body.detail--artboard-scale .detail__grey-bleed {
 
   .detail__mini-title .detail__header-rule {
     display: block;
-    width: 100vw;
-    max-width: 100vw;
+    width: 100%;
+    max-width: 100%;
     margin-top: 0;
     margin-right: 0;
     margin-bottom: 0;
-    margin-left: calc(50% - 50vw);
+    margin-left: 0;
   }
 
   .detail__mini-title .detail__header-row .detail__back {
