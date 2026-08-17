@@ -214,12 +214,22 @@ body.about-view .now-playing-pill {
   pointer-events: none;
 }
 
+/* About page — 64px horizontal section gutters (all viewports). */
+body.about-view .about-page .detail__right {
+  --detail-rail-pad-x: 64px;
+  box-sizing: border-box;
+  padding-left: max(64px, env(safe-area-inset-left, 0px));
+  padding-right: max(64px, env(safe-area-inset-right, 0px));
+  overflow-x: clip;
+}
+
 /* About hero — Figma 253:7775 artboard; uniform scale, locked layer transforms. */
 @media (min-width: 901px) {
-  .about-page .detail__right {
+  body.about-view .about-page .detail__right {
     min-height: 0;
-    padding: 64px var(--detail-rail-pad-x, 64px) 80px;
-    align-items: center;
+    padding-top: 64px;
+    padding-bottom: 80px;
+    align-items: stretch;
   }
 
   .about-page__hero.about-page__collage-figure,
@@ -461,6 +471,16 @@ body.about-view .about-page__photo {
 }
 
 @media (max-width: 900px) {
+  body.about-view .about-page .detail__left {
+    padding-left: max(64px, env(safe-area-inset-left, 0px));
+    padding-right: max(64px, env(safe-area-inset-right, 0px));
+  }
+
+  body.about-view .about-page .detail__right {
+    padding-top: 64px;
+    padding-bottom: max(80px, env(safe-area-inset-bottom, 0px));
+  }
+
   .about-page__collage-group {
     --hero-collage-scale: 1;
   }
