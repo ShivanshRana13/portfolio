@@ -750,9 +750,9 @@ body.detail--artboard-scale .detail__grey-bleed {
 }
 
 @media (max-width: 900px) {
-  html,
-  body.detail,
-  body.about-view.detail {
+  html.about-view,
+  body.about-view.detail,
+  body.detail:not(.about-view) {
     background: #ffffff;
   }
 
@@ -768,17 +768,17 @@ body.detail--artboard-scale .detail__grey-bleed {
     display: none !important;
   }
 
-  .detail-stage {
+  body.detail .detail-stage {
     background: #ffffff;
   }
 
-  .detail-layout {
+  body.detail .detail-layout {
     grid-template-columns: 1fr;
     column-gap: 0;
     background: #ffffff;
   }
 
-  .detail__left {
+  body.detail .detail__left {
     position: relative;
     left: auto;
     width: auto;

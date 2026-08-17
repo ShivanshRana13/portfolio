@@ -258,9 +258,16 @@ body.about-view .now-playing-pill {
    */
   --hero-artboard-w: 839;
   --hero-artboard-h: 817;
+  --hero-collage-scale: 1.25;
   position: relative;
-  width: min(100cqw, calc(100cqh * var(--hero-artboard-w) / var(--hero-artboard-h)));
-  height: min(100cqh, calc(100cqw * var(--hero-artboard-h) / var(--hero-artboard-w)));
+  width: min(
+    calc(100cqw * var(--hero-collage-scale)),
+    calc(100cqh * var(--hero-artboard-w) / var(--hero-artboard-h) * var(--hero-collage-scale))
+  );
+  height: min(
+    calc(100cqh * var(--hero-collage-scale)),
+    calc(100cqw * var(--hero-artboard-h) / var(--hero-artboard-w) * var(--hero-collage-scale))
+  );
   aspect-ratio: 839 / 817;
   transform-origin: center center;
   overflow: visible;

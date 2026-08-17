@@ -53,9 +53,21 @@ body.theme-dark {
   --text: #ffffff;
 }
 
-body.theme-focus-light {
+body.about-view.theme-focus-light {
   --bg: #ffffff;
   --text: #000000;
+}
+
+@media (max-width: 900px) {
+  html:not(.about-view):not(:has(body.detail)),
+  body:not(.about-view):not(.detail) {
+    background-color: #f6f6f6;
+  }
+
+  body:not(.about-view):not(.theme-dark) .stage,
+  body:not(.about-view):not(.theme-dark) .scene {
+    background-color: #f6f6f6;
+  }
 }
 
 body.theme-dark a {
@@ -762,7 +774,7 @@ body.theme-dark .scene.scene--patent-cube-active .patent-cube__viewport {
  * theme-dark: black field · theme-focus-light / about-view: about detail layout.
  */
 body.theme-dark .intro,
-body.theme-focus-light .intro {
+body.about-view.theme-focus-light .intro {
   opacity: 0;
   visibility: hidden;
   pointer-events: none;
@@ -770,7 +782,7 @@ body.theme-focus-light .intro {
 }
 
 body.theme-dark .cards .sticky:not(.is-selected),
-body.theme-focus-light .cards .sticky:not(.is-selected) {
+body.about-view.theme-focus-light .cards .sticky:not(.is-selected) {
   opacity: 0;
   visibility: hidden;
   pointer-events: none;
@@ -781,7 +793,7 @@ body.theme-focus-light .cards .sticky:not(.is-selected) {
 
 @media (prefers-reduced-motion: reduce) {
   body.theme-dark .cards .sticky:not(.is-selected),
-  body.theme-focus-light .cards .sticky:not(.is-selected) {
+  body.about-view.theme-focus-light .cards .sticky:not(.is-selected) {
     transition-duration: 0.01ms;
   }
 }
