@@ -769,17 +769,17 @@ body.detail--artboard-scale .detail__grey-bleed {
     display: none !important;
   }
 
-  body.detail:not(:has(.about-page)) .detail-stage {
+  body.detail .detail-stage {
     background: #ffffff;
   }
 
-  body.detail:not(:has(.about-page)) .detail-layout {
+  body.detail .detail-layout {
     grid-template-columns: 1fr;
     column-gap: 0;
     background: #ffffff;
   }
 
-  body.detail:not(:has(.about-page)) .detail__left {
+  body.detail .detail__left {
     position: relative;
     left: auto;
     width: auto;
