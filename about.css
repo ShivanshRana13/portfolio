@@ -125,8 +125,8 @@ body.about-view.detail.theme-focus-light {
   }
 
   body.about-view .cards {
-    overflow: hidden;
-    contain: paint;
+    overflow: visible;
+    contain: none;
   }
 
   body.about-view .cards .sticky:not(.sticky--star) {
@@ -134,7 +134,7 @@ body.about-view.detail.theme-focus-light {
   }
 
   body.about-view .sticky--star {
-    overflow: hidden;
+    overflow: visible;
   }
 
   body.about-view .intro,

@@ -318,6 +318,9 @@ function initStickyNotes() {
     return { width: r.width, height: r.height };
   }
 
+  /** Dog stack extends above the star tile (see `.sticky-star__dog-stack { top: -110px }`). */
+  const STAR_DOG_TOP_OVERFLOW_PX = 110;
+
   function constrainToStage(noteEl, x, y) {
     const sb = constrainBoundsSize();
     const onAboutView = document.body.classList.contains("about-view") === true;
@@ -329,10 +332,14 @@ function initStickyNotes() {
     const sx = onAboutView === true ? 0 : EDGE_OVERFLOW_FRACTION * w;
     const sy = onAboutView === true ? 0 : EDGE_OVERFLOW_FRACTION * h;
 
-    const minTx = -sx - bb0.minX;
+    let minTx = -sx - bb0.minX;
     const maxTx = sb.width + sx - bb0.maxX;
-    const minTy = -sy - bb0.minY;
+    let minTy = -sy - bb0.minY;
     const maxTy = sb.height + sy - bb0.maxY;
+
+    if (onAboutView === true && noteEl.classList.contains("sticky--star") === true) {
+      minTy = Math.max(minTy, STAR_DOG_TOP_OVERFLOW_PX - bb0.minY);
+    }
 
     return {
       x: clamp(x, minTx, maxTx),
