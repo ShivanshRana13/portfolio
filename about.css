@@ -218,7 +218,7 @@ body.about-view .now-playing-pill {
 @media (min-width: 901px) {
   .about-page .detail__right {
     min-height: 0;
-    padding: 0 0 80px;
+    padding: 64px var(--detail-rail-pad-x, 64px) 80px;
     align-items: center;
   }
 
