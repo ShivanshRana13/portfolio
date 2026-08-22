@@ -8,17 +8,8 @@ function getNumberAttr(el, name, fallback) {
   return Number.isFinite(n) ? n : fallback;
 }
 
-function getStarScrollDismissOffsetY(el) {
-  if (el.classList.contains("sticky--scroll-dismissed") !== true) {
-    return 0;
-  }
-  const height = el.offsetHeight > 0 ? el.offsetHeight : 275;
-  return height + 48;
-}
-
 function applyTransform(el, x, y, rotDeg) {
-  const dismissY = getStarScrollDismissOffsetY(el);
-  el.style.transform = `translate3d(${x}px, ${y + dismissY}px, 0) rotate(${rotDeg}deg)`;
+  el.style.transform = `translate3d(${x}px, ${y}px, 0) rotate(${rotDeg}deg)`;
 }
 
 function setZ(el, z) {

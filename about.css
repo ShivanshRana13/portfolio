@@ -155,7 +155,11 @@ body.about-view:has(.about-page:not([hidden])).detail.theme-focus-light {
   }
 
   body.about-view:has(.about-page:not([hidden])) .sticky--star.is-selected {
-    transition: transform 320ms cubic-bezier(0.22, 1, 0.32, 1);
+    opacity: 1;
+    visibility: visible;
+    transition:
+      opacity 320ms cubic-bezier(0.22, 1, 0.32, 1),
+      visibility 320ms cubic-bezier(0.22, 1, 0.32, 1);
   }
 
   body.about-view:has(.about-page:not([hidden])) .sticky--star.is-selected.sticky--dragging {
@@ -163,6 +167,8 @@ body.about-view:has(.about-page:not([hidden])).detail.theme-focus-light {
   }
 
   body.about-view:has(.about-page:not([hidden])) .sticky--star.is-selected.sticky--scroll-dismissed {
+    opacity: 0;
+    visibility: hidden;
     pointer-events: none;
   }
 }

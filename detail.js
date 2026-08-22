@@ -327,11 +327,7 @@ function createDetailScrollBehavior(config = {}) {
         pastTitle === true &&
         pastTitleJustEntered !== true &&
         headerMode === MOBILE_HEADER_LANDING;
-      const hadDismissed = star.classList.contains("sticky--scroll-dismissed") === true;
       star.classList.toggle("sticky--scroll-dismissed", hide);
-      if (hadDismissed !== hide && typeof window.__layoutStickyNotes === "function") {
-        window.__layoutStickyNotes();
-      }
     }
 
     function setMobileHeaderMode(nextMode) {
