@@ -109,11 +109,14 @@ function initStickyTheme() {
       "theme-dark",
       "detail--mobile-landing",
       "detail--mobile-mini-title",
-      "detail--mobile-past-title",
     );
     const starStickyEl = document.querySelector(".sticky--star");
     if (starStickyEl instanceof HTMLElement) {
-      starStickyEl.classList.remove("sticky--scroll-dismissed");
+      starStickyEl.style.removeProperty("opacity");
+      starStickyEl.style.removeProperty("pointer-events");
+    }
+    if (typeof window.__clearAboutStarPositionLock === "function") {
+      window.__clearAboutStarPositionLock();
     }
     if (scene instanceof HTMLElement) {
       scene.classList.remove("scene--about-active");

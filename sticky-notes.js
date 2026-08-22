@@ -281,6 +281,25 @@ function initStickyNotes() {
     return positions;
   }
 
+  function readAboutStarLock(note) {
+    const x = getNumberAttr(note, "data-about-star-x", NaN);
+    const y = getNumberAttr(note, "data-about-star-y", NaN);
+    if (Number.isFinite(x) && Number.isFinite(y)) {
+      return { x, y };
+    }
+    return null;
+  }
+
+  function writeAboutStarLock(note, x, y) {
+    note.setAttribute("data-about-star-x", String(x));
+    note.setAttribute("data-about-star-y", String(y));
+  }
+
+  function clearAboutStarLock(note) {
+    note.removeAttribute("data-about-star-x");
+    note.removeAttribute("data-about-star-y");
+  }
+
   function layoutNotes() {
     const dragging = notes.some((n) => n.classList.contains("sticky--dragging")) === true;
     if (dragging) {
@@ -289,6 +308,27 @@ function initStickyNotes() {
     }
 
     pendingLayout = false;
+
+    const aboutView = document.body.classList.contains("about-view") === true;
+    const starNote = notes.find((note) => note.classList.contains("sticky--star") === true) ?? null;
+
+    if (aboutView === true && starNote instanceof HTMLElement) {
+      const locked = readAboutStarLock(starNote);
+      if (locked !== null) {
+        applyCoords(starNote, locked.x, locked.y);
+        fitStickyCardTitles();
+        return;
+      }
+
+      const base = notes.map((note) => activePreset(note));
+      const fitted = fitPositionsToContainer(base);
+      const starIndex = notes.indexOf(starNote);
+      const starPos = fitted[starIndex] ?? base[starIndex] ?? { x: 0, y: 0 };
+      writeAboutStarLock(starNote, starPos.x, starPos.y);
+      applyCoords(starNote, starPos.x, starPos.y);
+      fitStickyCardTitles();
+      return;
+    }
 
     const base = notes.map((note) => activePreset(note));
 
@@ -345,6 +385,12 @@ function initStickyNotes() {
     if (Number.isFinite(mx) && Number.isFinite(my)) {
       note.setAttribute("data-mobile-x", String(x));
       note.setAttribute("data-mobile-y", String(y));
+    }
+    if (
+      document.body.classList.contains("about-view") === true &&
+      note.classList.contains("sticky--star") === true
+    ) {
+      writeAboutStarLock(note, x, y);
     }
   }
 
@@ -654,6 +700,13 @@ function initStickyNotes() {
   window.__layoutStickyNotes = () => {
     applyStickyStackOrder();
     layoutNotes();
+  };
+
+  window.__clearAboutStarPositionLock = () => {
+    const star = notes.find((note) => note.classList.contains("sticky--star") === true) ?? null;
+    if (star instanceof HTMLElement) {
+      clearAboutStarLock(star);
+    }
   };
 }
 

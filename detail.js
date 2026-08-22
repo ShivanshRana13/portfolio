@@ -41,7 +41,55 @@ const SCROLL_END_THRESHOLD_PX = 4;
 
 const MOBILE_HEADER_LANDING = "detail--mobile-landing";
 const MOBILE_HEADER_MINI_TITLE = "detail--mobile-mini-title";
-const MOBILE_HEADER_PAST_TITLE = "detail--mobile-past-title";
+
+/**
+ * Mobile About: hide the Let's chat star instantly on scroll down, show on scroll up.
+ * Opacity/pointer-events only — position stays locked in sticky-notes.js.
+ */
+function createAboutStarScrollDismiss(getScrollRoot, narrowMq) {
+  const star = document.querySelector(".sticky--star");
+  let lastScrollY = 0;
+
+  function clearStarScrollDismiss() {
+    if (!(star instanceof HTMLElement)) {
+      return;
+    }
+    star.style.removeProperty("opacity");
+    star.style.removeProperty("pointer-events");
+  }
+
+  function setStarScrollDismissed(dismissed) {
+    if (!(star instanceof HTMLElement)) {
+      return;
+    }
+    star.style.opacity = dismissed ? "0" : "1";
+    star.style.pointerEvents = dismissed ? "none" : "auto";
+  }
+
+  function reset() {
+    lastScrollY = getDetailScrollY(getScrollRoot());
+    clearStarScrollDismiss();
+  }
+
+  function onFrame() {
+    if (document.body.classList.contains("about-view") !== true || narrowMq.matches !== true) {
+      clearStarScrollDismiss();
+      return;
+    }
+
+    const y = getDetailScrollY(getScrollRoot());
+    const deltaY = y - lastScrollY;
+    lastScrollY = y;
+
+    if (deltaY > 0) {
+      setStarScrollDismissed(true);
+    } else if (deltaY < 0) {
+      setStarScrollDismissed(false);
+    }
+  }
+
+  return { onFrame, reset };
+}
 
 function initDetailPage() {
   const params = new URLSearchParams(window.location.search);
@@ -303,31 +351,7 @@ function createDetailScrollBehavior(config = {}) {
     }
 
     function clearMobileHeaderModes() {
-      document.body.classList.remove(
-        MOBILE_HEADER_LANDING,
-        MOBILE_HEADER_MINI_TITLE,
-        MOBILE_HEADER_PAST_TITLE,
-      );
-    }
-
-    function syncMobileAboutStarDismiss(pastTitle, pastTitleJustEntered, headerMode) {
-      const star = document.querySelector(".sticky--star");
-      if (!(star instanceof HTMLElement)) {
-        return;
-      }
-
-      const aboutOpen = document.body.classList.contains("about-view") === true;
-      const narrow = narrowLayoutMq.matches === true;
-      if (aboutOpen !== true || narrow !== true) {
-        star.classList.remove("sticky--scroll-dismissed");
-        return;
-      }
-
-      const hide =
-        pastTitle === true &&
-        pastTitleJustEntered !== true &&
-        headerMode === MOBILE_HEADER_LANDING;
-      star.classList.toggle("sticky--scroll-dismissed", hide);
+      document.body.classList.remove(MOBILE_HEADER_LANDING, MOBILE_HEADER_MINI_TITLE);
     }
 
     function setMobileHeaderMode(nextMode) {
@@ -368,23 +392,19 @@ function createDetailScrollBehavior(config = {}) {
         wasPastTitleSection = false;
         miniTitleRevealCarryPx = 0;
         mobileHeaderMode = MOBILE_HEADER_LANDING;
-        document.body.classList.remove(MOBILE_HEADER_PAST_TITLE);
         setMobileHeaderMode(MOBILE_HEADER_LANDING);
-        syncMobileAboutStarDismiss(false, false, mobileHeaderMode);
         return;
       }
 
       const y = getScrollY();
       const titleSectionH = getMobileTitleSectionHeightPx();
       const pastTitleSection = titleSectionH > 0 && y > titleSectionH;
-      document.body.classList.toggle(MOBILE_HEADER_PAST_TITLE, pastTitleSection === true);
 
       if (pastTitleSection !== true) {
         wasPastTitleSection = false;
         miniTitleRevealCarryPx = 0;
         mobileHeaderMode = MOBILE_HEADER_LANDING;
         setMobileHeaderMode(MOBILE_HEADER_LANDING);
-        syncMobileAboutStarDismiss(false, false, mobileHeaderMode);
         lastScrollY = y;
         return;
       }
@@ -397,7 +417,6 @@ function createDetailScrollBehavior(config = {}) {
         miniTitleRevealCarryPx = 0;
         mobileHeaderMode = MOBILE_HEADER_LANDING;
         setMobileHeaderMode(mobileHeaderMode);
-        syncMobileAboutStarDismiss(true, true, mobileHeaderMode);
         return;
       }
 
@@ -412,7 +431,6 @@ function createDetailScrollBehavior(config = {}) {
       }
 
       setMobileHeaderMode(mobileHeaderMode);
-      syncMobileAboutStarDismiss(true, false, mobileHeaderMode);
     }
 
     function applyDesktop() {
@@ -433,7 +451,6 @@ function createDetailScrollBehavior(config = {}) {
       if (isActive() !== true) {
         clearTitleScrollVars();
         clearMobileHeaderModes();
-        syncMobileAboutStarDismiss(false, false, MOBILE_HEADER_LANDING);
         if (miniTitleEl !== null) {
           miniTitleEl.hidden = true;
           miniTitleEl.setAttribute("aria-hidden", "true");
@@ -448,7 +465,6 @@ function createDetailScrollBehavior(config = {}) {
         } else {
           clearMobileHeaderModes();
         }
-        syncMobileAboutStarDismiss(false, false, MOBILE_HEADER_LANDING);
         return;
       }
 
@@ -458,7 +474,6 @@ function createDetailScrollBehavior(config = {}) {
       }
 
       clearMobileHeaderModes();
-      syncMobileAboutStarDismiss(false, false, MOBILE_HEADER_LANDING);
       applyDesktop();
     }
 
@@ -627,6 +642,8 @@ function initAboutDetailScroll() {
     return right instanceof HTMLElement ? right : null;
   };
 
+  const aboutStarScroll = createAboutStarScrollDismiss(resolveAboutScrollRoot, narrowLayoutMq);
+
   const controller = createDetailScrollBehavior({
     isActive: () => document.body.classList.contains("about-view") === true,
     scrollLevelId: "about-scroll-level",
@@ -637,13 +654,18 @@ function initAboutDetailScroll() {
     titleSectionSelector: ".about-page .detail__left-top",
     scrollToTopSelector: ".about-page .detail__left-top, .about-page .detail-layout",
     getScrollRoot: resolveAboutScrollRoot,
+    onFrame: aboutStarScroll.onFrame,
   });
 
   window.__refreshAboutDetailScroll = () => {
     controller.scheduleMeasureAndApply();
     controller.refresh();
+    aboutStarScroll.reset();
   };
-  window.__resetAboutScroll = controller.reset;
+  window.__resetAboutScroll = () => {
+    controller.reset();
+    aboutStarScroll.reset();
+  };
 }
 
 function boot() {
