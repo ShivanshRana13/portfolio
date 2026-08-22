@@ -3,11 +3,11 @@
  * Match case study spacing on mobile; only override scroll, star sticky, and hero collage.
  */
 
-html.about-view {
+html.about-view:has(.about-page:not([hidden])) {
   overflow-x: hidden;
 }
 
-body.about-view.detail.theme-focus-light {
+body.about-view:has(.about-page:not([hidden])).detail.theme-focus-light {
   --bg: #f6f6f6;
   overflow-x: hidden;
   background: #f6f6f6;
@@ -16,20 +16,20 @@ body.about-view.detail.theme-focus-light {
 
 /* Desktop: lock document scroll; only the right rail scrolls (like case study left rail). */
 @media (min-width: 901px) {
-  html.about-view {
+  html.about-view:has(.about-page:not([hidden])) {
     overflow: hidden;
     height: 100dvh;
     max-height: 100dvh;
   }
 
-  body.about-view.detail.theme-focus-light {
+  body.about-view:has(.about-page:not([hidden])).detail.theme-focus-light {
     overflow: hidden;
     height: 100dvh;
     max-height: 100dvh;
     min-height: 0;
   }
 
-  body.about-view .stage {
+  body.about-view:has(.about-page:not([hidden])) .stage {
     height: 100dvh;
     max-height: 100dvh;
     min-height: 0;
@@ -37,14 +37,14 @@ body.about-view.detail.theme-focus-light {
     align-items: stretch;
   }
 
-  body.about-view .scene {
+  body.about-view:has(.about-page:not([hidden])) .scene {
     height: 100dvh;
     max-height: 100dvh;
     min-height: 0;
     overflow: hidden;
   }
 
-  body.about-view .about-page {
+  body.about-view:has(.about-page:not([hidden])) .about-page {
     height: 100dvh;
     max-height: 100dvh;
     min-height: 0;
@@ -71,13 +71,13 @@ body.about-view.detail.theme-focus-light {
 
 /* Mobile about: scroll inside .detail-stage (index.html layout can't use body scroll). */
 @media (max-width: 900px) {
-  html.about-view {
+  html.about-view:has(.about-page:not([hidden])) {
     overflow: hidden;
     height: 100dvh;
     max-height: 100dvh;
   }
 
-  body.about-view.detail.theme-focus-light {
+  body.about-view:has(.about-page:not([hidden])).detail.theme-focus-light {
     --bg: #ffffff;
     background: #ffffff;
     overflow: hidden;
@@ -86,9 +86,9 @@ body.about-view.detail.theme-focus-light {
     min-height: 0;
   }
 
-  body.about-view .stage,
-  body.about-view .scene,
-  body.about-view .about-page {
+  body.about-view:has(.about-page:not([hidden])) .stage,
+  body.about-view:has(.about-page:not([hidden])) .scene,
+  body.about-view:has(.about-page:not([hidden])) .about-page {
     height: 100dvh;
     max-height: 100dvh;
     min-height: 0;
@@ -96,13 +96,13 @@ body.about-view.detail.theme-focus-light {
     background: #ffffff;
   }
 
-  body.about-view .scene {
+  body.about-view:has(.about-page:not([hidden])) .scene {
     transform: none !important;
     width: 100% !important;
     max-width: 100%;
   }
 
-  body.about-view .detail-stage {
+  body.about-view:has(.about-page:not([hidden])) .detail-stage {
     height: 100dvh;
     max-height: 100dvh;
     min-height: 0;
@@ -114,32 +114,32 @@ body.about-view.detail.theme-focus-light {
     touch-action: pan-y pinch-zoom;
   }
 
-  body.about-view .detail-layout,
-  body.about-view .detail__right {
+  body.about-view:has(.about-page:not([hidden])) .detail-layout,
+  body.about-view:has(.about-page:not([hidden])) .detail__right {
     overflow-x: hidden;
     max-width: 100%;
   }
 
-  body.about-view .cards {
+  body.about-view:has(.about-page:not([hidden])) .cards {
     overflow: visible;
     contain: none;
   }
 
-  body.about-view .cards .sticky:not(.sticky--star) {
+  body.about-view:has(.about-page:not([hidden])) .cards .sticky:not(.sticky--star) {
     display: none !important;
   }
 
-  body.about-view .sticky--star {
+  body.about-view:has(.about-page:not([hidden])) .sticky--star {
     overflow: visible;
   }
 
-  body.about-view .intro,
-  body.about-view .footer {
+  body.about-view:has(.about-page:not([hidden])) .intro,
+  body.about-view:has(.about-page:not([hidden])) .footer {
     display: none !important;
   }
 
   /* Same as detail.html: mini title sits outside the scroll clip, above about content. */
-  body.about-view #about-mini-title {
+  body.about-view:has(.about-page:not([hidden])) #about-mini-title {
     z-index: 60;
   }
 
@@ -148,15 +148,15 @@ body.about-view.detail.theme-focus-light {
   }
 }
 
-body.about-view .scene {
+body.about-view:has(.about-page:not([hidden])) .scene {
   transform: none !important;
   width: 100% !important;
   max-width: 100%;
 }
 
-body.about-view .scene > .intro,
-body.about-view .scene > .patent-cube,
-body.about-view .scene > .now-playing-pill {
+body.about-view:has(.about-page:not([hidden])) .scene > .intro,
+body.about-view:has(.about-page:not([hidden])) .scene > .patent-cube,
+body.about-view:has(.about-page:not([hidden])) .scene > .now-playing-pill {
   display: none !important;
 }
 
@@ -174,7 +174,7 @@ body.about-view .scene > .now-playing-pill {
     visibility 280ms ease;
 }
 
-body.about-view .about-page {
+body.about-view:has(.about-page:not([hidden])) .about-page {
   opacity: 1;
   visibility: visible;
   pointer-events: auto;
@@ -198,7 +198,7 @@ body.about--artboard-scale .about-page .detail__grey-bleed {
 }
 
 /* Star sticky + dog stay above the about detail layer */
-body.about-view .cards {
+body.about-view:has(.about-page:not([hidden])) .cards {
   position: fixed;
   inset: 0;
   z-index: 200;
@@ -207,17 +207,17 @@ body.about-view .cards {
   pointer-events: none;
 }
 
-body.about-view .sticky--star {
+body.about-view:has(.about-page:not([hidden])) .sticky--star {
   pointer-events: auto;
 }
 
-body.about-view .footer {
+body.about-view:has(.about-page:not([hidden])) .footer {
   opacity: 0;
   visibility: hidden;
   pointer-events: none;
 }
 
-body.about-view .now-playing-pill {
+body.about-view:has(.about-page:not([hidden])) .now-playing-pill {
   display: none !important;
   visibility: hidden;
   pointer-events: none;
@@ -229,7 +229,7 @@ body.about-view .now-playing-pill {
  * Desktop: 64px rail inset on the right section only.
  */
 @media (min-width: 901px) {
-  body.about-view .about-page .detail__right {
+  body.about-view:has(.about-page:not([hidden])) .about-page .detail__right {
     --detail-rail-pad-x: 64px;
     box-sizing: border-box;
     min-height: 0;
@@ -448,36 +448,36 @@ body.about-view .now-playing-pill {
   }
 }
 
-body.about-view .about-page__elden {
+body.about-view:has(.about-page:not([hidden])) .about-page__elden {
   animation: about-collage-wiggle 4.6s ease-in-out infinite;
 }
 
-body.about-view .about-page__controller {
+body.about-view:has(.about-page:not([hidden])) .about-page__controller {
   animation: about-collage-wiggle 3.8s ease-in-out infinite;
   animation-delay: -0.6s;
 }
 
-body.about-view .about-page__food {
+body.about-view:has(.about-page:not([hidden])) .about-page__food {
   animation: about-collage-wiggle 5.1s ease-in-out infinite;
   animation-delay: -1.2s;
 }
 
-body.about-view .about-page__dumbbells {
+body.about-view:has(.about-page:not([hidden])) .about-page__dumbbells {
   animation: about-collage-wiggle 4.2s ease-in-out infinite;
   animation-delay: -0.3s;
 }
 
-body.about-view .about-page__spotify {
+body.about-view:has(.about-page:not([hidden])) .about-page__spotify {
   animation: about-collage-wiggle 3.5s ease-in-out infinite;
   animation-delay: -0.9s;
 }
 
-body.about-view .about-page__photo {
+body.about-view:has(.about-page:not([hidden])) .about-page__photo {
   transform: translate(-50%, -50%) rotate(var(--wiggle-base, -9.22deg));
 }
 
 @media (max-width: 900px) {
-  body.about-view .about-page .detail__right {
+  body.about-view:has(.about-page:not([hidden])) .about-page .detail__right {
     overflow-x: clip;
     /* Case studies use 64px meta-to-body; about hero should sit tighter under the title. */
     padding-top: 0;
@@ -485,8 +485,8 @@ body.about-view .about-page__photo {
     margin-top: -24px;
   }
 
-  body.about-view .about-page__hero.about-page__collage-figure,
-  body.about-view .about-page__collage-figure {
+  body.about-view:has(.about-page:not([hidden])) .about-page__hero.about-page__collage-figure,
+  body.about-view:has(.about-page:not([hidden])) .about-page__collage-figure {
     container-type: inline-size;
     width: 100%;
     min-height: 0;
@@ -496,15 +496,15 @@ body.about-view .about-page__photo {
     place-items: center;
   }
 
-  body.about-view .about-page__hero-stage.about-page__collage,
-  body.about-view .about-page__collage {
+  body.about-view:has(.about-page:not([hidden])) .about-page__hero-stage.about-page__collage,
+  body.about-view:has(.about-page:not([hidden])) .about-page__collage {
     min-height: 0;
     height: auto;
     width: 100%;
   }
 
-  body.about-view .about-page__hero-layers.about-page__collage-group,
-  body.about-view .about-page__collage-group {
+  body.about-view:has(.about-page:not([hidden])) .about-page__hero-layers.about-page__collage-group,
+  body.about-view:has(.about-page:not([hidden])) .about-page__collage-group {
     --hero-collage-scale: 1;
     width: 100%;
     height: auto;
@@ -514,27 +514,27 @@ body.about-view .about-page__photo {
   }
 
   /* Beat later collage rules that set overflow: visible (higher class specificity). */
-  body.about-view .about-page__hero.about-page__collage-figure,
-  body.about-view .about-page__collage-figure,
-  body.about-view .about-page__hero-stage.about-page__collage,
-  body.about-view .about-page__collage,
-  body.about-view .about-page__hero-layers.about-page__collage-group,
-  body.about-view .about-page__collage-group {
+  body.about-view:has(.about-page:not([hidden])) .about-page__hero.about-page__collage-figure,
+  body.about-view:has(.about-page:not([hidden])) .about-page__collage-figure,
+  body.about-view:has(.about-page:not([hidden])) .about-page__hero-stage.about-page__collage,
+  body.about-view:has(.about-page:not([hidden])) .about-page__collage,
+  body.about-view:has(.about-page:not([hidden])) .about-page__hero-layers.about-page__collage-group,
+  body.about-view:has(.about-page:not([hidden])) .about-page__collage-group {
     overflow: hidden;
   }
 
-  body.about-view .about-page__controller,
-  body.about-view .about-page__elden,
-  body.about-view .about-page__food {
+  body.about-view:has(.about-page:not([hidden])) .about-page__controller,
+  body.about-view:has(.about-page:not([hidden])) .about-page__elden,
+  body.about-view:has(.about-page:not([hidden])) .about-page__food {
     animation: none;
   }
 
-  body.about-view .about-page__dumbbells {
+  body.about-view:has(.about-page:not([hidden])) .about-page__dumbbells {
     animation: about-collage-wiggle-y 4.2s ease-in-out infinite;
     animation-delay: -0.3s;
   }
 
-  body.about-view .about-page__spotify {
+  body.about-view:has(.about-page:not([hidden])) .about-page__spotify {
     animation: about-collage-wiggle-y 3.5s ease-in-out infinite;
     animation-delay: -0.9s;
   }
@@ -545,20 +545,20 @@ body.about-view .about-page__photo {
     transition-duration: 0.01ms;
   }
 
-  body.about-view .about-page__photo {
+  body.about-view:has(.about-page:not([hidden])) .about-page__photo {
     animation: none;
     transform: translate(-50%, -50%) rotate(var(--wiggle-base, -9.22deg));
   }
 
-  body.about-view .about-page__controller,
-  body.about-view .about-page__elden,
-  body.about-view .about-page__food,
-  body.about-view .about-page__spotify {
+  body.about-view:has(.about-page:not([hidden])) .about-page__controller,
+  body.about-view:has(.about-page:not([hidden])) .about-page__elden,
+  body.about-view:has(.about-page:not([hidden])) .about-page__food,
+  body.about-view:has(.about-page:not([hidden])) .about-page__spotify {
     animation: none;
     transform: translate(-50%, -50%) rotate(var(--wiggle-base, 0deg));
   }
 
-  body.about-view .about-page__dumbbells {
+  body.about-view:has(.about-page:not([hidden])) .about-page__dumbbells {
     animation: none;
     transform: translate(-50%, -50%) rotate(var(--wiggle-base, 0deg));
   }

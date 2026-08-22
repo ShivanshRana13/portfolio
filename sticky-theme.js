@@ -133,6 +133,30 @@ function initStickyTheme() {
     }
   };
 
+  const restoreHomepageDefaultState = () => {
+    if (isAboutHash() === true) {
+      return;
+    }
+    if (aboutPage instanceof HTMLElement && aboutPage.hidden !== true) {
+      return;
+    }
+
+    const needsReset =
+      document.documentElement.classList.contains("about-view") === true ||
+      body.classList.contains("about-view") === true ||
+      body.classList.contains("detail") === true ||
+      body.classList.contains("theme-focus-light") === true ||
+      body.classList.contains("detail--mobile-landing") === true ||
+      body.classList.contains("detail--mobile-mini-title") === true ||
+      (starSticky instanceof HTMLElement && starSticky.classList.contains("is-selected") === true);
+
+    if (needsReset !== true) {
+      return;
+    }
+
+    clearSelection({ skipUrlSync: true });
+  };
+
   const setSelected = (target) => {
     for (const el of stickies) {
       el.classList.toggle("is-selected", el === target);
@@ -212,6 +236,9 @@ function initStickyTheme() {
       e.stopPropagation();
       if (isAboutHash() === true || history.state?.about === true) {
         history.back();
+        window.requestAnimationFrame(() => {
+          restoreHomepageDefaultState();
+        });
         return;
       }
       clearSelection();
@@ -246,16 +273,22 @@ function initStickyTheme() {
     }
     if (!shouldShowAbout && showingAbout) {
       clearSelection({ skipUrlSync: true });
+      return;
     }
+    restoreHomepageDefaultState();
   };
 
   window.addEventListener("hashchange", syncAboutFromUrl);
   window.addEventListener("popstate", syncAboutFromUrl);
+  window.addEventListener("pageshow", () => {
+    syncAboutFromUrl();
+  });
 
   syncScenePatentCube();
   if (isAboutHash() && starSticky instanceof HTMLElement) {
     setSelected(starSticky);
   } else {
+    restoreHomepageDefaultState();
     syncAboutPage();
     syncStarStickyLabel();
     syncNowPlayingPill();

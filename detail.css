@@ -750,15 +750,14 @@ body.detail--artboard-scale .detail__grey-bleed {
 }
 
 @media (max-width: 900px) {
-  html.about-view,
-  body.about-view.detail,
-  /* Case study pages only — index.html always contains `.about-page`. */
+  html.about-view:has(.about-page:not([hidden])),
+  body.about-view.detail:has(.about-page:not([hidden])),
   body.detail:not(.about-view):not(:has(.about-page)) {
     background: #ffffff;
   }
 
-  html.about-view,
-  body.about-view.detail {
+  html.about-view:has(.about-page:not([hidden])),
+  body.about-view.detail:has(.about-page:not([hidden])) {
     overflow-x: hidden;
     overscroll-behavior-x: none;
     touch-action: pan-y pinch-zoom;

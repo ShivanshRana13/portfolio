@@ -53,7 +53,7 @@ body.theme-dark {
   --text: #ffffff;
 }
 
-body.about-view.theme-focus-light {
+body.about-view.theme-focus-light:has(.about-page:not([hidden])) {
   --bg: #ffffff;
   --text: #000000;
 }
