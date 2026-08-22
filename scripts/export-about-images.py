@@ -22,7 +22,7 @@ WEBP_METHOD = 6
 
 # (src filename, output base, 1× width, 1× height)
 ASSETS = (
-    ("image-2-src.png", "image-2", 839, 839),
+    ("image-2-src.png", "image-2", 839, 481),
 )
 
 
