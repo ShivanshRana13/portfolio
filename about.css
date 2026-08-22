@@ -367,7 +367,8 @@ body.about-view:has(.about-page:not([hidden])) .now-playing-pill {
 .about-page__image-7,
 .about-page__image-8,
 .about-page__image-9,
-.about-page__image-10 {
+.about-page__image-10,
+.about-page__image-11 {
   flex: 0 0 auto;
   margin: 0;
   width: 100%;
@@ -395,7 +396,9 @@ body.about-view:has(.about-page:not([hidden])) .now-playing-pill {
 .about-page__image-9 picture,
 .about-page__image-9 img,
 .about-page__image-10 picture,
-.about-page__image-10 img {
+.about-page__image-10 img,
+.about-page__image-11 picture,
+.about-page__image-11 img {
   display: block;
   width: 100%;
   height: auto;
