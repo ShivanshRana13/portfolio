@@ -328,14 +328,6 @@ function initStickyTheme() {
     });
   }
 
-  for (const backBtn of document.querySelectorAll(".about-page__back")) {
-    if (!(backBtn instanceof HTMLButtonElement)) continue;
-    backBtn.addEventListener("click", (e) => {
-      e.stopPropagation();
-      finishHomepageReturn();
-    });
-  }
-
   document.addEventListener("pointerdown", (e) => {
     if (!(e instanceof PointerEvent)) return;
     const target = e.target;
