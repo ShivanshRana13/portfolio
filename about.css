@@ -483,11 +483,14 @@ body.about-view:has(.about-page:not([hidden])) .about-page__photo {
   body.about-view:has(.about-page:not([hidden])) .about-page__hero.about-page__collage-figure,
   body.about-view:has(.about-page:not([hidden])) .about-page__collage-figure {
     container-type: inline-size;
-    width: 100%;
+    width: 120%;
+    max-width: 120%;
+    margin-inline: -10%;
     min-height: 0;
     height: auto;
     aspect-ratio: 839 / 817;
-    margin: 0;
+    margin-top: 0;
+    margin-bottom: 0;
     place-items: center;
   }
 
@@ -500,7 +503,7 @@ body.about-view:has(.about-page:not([hidden])) .about-page__photo {
 
   body.about-view:has(.about-page:not([hidden])) .about-page__hero-layers.about-page__collage-group,
   body.about-view:has(.about-page:not([hidden])) .about-page__collage-group {
-    --hero-collage-scale: 1;
+    --hero-collage-scale: 1.2;
     width: 100%;
     height: auto;
     aspect-ratio: 839 / 817;
