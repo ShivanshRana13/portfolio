@@ -470,6 +470,7 @@ body.about-view .about-page__photo {
 @media (max-width: 900px) {
   body.about-view .about-page .detail__right {
     overflow-x: clip;
+    padding-top: 0;
   }
 
   .about-page__collage-group {
@@ -479,6 +480,8 @@ body.about-view .about-page__photo {
   .about-page__collage-figure {
     min-height: min(72vh, 640px);
     height: min(72vh, 640px);
+    place-items: start center;
+    margin-top: -32px;
   }
 
   /* Beat later collage rules that set overflow: visible (higher class specificity). */
