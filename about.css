@@ -137,6 +137,15 @@ body.about-view.detail.theme-focus-light {
   body.about-view .footer {
     display: none !important;
   }
+
+  /* Same as detail.html: mini title sits outside the scroll clip, above about content. */
+  body.about-view #about-mini-title {
+    z-index: 60;
+  }
+
+  body:not(.about-view) #about-mini-title {
+    display: none !important;
+  }
 }
 
 body.about-view .scene {

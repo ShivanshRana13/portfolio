@@ -271,6 +271,19 @@ function createDetailScrollBehavior(config = {}) {
     let wasPastTitleSection = false;
     let mobileHeaderMode = MOBILE_HEADER_LANDING;
     let miniTitleRevealCarryPx = 0;
+    let cachedTitleSectionH = 0;
+
+    function measureTitleSectionH() {
+      if (titleSectionEl === null) {
+        cachedTitleSectionH = 0;
+        return;
+      }
+      cachedTitleSectionH = titleSectionEl.offsetHeight;
+    }
+
+    function getMobileTitleSectionHeightPx() {
+      return cachedTitleSectionH;
+    }
 
     function getFirstFoldPx() {
       if (
@@ -303,13 +316,6 @@ function createDetailScrollBehavior(config = {}) {
         miniTitleEl.hidden = !showMini;
         miniTitleEl.setAttribute("aria-hidden", showMini ? "false" : "true");
       }
-    }
-
-    function getMobileTitleSectionHeightPx() {
-      if (titleSectionEl === null) {
-        return 0;
-      }
-      return titleSectionEl.offsetHeight;
     }
 
     function measureTitleMaxPx() {
@@ -429,6 +435,7 @@ function createDetailScrollBehavior(config = {}) {
         miniTitleRevealCarryPx = 0;
         mobileHeaderMode = MOBILE_HEADER_LANDING;
         measureTitleMaxPx();
+        measureTitleSectionH();
         apply();
       });
     }
@@ -437,6 +444,13 @@ function createDetailScrollBehavior(config = {}) {
     reduceMotionMq.addEventListener("change", scheduleMeasureAndApply);
     narrowLayoutMq.addEventListener("change", scheduleMeasureAndApply);
     window.addEventListener("resize", scheduleMeasureAndApply);
+
+    if (typeof ResizeObserver !== "undefined" && titleSectionEl instanceof HTMLElement) {
+      const titleSectionObserver = new ResizeObserver(() => {
+        measureTitleSectionH();
+      });
+      titleSectionObserver.observe(titleSectionEl);
+    }
 
     return { apply, scheduleMeasureAndApply };
   };
