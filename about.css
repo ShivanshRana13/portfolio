@@ -481,7 +481,7 @@ body.about-view .about-page__photo {
     min-height: min(72vh, 640px);
     height: min(72vh, 640px);
     place-items: start center;
-    margin-top: -72px;
+    margin-top: -120px;
   }
 
   /* Beat later collage rules that set overflow: visible (higher class specificity). */
