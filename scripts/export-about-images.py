@@ -30,6 +30,7 @@ ASSETS = (
     ("image-7-src.png", "image-7", 836, 392),
     ("image-8-src.png", "image-8", 841, 827),
     ("image-9-src.png", "image-9", 839, 805),
+    ("image-10-src.png", "image-10", 826, 1119),
 )
 
 
