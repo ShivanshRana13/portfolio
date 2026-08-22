@@ -77,6 +77,28 @@ function initStickyTheme() {
     }
   };
 
+  const resetAboutMiniTitleBar = () => {
+    const aboutMiniTitle = document.getElementById("about-mini-title");
+    if (!(aboutMiniTitle instanceof HTMLElement)) {
+      return;
+    }
+    aboutMiniTitle.hidden = true;
+    aboutMiniTitle.setAttribute("aria-hidden", "true");
+    aboutMiniTitle.style.transform = "translateY(-100%)";
+    aboutMiniTitle.style.visibility = "hidden";
+    aboutMiniTitle.style.pointerEvents = "none";
+  };
+
+  const clearAboutMiniTitleBarInline = () => {
+    const aboutMiniTitle = document.getElementById("about-mini-title");
+    if (!(aboutMiniTitle instanceof HTMLElement)) {
+      return;
+    }
+    aboutMiniTitle.style.removeProperty("transform");
+    aboutMiniTitle.style.removeProperty("visibility");
+    aboutMiniTitle.style.removeProperty("pointer-events");
+  };
+
   const resetAboutViewState = () => {
     const root = document.documentElement;
     root.classList.remove("about-view");
@@ -95,11 +117,7 @@ function initStickyTheme() {
       aboutPage.hidden = true;
       aboutPage.setAttribute("aria-hidden", "true");
     }
-    const aboutMiniTitle = document.getElementById("about-mini-title");
-    if (aboutMiniTitle instanceof HTMLElement) {
-      aboutMiniTitle.hidden = true;
-      aboutMiniTitle.setAttribute("aria-hidden", "true");
-    }
+    resetAboutMiniTitleBar();
   };
 
   const syncHomepageChrome = () => {
@@ -118,6 +136,11 @@ function initStickyTheme() {
     if (stage instanceof HTMLElement) {
       stage.style.backgroundColor = "#f6f6f6";
     }
+    if (scene instanceof HTMLElement) {
+      scene.style.backgroundColor = "#f6f6f6";
+    }
+
+    resetAboutMiniTitleBar();
   };
 
   const clearHomepageChromeInline = () => {
@@ -128,6 +151,17 @@ function initStickyTheme() {
     if (stage instanceof HTMLElement) {
       stage.style.removeProperty("background-color");
     }
+    if (scene instanceof HTMLElement) {
+      scene.style.removeProperty("background-color");
+    }
+    clearAboutMiniTitleBarInline();
+  };
+
+  const finishHomepageReturn = (options = {}) => {
+    clearSelection(options);
+    window.requestAnimationFrame(() => {
+      syncHomepageChrome();
+    });
   };
 
   const syncAboutPage = (skipUrlSync = false) => {
@@ -170,6 +204,14 @@ function initStickyTheme() {
     syncHomepageChrome();
   };
 
+  const markHomepageResetOnLeave = () => {
+    try {
+      sessionStorage.setItem("portfolio:reset-home", "1");
+    } catch {
+      // sessionStorage may be unavailable in private mode
+    }
+  };
+
   const restoreHomepageDefaultState = () => {
     if (isAboutHash() === true) {
       return;
@@ -191,8 +233,11 @@ function initStickyTheme() {
       return;
     }
 
-    clearSelection({ skipUrlSync: true });
+    finishHomepageReturn({ skipUrlSync: true });
   };
+
+  window.__finishHomepageReturn = finishHomepageReturn;
+  window.__markHomepageResetOnLeave = markHomepageResetOnLeave;
 
   const consumeHomepageResetFlag = () => {
     try {
@@ -245,6 +290,10 @@ function initStickyTheme() {
 
   const toggleStickySelection = (sticky) => {
     if (sticky.classList.contains("is-selected") === true) {
+      if (sticky === starSticky) {
+        finishHomepageReturn();
+        return;
+      }
       clearSelection();
       return;
     }
@@ -283,7 +332,7 @@ function initStickyTheme() {
     if (!(backBtn instanceof HTMLButtonElement)) continue;
     backBtn.addEventListener("click", (e) => {
       e.stopPropagation();
-      clearSelection();
+      finishHomepageReturn();
     });
   }
 
@@ -302,13 +351,17 @@ function initStickyTheme() {
 
   document.addEventListener("keydown", (e) => {
     if (e.key !== "Escape") return;
+    if (body.classList.contains("about-view") === true) {
+      finishHomepageReturn();
+      return;
+    }
     clearSelection();
   });
 
   const syncAboutFromUrl = () => {
     if (syncingAboutUrl) return;
     if (consumeHomepageResetFlag() === true) {
-      clearSelection({ skipUrlSync: true });
+      finishHomepageReturn({ skipUrlSync: true });
       return;
     }
     const shouldShowAbout = isAboutHash();
@@ -318,7 +371,7 @@ function initStickyTheme() {
       return;
     }
     if (!shouldShowAbout && showingAbout) {
-      clearSelection({ skipUrlSync: true });
+      finishHomepageReturn({ skipUrlSync: true });
       return;
     }
     restoreHomepageDefaultState();

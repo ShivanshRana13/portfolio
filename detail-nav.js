@@ -6,6 +6,10 @@
  * homepage after bfcache (common when leaving from the scroll mini title bar).
  */
 function markHomepageResetOnLeave() {
+  if (typeof window.__markHomepageResetOnLeave === "function") {
+    window.__markHomepageResetOnLeave();
+    return;
+  }
   try {
     sessionStorage.setItem("portfolio:reset-home", "1");
   } catch {
