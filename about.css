@@ -470,18 +470,38 @@ body.about-view .about-page__photo {
 @media (max-width: 900px) {
   body.about-view .about-page .detail__right {
     overflow-x: clip;
+    /* Case studies use 64px meta-to-body; about hero should sit tighter under the title. */
     padding-top: 0;
+    gap: 16px;
+    margin-top: -24px;
   }
 
-  .about-page__collage-group {
+  body.about-view .about-page__hero.about-page__collage-figure,
+  body.about-view .about-page__collage-figure {
+    container-type: inline-size;
+    width: 100%;
+    min-height: 0;
+    height: auto;
+    aspect-ratio: 839 / 817;
+    margin: 0;
+    place-items: center;
+  }
+
+  body.about-view .about-page__hero-stage.about-page__collage,
+  body.about-view .about-page__collage {
+    min-height: 0;
+    height: auto;
+    width: 100%;
+  }
+
+  body.about-view .about-page__hero-layers.about-page__collage-group,
+  body.about-view .about-page__collage-group {
     --hero-collage-scale: 1;
-  }
-
-  .about-page__collage-figure {
-    min-height: min(72vh, 640px);
-    height: min(72vh, 640px);
-    place-items: start center;
-    margin-top: -120px;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 839 / 817;
+    max-width: 100%;
+    min-height: 0;
   }
 
   /* Beat later collage rules that set overflow: visible (higher class specificity). */
