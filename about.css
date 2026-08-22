@@ -483,9 +483,9 @@ body.about-view:has(.about-page:not([hidden])) .about-page__photo {
   body.about-view:has(.about-page:not([hidden])) .about-page__hero.about-page__collage-figure,
   body.about-view:has(.about-page:not([hidden])) .about-page__collage-figure {
     container-type: inline-size;
-    width: 120%;
-    max-width: 120%;
-    margin-inline: -10%;
+    width: 132%;
+    max-width: 132%;
+    margin-inline: -16%;
     min-height: 0;
     height: auto;
     aspect-ratio: 839 / 817;
