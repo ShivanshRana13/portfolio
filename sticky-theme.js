@@ -95,6 +95,11 @@ function initStickyTheme() {
       aboutPage.hidden = true;
       aboutPage.setAttribute("aria-hidden", "true");
     }
+    const aboutMiniTitle = document.getElementById("about-mini-title");
+    if (aboutMiniTitle instanceof HTMLElement) {
+      aboutMiniTitle.hidden = true;
+      aboutMiniTitle.setAttribute("aria-hidden", "true");
+    }
   };
 
   const syncAboutPage = (skipUrlSync = false) => {
@@ -137,11 +142,11 @@ function initStickyTheme() {
     if (isAboutHash() === true) {
       return;
     }
-    if (aboutPage instanceof HTMLElement && aboutPage.hidden !== true) {
-      return;
-    }
 
+    const aboutShellOpen =
+      aboutPage instanceof HTMLElement && aboutPage.hidden !== true;
     const needsReset =
+      aboutShellOpen ||
       document.documentElement.classList.contains("about-view") === true ||
       body.classList.contains("about-view") === true ||
       body.classList.contains("detail") === true ||
@@ -155,6 +160,18 @@ function initStickyTheme() {
     }
 
     clearSelection({ skipUrlSync: true });
+  };
+
+  const consumeHomepageResetFlag = () => {
+    try {
+      if (sessionStorage.getItem("portfolio:reset-home") !== "1") {
+        return false;
+      }
+      sessionStorage.removeItem("portfolio:reset-home");
+    } catch {
+      return false;
+    }
+    return true;
   };
 
   const setSelected = (target) => {
@@ -234,13 +251,6 @@ function initStickyTheme() {
     if (!(backBtn instanceof HTMLButtonElement)) continue;
     backBtn.addEventListener("click", (e) => {
       e.stopPropagation();
-      if (isAboutHash() === true || history.state?.about === true) {
-        history.back();
-        window.requestAnimationFrame(() => {
-          restoreHomepageDefaultState();
-        });
-        return;
-      }
       clearSelection();
     });
   }
@@ -265,6 +275,10 @@ function initStickyTheme() {
 
   const syncAboutFromUrl = () => {
     if (syncingAboutUrl) return;
+    if (consumeHomepageResetFlag() === true) {
+      clearSelection({ skipUrlSync: true });
+      return;
+    }
     const shouldShowAbout = isAboutHash();
     const showingAbout = body.classList.contains("about-view");
     if (shouldShowAbout && !showingAbout && starSticky instanceof HTMLElement) {
