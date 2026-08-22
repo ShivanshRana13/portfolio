@@ -69,28 +69,30 @@ body.about-view.detail.theme-focus-light {
   }
 }
 
-/* Mobile about: body scroll (same as case study); detail.css handles horizontal overscroll. */
+/* Mobile about: scroll inside .detail-stage (index.html layout can't use body scroll). */
 @media (max-width: 900px) {
+  html.about-view {
+    overflow: hidden;
+    height: 100dvh;
+    max-height: 100dvh;
+  }
+
   body.about-view.detail.theme-focus-light {
     --bg: #ffffff;
     background: #ffffff;
-    overflow-x: hidden;
-    overflow-y: auto;
-    height: auto;
-    min-height: 100dvh;
-    max-height: none;
-    overscroll-behavior-x: none;
-    touch-action: pan-y pinch-zoom;
-    -webkit-overflow-scrolling: touch;
+    overflow: hidden;
+    height: 100dvh;
+    max-height: 100dvh;
+    min-height: 0;
   }
 
   body.about-view .stage,
   body.about-view .scene,
   body.about-view .about-page {
-    height: auto;
-    min-height: 100dvh;
-    max-height: none;
-    overflow: visible;
+    height: 100dvh;
+    max-height: 100dvh;
+    min-height: 0;
+    overflow: hidden;
     background: #ffffff;
   }
 
@@ -101,10 +103,15 @@ body.about-view.detail.theme-focus-light {
   }
 
   body.about-view .detail-stage {
-    height: auto;
+    height: 100dvh;
+    max-height: 100dvh;
     min-height: 0;
-    max-height: none;
-    overflow: visible;
+    overflow-x: hidden;
+    overflow-y: auto;
+    overscroll-behavior-x: none;
+    overscroll-behavior-y: contain;
+    -webkit-overflow-scrolling: touch;
+    touch-action: pan-y pinch-zoom;
   }
 
   body.about-view .detail-layout,
