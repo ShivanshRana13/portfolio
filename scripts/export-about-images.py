@@ -24,6 +24,7 @@ WEBP_METHOD = 6
 ASSETS = (
     ("image-2-src.png", "image-2", 839, 839),
     ("image-3-src.png", "image-3", 839, 481),
+    ("image-4-src.png", "image-4", 839, 702),
 )
 
 
