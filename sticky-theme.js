@@ -109,7 +109,12 @@ function initStickyTheme() {
       "theme-dark",
       "detail--mobile-landing",
       "detail--mobile-mini-title",
+      "detail--mobile-past-title",
     );
+    const starStickyEl = document.querySelector(".sticky--star");
+    if (starStickyEl instanceof HTMLElement) {
+      starStickyEl.classList.remove("sticky--scroll-dismissed");
+    }
     if (scene instanceof HTMLElement) {
       scene.classList.remove("scene--about-active");
     }

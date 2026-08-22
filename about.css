@@ -153,6 +153,18 @@ body.about-view:has(.about-page:not([hidden])).detail.theme-focus-light {
     display: block !important;
     visibility: visible !important;
   }
+
+  body.about-view:has(.about-page:not([hidden])) .sticky--star.is-selected {
+    transition: transform 320ms cubic-bezier(0.22, 1, 0.32, 1);
+  }
+
+  body.about-view:has(.about-page:not([hidden])) .sticky--star.is-selected.sticky--dragging {
+    transition: none;
+  }
+
+  body.about-view:has(.about-page:not([hidden])) .sticky--star.is-selected.sticky--scroll-dismissed {
+    pointer-events: none;
+  }
 }
 
 body.about-view:has(.about-page:not([hidden])) .scene {

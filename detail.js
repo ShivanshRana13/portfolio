@@ -41,6 +41,7 @@ const SCROLL_END_THRESHOLD_PX = 4;
 
 const MOBILE_HEADER_LANDING = "detail--mobile-landing";
 const MOBILE_HEADER_MINI_TITLE = "detail--mobile-mini-title";
+const MOBILE_HEADER_PAST_TITLE = "detail--mobile-past-title";
 
 function initDetailPage() {
   const params = new URLSearchParams(window.location.search);
@@ -302,7 +303,35 @@ function createDetailScrollBehavior(config = {}) {
     }
 
     function clearMobileHeaderModes() {
-      document.body.classList.remove(MOBILE_HEADER_LANDING, MOBILE_HEADER_MINI_TITLE);
+      document.body.classList.remove(
+        MOBILE_HEADER_LANDING,
+        MOBILE_HEADER_MINI_TITLE,
+        MOBILE_HEADER_PAST_TITLE,
+      );
+    }
+
+    function syncMobileAboutStarDismiss(pastTitle, pastTitleJustEntered, headerMode) {
+      const star = document.querySelector(".sticky--star");
+      if (!(star instanceof HTMLElement)) {
+        return;
+      }
+
+      const aboutOpen = document.body.classList.contains("about-view") === true;
+      const narrow = narrowLayoutMq.matches === true;
+      if (aboutOpen !== true || narrow !== true) {
+        star.classList.remove("sticky--scroll-dismissed");
+        return;
+      }
+
+      const hide =
+        pastTitle === true &&
+        pastTitleJustEntered !== true &&
+        headerMode === MOBILE_HEADER_LANDING;
+      const hadDismissed = star.classList.contains("sticky--scroll-dismissed") === true;
+      star.classList.toggle("sticky--scroll-dismissed", hide);
+      if (hadDismissed !== hide && typeof window.__layoutStickyNotes === "function") {
+        window.__layoutStickyNotes();
+      }
     }
 
     function setMobileHeaderMode(nextMode) {
@@ -343,19 +372,23 @@ function createDetailScrollBehavior(config = {}) {
         wasPastTitleSection = false;
         miniTitleRevealCarryPx = 0;
         mobileHeaderMode = MOBILE_HEADER_LANDING;
+        document.body.classList.remove(MOBILE_HEADER_PAST_TITLE);
         setMobileHeaderMode(MOBILE_HEADER_LANDING);
+        syncMobileAboutStarDismiss(false, false, mobileHeaderMode);
         return;
       }
 
       const y = getScrollY();
       const titleSectionH = getMobileTitleSectionHeightPx();
       const pastTitleSection = titleSectionH > 0 && y > titleSectionH;
+      document.body.classList.toggle(MOBILE_HEADER_PAST_TITLE, pastTitleSection === true);
 
       if (pastTitleSection !== true) {
         wasPastTitleSection = false;
         miniTitleRevealCarryPx = 0;
         mobileHeaderMode = MOBILE_HEADER_LANDING;
         setMobileHeaderMode(MOBILE_HEADER_LANDING);
+        syncMobileAboutStarDismiss(false, false, mobileHeaderMode);
         lastScrollY = y;
         return;
       }
@@ -368,6 +401,7 @@ function createDetailScrollBehavior(config = {}) {
         miniTitleRevealCarryPx = 0;
         mobileHeaderMode = MOBILE_HEADER_LANDING;
         setMobileHeaderMode(mobileHeaderMode);
+        syncMobileAboutStarDismiss(true, true, mobileHeaderMode);
         return;
       }
 
@@ -382,6 +416,7 @@ function createDetailScrollBehavior(config = {}) {
       }
 
       setMobileHeaderMode(mobileHeaderMode);
+      syncMobileAboutStarDismiss(true, false, mobileHeaderMode);
     }
 
     function applyDesktop() {
@@ -402,6 +437,7 @@ function createDetailScrollBehavior(config = {}) {
       if (isActive() !== true) {
         clearTitleScrollVars();
         clearMobileHeaderModes();
+        syncMobileAboutStarDismiss(false, false, MOBILE_HEADER_LANDING);
         if (miniTitleEl !== null) {
           miniTitleEl.hidden = true;
           miniTitleEl.setAttribute("aria-hidden", "true");
@@ -416,6 +452,7 @@ function createDetailScrollBehavior(config = {}) {
         } else {
           clearMobileHeaderModes();
         }
+        syncMobileAboutStarDismiss(false, false, MOBILE_HEADER_LANDING);
         return;
       }
 
@@ -425,6 +462,7 @@ function createDetailScrollBehavior(config = {}) {
       }
 
       clearMobileHeaderModes();
+      syncMobileAboutStarDismiss(false, false, MOBILE_HEADER_LANDING);
       applyDesktop();
     }
 
