@@ -359,7 +359,8 @@ body.about-view:has(.about-page:not([hidden])) .now-playing-pill {
   z-index: 3;
 }
 
-.about-page__image-2 {
+.about-page__image-2,
+.about-page__image-3 {
   flex: 0 0 auto;
   margin: 0;
   width: 100%;
@@ -371,7 +372,9 @@ body.about-view:has(.about-page:not([hidden])) .now-playing-pill {
 }
 
 .about-page__image-2 picture,
-.about-page__image-2 img {
+.about-page__image-2 img,
+.about-page__image-3 picture,
+.about-page__image-3 img {
   display: block;
   width: 100%;
   height: auto;
@@ -503,7 +506,7 @@ body.about-view:has(.about-page:not([hidden])) .about-page__photo {
 
   body.about-view:has(.about-page:not([hidden])) .about-page__hero-layers.about-page__collage-group,
   body.about-view:has(.about-page:not([hidden])) .about-page__collage-group {
-    --hero-collage-scale: 1.2;
+    --hero-collage-scale: 1.32;
     width: 100%;
     height: auto;
     aspect-ratio: 839 / 817;
