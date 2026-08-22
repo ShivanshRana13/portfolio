@@ -559,54 +559,6 @@ function initDetailScroll() {
   });
 }
 
-function initAboutHorizontalScrollLock() {
-  const narrowLayoutMq = window.matchMedia("(max-width: 900px)");
-
-  const clampHorizontalScroll = () => {
-    if (
-      document.body.classList.contains("about-view") !== true ||
-      narrowLayoutMq.matches !== true
-    ) {
-      return;
-    }
-    if (window.scrollX !== 0) {
-      window.scrollTo(0, window.scrollY);
-    }
-  };
-
-  window.addEventListener("scroll", clampHorizontalScroll, { passive: true });
-}
-
-function initAboutHorizontalScrollLock() {
-  const narrowLayoutMq = window.matchMedia("(max-width: 900px)");
-
-  const clampHorizontalScroll = () => {
-    if (
-      document.body.classList.contains("about-view") !== true ||
-      narrowLayoutMq.matches !== true
-    ) {
-      return;
-    }
-    const aboutPage = document.querySelector(".about-page");
-    const stage =
-      aboutPage instanceof HTMLElement ? aboutPage.querySelector(".detail-stage") : null;
-    if (stage instanceof HTMLElement && stage.scrollLeft !== 0) {
-      stage.scrollLeft = 0;
-    }
-    if (window.scrollX !== 0) {
-      window.scrollTo(0, window.scrollY);
-    }
-  };
-
-  window.addEventListener("scroll", clampHorizontalScroll, { passive: true });
-  const aboutPage = document.querySelector(".about-page");
-  const stage =
-    aboutPage instanceof HTMLElement ? aboutPage.querySelector(".detail-stage") : null;
-  if (stage instanceof HTMLElement) {
-    stage.addEventListener("scroll", clampHorizontalScroll, { passive: true });
-  }
-}
-
 function initAboutDetailScroll() {
   if (document.querySelector(".about-page") === null) {
     return;
@@ -620,8 +572,7 @@ function initAboutDetailScroll() {
       return null;
     }
     if (narrowLayoutMq.matches === true) {
-      const stage = aboutPage.querySelector(".detail-stage");
-      return stage instanceof HTMLElement ? stage : null;
+      return null;
     }
     const right = aboutPage.querySelector(".detail__right");
     return right instanceof HTMLElement ? right : null;
@@ -637,11 +588,6 @@ function initAboutDetailScroll() {
     titleSectionSelector: ".about-page .detail__left-top",
     scrollToTopSelector: ".about-page .detail__left-top, .about-page .detail-layout",
     getScrollRoot: resolveAboutScrollRoot,
-    onFrame: () => {
-      if (typeof window.__refreshAboutDetailScale === "function") {
-        window.__refreshAboutDetailScale();
-      }
-    },
   });
 
   window.__refreshAboutDetailScroll = () => {
@@ -656,7 +602,6 @@ function boot() {
     initDetailPage();
     initDetailScroll();
   }
-  initAboutHorizontalScrollLock();
   initAboutDetailScroll();
 }
 

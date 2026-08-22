@@ -299,8 +299,7 @@ function bootDetailScale() {
           return null;
         }
         if (aboutNarrowMq.matches === true) {
-          const stage = aboutPage.querySelector(".detail-stage");
-          return stage instanceof HTMLElement ? stage : null;
+          return null;
         }
         const right = aboutPage.querySelector(".detail__right");
         return right instanceof HTMLElement ? right : null;
