@@ -180,12 +180,16 @@ body.about-view .about-page {
   pointer-events: auto;
 }
 
-.about-page .detail__back {
+.about-page .detail__back,
+.about-page__back {
   border: none;
   padding: 0;
   background: none;
   font: inherit;
   cursor: pointer;
+  color: inherit;
+  -webkit-appearance: none;
+  appearance: none;
 }
 
 body.about--artboard-scale .about-page .detail__white-bleed,
