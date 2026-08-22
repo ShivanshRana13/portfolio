@@ -38,6 +38,7 @@ body {
 
 html {
   overflow: hidden;
+  background-color: var(--bg, #f6f6f6);
 }
 
 body {
@@ -885,6 +886,7 @@ body.theme-dark .sticky:not(.sticky--star):not(:hover):not(:focus-visible):not(.
     height: 100dvh;
     max-height: 100dvh;
     overflow: hidden;
+    background-color: var(--bg, #f6f6f6);
     /* Full bleed; only OS safe areas (notch / home indicator), no extra vertical gutters */
     padding: 0;
     padding-top: env(safe-area-inset-top, 0px);
@@ -893,6 +895,10 @@ body.theme-dark .sticky:not(.sticky--star):not(:hover):not(:focus-visible):not(.
     flex-direction: column;
     align-items: stretch;
     justify-content: flex-start;
+  }
+
+  body.theme-dark .stage {
+    background-color: var(--bg, #0d0d0d);
   }
 
   .scene {

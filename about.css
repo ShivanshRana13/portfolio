@@ -145,6 +145,13 @@ body.about-view:has(.about-page:not([hidden])).detail.theme-focus-light {
 
   body:not(.about-view) #about-mini-title {
     display: none !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+  }
+
+  body.about-view.detail--mobile-mini-title #about-mini-title:not([hidden]) {
+    display: block !important;
+    visibility: visible !important;
   }
 }
 

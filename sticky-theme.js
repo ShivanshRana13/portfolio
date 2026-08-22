@@ -102,6 +102,34 @@ function initStickyTheme() {
     }
   };
 
+  const syncHomepageChrome = () => {
+    const onHomepage =
+      body.classList.contains("about-view") === false &&
+      body.classList.contains("theme-dark") === false;
+    if (onHomepage !== true) {
+      return;
+    }
+
+    document.documentElement.style.setProperty("--bg", "#f6f6f6");
+    document.documentElement.style.backgroundColor = "#f6f6f6";
+    body.style.backgroundColor = "#f6f6f6";
+
+    const stage = document.querySelector(".stage");
+    if (stage instanceof HTMLElement) {
+      stage.style.backgroundColor = "#f6f6f6";
+    }
+  };
+
+  const clearHomepageChromeInline = () => {
+    document.documentElement.style.removeProperty("--bg");
+    document.documentElement.style.removeProperty("background-color");
+    body.style.removeProperty("background-color");
+    const stage = document.querySelector(".stage");
+    if (stage instanceof HTMLElement) {
+      stage.style.removeProperty("background-color");
+    }
+  };
+
   const syncAboutPage = (skipUrlSync = false) => {
     const active =
       starSticky instanceof HTMLElement && starSticky.classList.contains("is-selected") === true;
@@ -118,7 +146,10 @@ function initStickyTheme() {
       aboutPage.setAttribute("aria-hidden", active ? "false" : "true");
     }
     if (active) {
+      clearHomepageChromeInline();
       window.requestAnimationFrame(refreshAboutDetail);
+    } else {
+      syncHomepageChrome();
     }
     if (skipUrlSync !== true) {
       syncAboutUrl(active);
@@ -136,6 +167,7 @@ function initStickyTheme() {
     if (typeof window.__resetAboutScroll === "function") {
       window.__resetAboutScroll();
     }
+    syncHomepageChrome();
   };
 
   const restoreHomepageDefaultState = () => {
