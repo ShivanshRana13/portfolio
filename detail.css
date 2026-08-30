@@ -11,7 +11,7 @@ body.about-view.detail {
 body.detail,
 body.about-view.detail {
   font-family: var(--font);
-  overflow-x: visible;
+  overflow-x: hidden;
   overflow-y: auto;
   position: relative;
   background: #f6f6f6;
@@ -75,10 +75,14 @@ body.detail--artboard-scale .detail__grey-bleed {
 @media (min-width: 1440px) and (min-height: 1024px) {
   .detail-stage {
     width: 100%;
+    max-width: 100%;
+    overflow-x: hidden;
   }
 
   .detail-layout {
     width: 100%;
+    max-width: 100%;
+    overflow-x: hidden;
     grid-template-columns: max-content minmax(0, 1fr);
     zoom: var(--detail-scale, 1);
   }
@@ -212,6 +216,7 @@ body.detail--artboard-scale .detail__grey-bleed {
     grid-row: 1;
     width: 100%;
     min-width: 0;
+    overflow-x: hidden;
     --detail-rail-pad-x: 64px;
     padding: 64px var(--detail-rail-pad-x) 80px;
   }
@@ -561,6 +566,7 @@ body.detail--artboard-scale .detail__grey-bleed {
   gap: var(--detail-stack-gap);
   width: 100%;
   min-width: 0;
+  overflow-x: hidden;
   box-sizing: border-box;
   background: #ffffff;
   padding: 64px var(--detail-rail-pad-x) 80px;
