@@ -112,10 +112,16 @@ function initDetailScaleInRoot(scope, config = {}) {
     if (scrollRoot instanceof HTMLElement) {
       return scrollRoot.scrollHeight;
     }
-    return Math.max(
-      document.documentElement.scrollHeight,
-      document.body.scrollHeight,
-    );
+    // Body scroll on case-study pages: measure the stage, not document scroll height.
+    // Edge bleeds are body children with min-height tied to fill height; using
+    // body.scrollHeight creates a feedback loop that inflates scroll past content.
+    if (stage instanceof HTMLElement) {
+      return stage.offsetHeight;
+    }
+    if (layout instanceof HTMLElement) {
+      return layout.getBoundingClientRect().height;
+    }
+    return document.documentElement.scrollHeight;
   };
 
   const updateEdgeBleeds = () => {
