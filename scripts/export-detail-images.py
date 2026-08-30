@@ -22,9 +22,7 @@ WEBP_METHOD = 6
 
 # (src filename, output base, 1× width, 1× height)
 ASSETS = (
-    ("problem-grid-178-src.png", "problem-grid-178", 361, 314),
-    ("problem-deform-294-src.png", "problem-deform-294", 430, 315),
-    ("problem-gizmos-291-src.png", "problem-gizmos-291", 807, 431),
+    ("problem-839-src.png", "problem-839", 839, 794),
     ("discovery-839-src.png", "discovery-839", 839, 882),
     ("principles-839-src.png", "principles-839", 839, 737),
     ("exploration-839-src.png", "exploration-839", 839, 945),

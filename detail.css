@@ -628,33 +628,6 @@ body.detail--artboard-scale .detail__grey-bleed {
   padding-left: 1.35rem;
 }
 
-.detail__problem-images {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  width: 100%;
-  max-width: none;
-  margin: 0;
-}
-
-.detail__problem-images-row {
-  display: grid;
-  grid-template-columns: minmax(0, 361fr) minmax(0, 430fr);
-  gap: 16px;
-}
-
-.detail__problem-image {
-  margin: 0;
-  border-radius: 4px;
-  overflow: hidden;
-}
-
-.detail__problem-image img {
-  display: block;
-  width: 100%;
-  height: auto;
-}
-
 .detail__split {
   display: flex;
   flex-direction: row;
@@ -698,7 +671,8 @@ body.detail--artboard-scale .detail__grey-bleed {
 .detail__precision-gizmo-image,
 .detail__precision-scale-image,
 .detail__handoff-image,
-.detail__hitbox-image {
+.detail__hitbox-image,
+.detail__problem-image {
   margin: 0;
 }
 
@@ -732,10 +706,6 @@ body.detail--artboard-scale .detail__grey-bleed {
 }
 
 @media (max-width: 520px) {
-  .detail__problem-images-row {
-    grid-template-columns: 1fr;
-  }
-
   .detail__split {
     flex-direction: column;
   }
