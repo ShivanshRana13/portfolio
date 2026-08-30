@@ -584,6 +584,13 @@ body.detail--artboard-scale .detail__grey-bleed {
   margin-top: 8px;
 }
 
+.detail__section-body + .detail__figure,
+.detail__section-body + .detail__media,
+p.detail__section-body + .detail__figure,
+p.detail__section-body + .detail__media {
+  margin-top: var(--detail-stack-gap);
+}
+
 .detail__section-body {
   display: flex;
   flex-direction: column;
@@ -657,7 +664,8 @@ body.detail--artboard-scale .detail__grey-bleed {
 }
 
 .detail__figure {
-  margin: 0;
+  margin-inline: 0;
+  margin-bottom: 0;
   width: 100%;
   max-width: none;
   line-height: 0;
@@ -681,13 +689,15 @@ body.detail--artboard-scale .detail__grey-bleed {
 .detail__handoff-image,
 .detail__hitbox-image,
 .detail__problem-image {
-  margin: 0;
+  margin-inline: 0;
+  margin-bottom: 0;
 }
 
 .detail__media {
   width: 100%;
   max-width: 100%;
-  margin: 0;
+  margin-inline: 0;
+  margin-bottom: 0;
   min-height: min(408px, 50vh);
   background: #0d0d0d;
 }
