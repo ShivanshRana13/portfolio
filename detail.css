@@ -570,10 +570,18 @@ body.detail--artboard-scale .detail__grey-bleed {
 .detail__section {
   display: flex;
   flex-direction: column;
-  gap: var(--detail-stack-gap);
   align-items: flex-start;
   width: 100%;
   max-width: none;
+  gap: 0;
+}
+
+.detail__section > * + * {
+  margin-top: var(--detail-stack-gap);
+}
+
+.detail__section-heading + .detail__section-body {
+  margin-top: 8px;
 }
 
 .detail__section-body {
