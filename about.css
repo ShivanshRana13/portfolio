@@ -69,30 +69,33 @@ body.about-view:has(.about-page:not([hidden])).detail.theme-focus-light {
   }
 }
 
-/* Mobile about: scroll inside .detail-stage (index.html layout can't use body scroll). */
+/* Mobile about: document scroll (same as case study detail pages). */
 @media (max-width: 900px) {
   html.about-view:has(.about-page:not([hidden])) {
-    overflow: hidden;
-    height: 100dvh;
-    max-height: 100dvh;
+    overflow-x: hidden;
+    overflow-y: auto;
+    height: auto;
+    min-height: 100dvh;
+    max-height: none;
   }
 
   body.about-view:has(.about-page:not([hidden])).detail.theme-focus-light {
     --bg: #ffffff;
     background: #ffffff;
-    overflow: hidden;
-    height: 100dvh;
-    max-height: 100dvh;
-    min-height: 0;
+    overflow-x: hidden;
+    overflow-y: auto;
+    height: auto;
+    min-height: 100dvh;
+    max-height: none;
   }
 
   body.about-view:has(.about-page:not([hidden])) .stage,
   body.about-view:has(.about-page:not([hidden])) .scene,
   body.about-view:has(.about-page:not([hidden])) .about-page {
-    height: 100dvh;
-    max-height: 100dvh;
-    min-height: 0;
-    overflow: hidden;
+    height: auto;
+    min-height: 100dvh;
+    max-height: none;
+    overflow: visible;
     background: #ffffff;
   }
 
@@ -103,15 +106,10 @@ body.about-view:has(.about-page:not([hidden])).detail.theme-focus-light {
   }
 
   body.about-view:has(.about-page:not([hidden])) .detail-stage {
-    height: 100dvh;
-    max-height: 100dvh;
+    height: auto;
     min-height: 0;
-    overflow-x: hidden;
-    overflow-y: auto;
-    overscroll-behavior-x: none;
-    overscroll-behavior-y: contain;
-    -webkit-overflow-scrolling: touch;
-    touch-action: pan-y pinch-zoom;
+    max-height: none;
+    overflow: visible;
   }
 
   body.about-view:has(.about-page:not([hidden])) .detail-layout,

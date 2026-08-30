@@ -158,6 +158,19 @@ function bindDetailScroll(onScroll, scrollRoot) {
   }
 }
 
+function unbindDetailScroll(onScroll, scrollRoot) {
+  if (scrollRoot instanceof HTMLElement) {
+    scrollRoot.removeEventListener("scroll", onScroll);
+    return;
+  }
+  window.removeEventListener("scroll", onScroll, { capture: true });
+  document.removeEventListener("scroll", onScroll, { capture: true });
+  document.documentElement.removeEventListener("scroll", onScroll);
+  if (document.body !== null) {
+    document.body.removeEventListener("scroll", onScroll);
+  }
+}
+
 /**
  * @param {{
  *   isActive?: () => boolean;
@@ -536,13 +549,9 @@ function createDetailScrollBehavior(config = {}) {
     if (nextRoot === boundScrollRoot) {
       return;
     }
-    if (boundScrollRoot instanceof HTMLElement) {
-      boundScrollRoot.removeEventListener("scroll", onScroll);
-    }
+    unbindDetailScroll(onScroll, boundScrollRoot);
     boundScrollRoot = nextRoot;
-    if (boundScrollRoot instanceof HTMLElement) {
-      boundScrollRoot.addEventListener("scroll", onScroll, { passive: true });
-    }
+    bindDetailScroll(onScroll, boundScrollRoot);
   };
 
   if (config.getScrollRoot !== undefined) {
@@ -635,8 +644,7 @@ function initAboutDetailScroll() {
       return null;
     }
     if (narrowLayoutMq.matches === true) {
-      const stage = aboutPage.querySelector(".detail-stage");
-      return stage instanceof HTMLElement ? stage : null;
+      return null;
     }
     const right = aboutPage.querySelector(".detail__right");
     return right instanceof HTMLElement ? right : null;

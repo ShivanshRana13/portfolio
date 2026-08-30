@@ -840,6 +840,10 @@ body.detail--artboard-scale .detail__grey-bleed {
   .detail__scroll-level.detail__scroll-level--complete {
     opacity: 1;
     visibility: visible;
+    pointer-events: none;
+  }
+
+  .detail__scroll-level--complete .detail__scroll-up {
     pointer-events: auto;
   }
 
