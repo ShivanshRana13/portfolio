@@ -313,19 +313,14 @@ function initStickyNotes() {
     const starNote = notes.find((note) => note.classList.contains("sticky--star") === true) ?? null;
 
     if (aboutView === true && starNote instanceof HTMLElement) {
-      const locked = readAboutStarLock(starNote);
-      if (locked !== null) {
-        applyCoords(starNote, locked.x, locked.y);
-        fitStickyCardTitles();
-        return;
+      let locked = readAboutStarLock(starNote);
+      if (locked === null) {
+        const x = getNumberAttr(starNote, "data-x", 0);
+        const y = getNumberAttr(starNote, "data-y", 0);
+        writeAboutStarLock(starNote, x, y);
+        locked = { x, y };
       }
-
-      const base = notes.map((note) => activePreset(note));
-      const fitted = fitPositionsToContainer(base);
-      const starIndex = notes.indexOf(starNote);
-      const starPos = fitted[starIndex] ?? base[starIndex] ?? { x: 0, y: 0 };
-      writeAboutStarLock(starNote, starPos.x, starPos.y);
-      applyCoords(starNote, starPos.x, starPos.y);
+      applyCoords(starNote, locked.x, locked.y);
       fitStickyCardTitles();
       return;
     }
@@ -398,12 +393,6 @@ function initStickyNotes() {
   function constrainBoundsSize() {
     const target = cards instanceof HTMLElement ? cards : stage;
     const r = target.getBoundingClientRect();
-    if (document.body.classList.contains("about-view") === true) {
-      return {
-        width: window.innerWidth,
-        height: window.innerHeight,
-      };
-    }
     return { width: r.width, height: r.height };
   }
 
@@ -707,6 +696,21 @@ function initStickyNotes() {
     if (star instanceof HTMLElement) {
       clearAboutStarLock(star);
     }
+  };
+
+  window.__reapplyAboutStarLock = () => {
+    if (document.body.classList.contains("about-view") !== true) {
+      return;
+    }
+    const star = notes.find((note) => note.classList.contains("sticky--star") === true) ?? null;
+    if (!(star instanceof HTMLElement)) {
+      return;
+    }
+    const locked = readAboutStarLock(star);
+    if (locked === null) {
+      return;
+    }
+    applyCoords(star, locked.x, locked.y);
   };
 }
 

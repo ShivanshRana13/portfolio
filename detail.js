@@ -69,6 +69,9 @@ function createAboutStarScrollDismiss(getScrollRoot, narrowMq) {
   function reset() {
     lastScrollY = getDetailScrollY(getScrollRoot());
     clearStarScrollDismiss();
+    if (typeof window.__reapplyAboutStarLock === "function") {
+      window.__reapplyAboutStarLock();
+    }
   }
 
   function onFrame() {
@@ -85,6 +88,9 @@ function createAboutStarScrollDismiss(getScrollRoot, narrowMq) {
       setStarScrollDismissed(true);
     } else if (deltaY < 0) {
       setStarScrollDismissed(false);
+      if (typeof window.__reapplyAboutStarLock === "function") {
+        window.__reapplyAboutStarLock();
+      }
     }
   }
 
