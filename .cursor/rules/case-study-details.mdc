@@ -1,0 +1,94 @@
+---
+description: Case study details page — layout, spacing, scroll, assets, and conventions for all case studies
+globs: detail.html,detail.css,detail.js,detail-scale.js,detail-nav.js,scripts/export-detail-images.py,assets/detail/**
+alwaysApply: false
+---
+
+# Case Study Details Page
+
+Use this pattern for every case study. Terminology: **case study details page** (`detail.html`), not "project page".
+
+## Architecture
+
+- Shared shell: `detail.html` + `detail.css` + `detail.js` + `detail-scale.js` + `detail-nav.js`
+- Entry: `./detail.html?tile={key}` — tile swaps **title/meta only** via `TILE_COPY` in `detail.js`; body content is currently hardcoded per case study in `detail.html`
+- New tile: add key to allowlist (inline script in `detail.html` **and** `ALLOWED_TILES` / `TILE_COPY` in `detail.js`), plus homepage sticky badge link
+
+## Layout
+
+```
+body.detail.detail--{tile}
+  .detail__grey-bleed / .detail__white-bleed   ← large screens only
+  .detail-stage > .detail-layout (2-col grid)
+    .detail__left-spacer + .detail__left (fixed rail) | .detail__right (white content)
+  #detail-mini-title                           ← mobile only
+```
+
+- **Desktop (≥901px):** fixed left rail (grey `#f6f6f6`), white right column; **body scrolls** (not `.detail__right`)
+- **Mobile (≤900px):** single column, body scroll, mini title bar on scroll-up latch
+- **Large (≥1440×1024):** artboard scale via `zoom: var(--detail-scale)` on `.detail-layout`; edge bleeds fill margins; `overflow-x: hidden` on body/stage/layout/right
+
+## Spacing (strict)
+
+| Relationship | Gap |
+|---|---|
+| Section heading → body | **8px** (`.detail__section-heading + .detail__section-body`) |
+| Everything else (paragraphs, sections, body → image) | **32px** (`--detail-stack-gap`) |
+| Right column padding | 64px top/sides, 80px bottom (desktop) |
+
+Do not override `.detail__figure { margin: 0 }` without re-adding body→figure 32px rules.
+
+## Typography & copy
+
+- Fibonacci scale: body **13px**, section headings **21px**, hero title **21–34px** (shrinks to 21px on desktop scroll)
+- Body copy max-width: **525px** (`32.8125rem`) — Figma frame 70:626
+- Figures: full width of right rail (839px design width at 1×)
+
+## Section markup
+
+```html
+<section class="detail__section" aria-labelledby="detail-{name}-heading">
+  <h2 class="detail__section-heading" id="detail-{name}-heading">…</h2>
+  <p class="detail__section-body">…</p>   <!-- or div/ol; 8px below heading -->
+  <figure class="detail__figure detail__{name}-image">  <!-- 32px below body -->
+    <picture>…</picture>
+  </figure>
+</section>
+```
+
+- Intro before first section: `.detail__lede`
+- Standalone paragraphs between sections: `.detail__body`
+- Side-by-side images: `.detail__split` (stacks at ≤520px)
+- **No box-shadow** on detail images
+
+## Images
+
+1. Export Figma frame at **4×** → `assets/detail/{name}-839-src.png`
+2. Register in `ASSETS` tuple in `scripts/export-detail-images.py`
+3. Run script → outputs `{name}-839.{png,webp}` + `@4x` variants
+4. HTML: `<picture>` with WebP + PNG, `width="839"`, standard `sizes` using `--detail-left-w` and `--detail-scale`
+5. Prefer **one combined image** over multi-image grids when Figma groups content (e.g. Problem section)
+6. Bump cache-bust `?v=` on CSS/JS when changing assets
+
+## Scroll & chrome behavior
+
+- **Progress bar:** left rail bottom (desktop), fixed bottom pill (mobile); `--detail-scroll-remaining`
+- **Scroll-up button:** appears within 4px of page bottom
+- **Mini title (mobile):** latches on upward scroll past title block; stays until user reaches top (~24px); slide-in once per session
+- **Edge bleeds:** `min-height` from **stage.offsetHeight**, never `body.scrollHeight` (prevents dead-space feedback loop)
+- **About overlay** reuses same components but desktop scrolls `.detail__right` — do not break that path in shared JS
+
+## Do not regress
+
+- Laptop (<1440×1024): no artboard scale, no bleeds, no extra bottom dead space
+- Mobile: document/body scroll (no nested `.detail-stage` scroll trap)
+- Horizontal scrollbar must not appear on large screens
+- Back link sets `sessionStorage portfolio:reset-home` via `detail-nav.js` for homepage grey restore
+
+## New case study checklist
+
+1. Tile key + `TILE_COPY` title/meta
+2. Replace/add body sections in `detail.html` following section markup above
+3. Export & register all `-839` images
+4. Verify spacing (8px / 32px), scroll end, large-screen bleeds, mobile mini title
+5. Commit with cache-bust bumps on touched static assets
