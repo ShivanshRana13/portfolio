@@ -84,6 +84,7 @@ function initStickyTheme() {
     }
     aboutMiniTitle.hidden = true;
     aboutMiniTitle.setAttribute("aria-hidden", "true");
+    aboutMiniTitle.classList.remove("detail__mini-title--entered");
     aboutMiniTitle.style.transform = "translateY(-100%)";
     aboutMiniTitle.style.visibility = "hidden";
     aboutMiniTitle.style.pointerEvents = "none";
@@ -109,6 +110,7 @@ function initStickyTheme() {
       "theme-dark",
       "detail--mobile-landing",
       "detail--mobile-mini-title",
+      "detail--mobile-mini-title-animate",
     );
     const starStickyEl = document.querySelector(".sticky--star");
     if (starStickyEl instanceof HTMLElement) {

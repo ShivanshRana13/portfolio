@@ -33,12 +33,16 @@ const TITLE_MIN_PX = 21;
 
 /** Cumulative upward movement before revealing mini title section. */
 const MOBILE_MINI_TITLE_REVEAL_UP_PX = 6;
+/** Scroll Y at or below this — mini title dismisses (true page top). */
+const MOBILE_MINI_TITLE_DISMISS_PX = 24;
 
 /** Pixels from the bottom treated as “scroll complete” for the scroll-up control. */
 const SCROLL_END_THRESHOLD_PX = 4;
 
 const MOBILE_HEADER_LANDING = "detail--mobile-landing";
 const MOBILE_HEADER_MINI_TITLE = "detail--mobile-mini-title";
+const MOBILE_HEADER_MINI_TITLE_ANIMATE = "detail--mobile-mini-title-animate";
+const MINI_TITLE_ENTERED_CLASS = "detail__mini-title--entered";
 
 /**
  * Mobile About: hide the Let's chat star instantly on scroll down, show on scroll up.
@@ -336,8 +340,28 @@ function createDetailScrollBehavior(config = {}) {
     let lastScrollY = 0;
     let wasPastTitleSection = false;
     let mobileHeaderMode = MOBILE_HEADER_LANDING;
+    let miniTitleLatched = false;
     let miniTitleRevealCarryPx = 0;
     let cachedTitleSectionH = 0;
+
+    function clearMiniTitleEnteredState() {
+      document.body.classList.remove(MOBILE_HEADER_MINI_TITLE_ANIMATE);
+      if (miniTitleEl instanceof HTMLElement) {
+        miniTitleEl.classList.remove(MINI_TITLE_ENTERED_CLASS);
+        miniTitleEl.style.removeProperty("transform");
+        miniTitleEl.style.removeProperty("visibility");
+        miniTitleEl.style.removeProperty("pointer-events");
+      }
+    }
+
+    function resetMobileHeaderState() {
+      lastScrollY = getScrollY();
+      wasPastTitleSection = false;
+      miniTitleRevealCarryPx = 0;
+      miniTitleLatched = false;
+      mobileHeaderMode = MOBILE_HEADER_LANDING;
+      clearMiniTitleEnteredState();
+    }
 
     function measureTitleSectionH() {
       if (titleSectionEl === null) {
@@ -381,23 +405,27 @@ function createDetailScrollBehavior(config = {}) {
         const showMini = nextMode === MOBILE_HEADER_MINI_TITLE;
         miniTitleEl.hidden = !showMini;
         miniTitleEl.setAttribute("aria-hidden", showMini ? "false" : "true");
+        if (showMini) {
+          miniTitleEl.style.removeProperty("transform");
+          miniTitleEl.style.removeProperty("visibility");
+          miniTitleEl.style.removeProperty("pointer-events");
+          if (miniTitleEl.classList.contains(MINI_TITLE_ENTERED_CLASS) !== true) {
+            miniTitleEl.classList.add(MINI_TITLE_ENTERED_CLASS);
+            document.body.classList.add(MOBILE_HEADER_MINI_TITLE_ANIMATE);
+          }
+        }
       }
     }
 
     function measureTitleMaxPx() {
-      const wasMobileModes = narrowLayoutMq.matches === true;
-      if (wasMobileModes) {
-        clearMobileHeaderModes();
-        document.body.classList.add(MOBILE_HEADER_LANDING);
-      } else {
-        clearTitleScrollVars();
+      if (narrowLayoutMq.matches === true) {
+        maxPx = 34;
+        return;
       }
+      clearTitleScrollVars();
       const px = parseFloat(window.getComputedStyle(titleEl).fontSize);
       const fallback = 34;
       maxPx = Number.isFinite(px) && px > TITLE_MIN_PX ? px : fallback;
-      if (wasMobileModes) {
-        clearMobileHeaderModes();
-      }
     }
 
     function getScrollY() {
@@ -406,28 +434,38 @@ function createDetailScrollBehavior(config = {}) {
 
     function applyMobile() {
       if (titleSectionEl === null) {
-        wasPastTitleSection = false;
-        miniTitleRevealCarryPx = 0;
-        mobileHeaderMode = MOBILE_HEADER_LANDING;
+        resetMobileHeaderState();
         setMobileHeaderMode(MOBILE_HEADER_LANDING);
         return;
       }
 
       const y = getScrollY();
       const titleSectionH = getMobileTitleSectionHeightPx();
-      const atTop = titleSectionH <= 0 || y <= titleSectionH;
 
-      if (atTop === true) {
-        wasPastTitleSection = false;
-        miniTitleRevealCarryPx = 0;
-        mobileHeaderMode = MOBILE_HEADER_LANDING;
+      if (y <= MOBILE_MINI_TITLE_DISMISS_PX) {
+        resetMobileHeaderState();
         setMobileHeaderMode(MOBILE_HEADER_LANDING);
-        lastScrollY = y;
         return;
       }
 
       const deltaY = y - lastScrollY;
       lastScrollY = y;
+
+      if (miniTitleLatched === true) {
+        mobileHeaderMode = MOBILE_HEADER_MINI_TITLE;
+        setMobileHeaderMode(MOBILE_HEADER_MINI_TITLE);
+        return;
+      }
+
+      const pastTitleSection = titleSectionH > 0 && y > titleSectionH;
+
+      if (pastTitleSection !== true) {
+        wasPastTitleSection = false;
+        miniTitleRevealCarryPx = 0;
+        mobileHeaderMode = MOBILE_HEADER_LANDING;
+        setMobileHeaderMode(MOBILE_HEADER_LANDING);
+        return;
+      }
 
       if (wasPastTitleSection === false) {
         wasPastTitleSection = true;
@@ -437,14 +475,10 @@ function createDetailScrollBehavior(config = {}) {
         return;
       }
 
-      if (mobileHeaderMode === MOBILE_HEADER_MINI_TITLE) {
-        setMobileHeaderMode(MOBILE_HEADER_MINI_TITLE);
-        return;
-      }
-
       if (deltaY < 0) {
         miniTitleRevealCarryPx += -deltaY;
         if (miniTitleRevealCarryPx >= MOBILE_MINI_TITLE_REVEAL_UP_PX) {
+          miniTitleLatched = true;
           mobileHeaderMode = MOBILE_HEADER_MINI_TITLE;
           miniTitleRevealCarryPx = 0;
         }
@@ -497,22 +531,36 @@ function createDetailScrollBehavior(config = {}) {
       applyDesktop();
     }
 
-    function scheduleMeasureAndApply() {
+    function scheduleMeasureAndApply(options = {}) {
+      const resetSession = options.resetSession === true;
       window.requestAnimationFrame(() => {
-        lastScrollY = getScrollY();
-        wasPastTitleSection = false;
-        miniTitleRevealCarryPx = 0;
-        mobileHeaderMode = MOBILE_HEADER_LANDING;
-        measureTitleMaxPx();
+        if (resetSession === true) {
+          resetMobileHeaderState();
+        }
         measureTitleSectionH();
+        if (narrowLayoutMq.matches !== true) {
+          if (resetSession === true) {
+            lastScrollY = getScrollY();
+          }
+          measureTitleMaxPx();
+        }
         apply();
       });
     }
 
-    scheduleMeasureAndApply();
-    reduceMotionMq.addEventListener("change", scheduleMeasureAndApply);
-    narrowLayoutMq.addEventListener("change", scheduleMeasureAndApply);
-    window.addEventListener("resize", scheduleMeasureAndApply);
+    resetMobileHeaderState();
+    measureTitleMaxPx();
+    measureTitleSectionH();
+    apply();
+    reduceMotionMq.addEventListener("change", () => {
+      scheduleMeasureAndApply({ resetSession: true });
+    });
+    narrowLayoutMq.addEventListener("change", () => {
+      scheduleMeasureAndApply({ resetSession: true });
+    });
+    window.addEventListener("resize", () => {
+      scheduleMeasureAndApply();
+    });
 
     if (typeof ResizeObserver !== "undefined" && titleSectionEl instanceof HTMLElement) {
       const titleSectionObserver = new ResizeObserver(() => {
@@ -521,7 +569,7 @@ function createDetailScrollBehavior(config = {}) {
       titleSectionObserver.observe(titleSectionEl);
     }
 
-    return { apply, scheduleMeasureAndApply };
+    return { apply, scheduleMeasureAndApply, resetMobileHeaderState };
   };
 
   const applyScrollLevel = initScrollLevelIndicator();
@@ -610,7 +658,12 @@ function createDetailScrollBehavior(config = {}) {
     scrollDetailToTop();
     document.body.style.removeProperty("--detail-title-fs");
     document.body.style.removeProperty("--detail-title-fw");
-    document.body.classList.remove(MOBILE_HEADER_LANDING, MOBILE_HEADER_MINI_TITLE);
+    document.body.classList.remove(
+      MOBILE_HEADER_LANDING,
+      MOBILE_HEADER_MINI_TITLE,
+      MOBILE_HEADER_MINI_TITLE_ANIMATE,
+    );
+    titleController.resetMobileHeaderState();
     if (miniTitleId !== null) {
       const miniTitleEl = document.getElementById(miniTitleId);
       if (miniTitleEl !== null) {
@@ -673,7 +726,7 @@ function initAboutDetailScroll() {
   });
 
   window.__refreshAboutDetailScroll = () => {
-    controller.scheduleMeasureAndApply();
+    controller.scheduleMeasureAndApply({ resetSession: true });
     controller.refresh();
     aboutStarScroll.reset();
   };
