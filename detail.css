@@ -647,10 +647,6 @@ body.detail--artboard-scale .detail__grey-bleed {
   margin: 0;
   border-radius: 4px;
   overflow: hidden;
-  box-shadow:
-    0 0 0 1px rgba(0, 0, 0, 0.2),
-    0 0 2px rgba(0, 0, 0, 0.08),
-    0 2px 6px rgba(0, 0, 0, 0.1);
 }
 
 .detail__problem-image img {
