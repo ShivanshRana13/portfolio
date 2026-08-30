@@ -31,8 +31,6 @@ const ALLOWED_TILES = Object.keys(TILE_COPY);
 /** Desktop scrolled title: 21px (Fibonacci / φ step with section labels). */
 const TITLE_MIN_PX = 21;
 
-/** Downward movement (one frame) past title → hide mini title section. */
-const MOBILE_MINI_TITLE_HIDE_DOWN_PX = 2;
 /** Cumulative upward movement before revealing mini title section. */
 const MOBILE_MINI_TITLE_REVEAL_UP_PX = 6;
 
@@ -417,9 +415,9 @@ function createDetailScrollBehavior(config = {}) {
 
       const y = getScrollY();
       const titleSectionH = getMobileTitleSectionHeightPx();
-      const pastTitleSection = titleSectionH > 0 && y > titleSectionH;
+      const atTop = titleSectionH <= 0 || y <= titleSectionH;
 
-      if (pastTitleSection !== true) {
+      if (atTop === true) {
         wasPastTitleSection = false;
         miniTitleRevealCarryPx = 0;
         mobileHeaderMode = MOBILE_HEADER_LANDING;
@@ -439,13 +437,16 @@ function createDetailScrollBehavior(config = {}) {
         return;
       }
 
-      if (deltaY > MOBILE_MINI_TITLE_HIDE_DOWN_PX) {
-        miniTitleRevealCarryPx = 0;
-        mobileHeaderMode = MOBILE_HEADER_LANDING;
-      } else if (deltaY < 0) {
+      if (mobileHeaderMode === MOBILE_HEADER_MINI_TITLE) {
+        setMobileHeaderMode(MOBILE_HEADER_MINI_TITLE);
+        return;
+      }
+
+      if (deltaY < 0) {
         miniTitleRevealCarryPx += -deltaY;
         if (miniTitleRevealCarryPx >= MOBILE_MINI_TITLE_REVEAL_UP_PX) {
           mobileHeaderMode = MOBILE_HEADER_MINI_TITLE;
+          miniTitleRevealCarryPx = 0;
         }
       }
 
