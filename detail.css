@@ -21,6 +21,8 @@ body.about-view.detail {
    */
   --detail-fs-body: 13px;
   --detail-fs-section: 21px;
+  --detail-fw-body: 400;
+  --detail-fw-section: 700;
   --detail-fs-title-min: 21px;
   --detail-fs-title-max: 34px;
   --detail-fs-title-shrunk: 21px;
@@ -611,8 +613,16 @@ p.detail__section-body + .detail__media {
 .detail__section-body {
   margin: 0;
   font-size: var(--detail-fs-body);
+  font-weight: var(--detail-fw-body);
   line-height: normal;
   color: rgba(0, 0, 0, 0.8);
+}
+
+.detail__section-body p,
+.detail__section-body li {
+  font-size: inherit;
+  font-weight: inherit;
+  color: inherit;
 }
 
 .detail__lede,
@@ -648,7 +658,7 @@ body.detail--case .detail__tile--case {
   max-width: 32.8125rem;
   width: 100%;
   font-size: var(--detail-fs-section);
-  font-weight: 700;
+  font-weight: var(--detail-fw-section);
   line-height: normal;
   color: #000000;
 }
