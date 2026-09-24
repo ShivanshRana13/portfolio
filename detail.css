@@ -655,6 +655,7 @@ body.detail--case .detail__tile--case {
 
 .detail__section-heading {
   margin: 0;
+  /* Flex section gap is 32px; pull copy up so heading → body reads as 8px. */
   margin-bottom: calc(var(--detail-heading-body-gap) - var(--detail-stack-gap));
   max-width: 32.8125rem;
   width: 100%;
@@ -703,8 +704,7 @@ body.detail--case .detail__tile--case {
 }
 
 .detail__figure {
-  margin-inline: 0;
-  margin-bottom: 0;
+  margin: 0;
   width: 100%;
   max-width: none;
   line-height: 0;
@@ -728,15 +728,13 @@ body.detail--case .detail__tile--case {
 .detail__handoff-image,
 .detail__hitbox-image,
 .detail__problem-image {
-  margin-inline: 0;
-  margin-bottom: 0;
+  margin: 0;
 }
 
 .detail__media {
   width: 100%;
   max-width: 100%;
-  margin-inline: 0;
-  margin-bottom: 0;
+  margin: 0;
   min-height: min(408px, 50vh);
   background: #0d0d0d;
 }

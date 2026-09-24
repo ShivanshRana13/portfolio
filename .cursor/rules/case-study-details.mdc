@@ -38,7 +38,7 @@ body.detail.detail--{tile}
 | Numbered list item → numbered list item | **8px** (`--detail-list-item-gap`) |
 | Right column padding | 64px top/sides, 80px bottom (desktop) |
 
-Do not override `.detail__figure { margin: 0 }` without re-adding body→figure 32px rules.
+Keep `.detail__figure { margin: 0 }` (browser default `figure` top margin otherwise stacks with flex `gap` → ~48px).
 
 ## Typography & copy
 
