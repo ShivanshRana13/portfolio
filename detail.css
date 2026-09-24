@@ -630,6 +630,15 @@ p.detail__section-body + .detail__media {
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0.08);
 }
 
+.detail__tile {
+  display: none;
+}
+
+body.detail--case-tilt .detail__tile--case-tilt,
+body.detail--case .detail__tile--case {
+  display: block;
+}
+
 .detail__section-heading {
   margin: 0;
   max-width: 32.8125rem;

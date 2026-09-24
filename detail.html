@@ -14,7 +14,7 @@
       rel="stylesheet"
     />
     <link rel="stylesheet" href="./styles.css?v=102" />
-    <link rel="stylesheet" href="./detail.css?v=139" />
+    <link rel="stylesheet" href="./detail.css?v=140" />
   </head>
   <body class="detail">
     <script>
@@ -126,6 +126,7 @@
         </div>
       </aside>
       <main class="detail__right">
+        <div class="detail__tile detail__tile--case-tilt">
         <p class="detail__lede">
           Gizmos are visual aids in 3D software that allow users to manipulate objects. They
           commonly include move, rotate, and scale functions, which provide intuitive and precise
@@ -722,6 +723,200 @@
             </p>
           </div>
         </section>
+        </div>
+
+        <div class="detail__tile detail__tile--case">
+        <p class="detail__lede">
+          A sequencer is a tool that lets you arrange, time, and trigger different pieces of media
+          or data along a timeline. Instead of creating content from scratch, you use a sequencer to
+          decide when and how long existing elements play.
+        </p>
+        <p class="detail__body">
+          The timeline interface displays time as a left-to-right grid with parallel tracks for
+          layering elements like audio and video. Clips are modular blocks you can drag, trim, and
+          rearrange without altering the original files, thanks to non-destructive editing. To learn
+          more, watch this short video on Sequencer online.
+        </p>
+
+        <section class="detail__section" aria-labelledby="case-problem-heading">
+          <h2 class="detail__section-heading" id="case-problem-heading">The Problem</h2>
+          <div class="detail__section-body">
+            <p>
+              Maya’s camera sequencer was a pioneer in the 3D design world and has become essential
+              in many studios’ workflows, from small teams to giants like Netflix and Disney, whose
+              animation departments have trusted Sequencer for years.
+            </p>
+            <p>
+              In the image below you can see Maya’s Sequencer. It’s very obvious that the UI looks
+              very old and un-intuitive. Which to Maya’s defence is what all legacy tools looked like
+              back in the day. Let’s break down what you’re seeing: The shots are the blue slabs with
+              bunch of animation information represented in numbers in all 4 corners and in the
+              middle. Each number in the shot is editable. Additionally, shots could have audio clips
+              attached to them which are represented by green slabs. The audio clips are
+              representation of audio (ambient, diegetic, non-diegetic, sound effects, etc.) which is
+              represented using waveform showing varying decibel levels. The scrubber. It’s the visual
+              indicator to show which frame in timeline the user is at. They can drag it in this
+              timeline to preview changes in the viewport. The tracks are the areas where all the
+              shots and the audio clips live. They are the horizontal empty bars that hold all the
+              sequence data. Users can perform numerous track level actions like, Muting, Soloing,
+              Locking and dragging the track up or down to change their order. After decades without
+              major updates, overhauling such a fundamental tool with so many moving parts is
+              challenging because we can’t ask existing users to relearn their workflows or adjust to
+              a completely redesigned product. Such a change could seriously impact the business.
+            </p>
+          </div>
+        </section>
+
+        <section class="detail__section" aria-labelledby="case-challenge-heading">
+          <h2 class="detail__section-heading" id="case-challenge-heading">
+            The Challenge - Opportunity
+          </h2>
+          <p class="detail__section-body">
+            Thousands of users requested an update to the tool to align it with Maya’s overall design,
+            simplify its complexity, and make it as intuitive as other modern sequencers. These
+            requests couldn’t be ignored. This challenge pushed the team to create a solution that
+            wouldn’t disrupt existing studios workflows too much while also satisfying customers eager
+            for a new and improved sequencer.
+          </p>
+        </section>
+
+        <section class="detail__section" aria-labelledby="case-discovery-heading">
+          <h2 class="detail__section-heading" id="case-discovery-heading">
+            Discovery &amp; Exploration
+          </h2>
+          <p class="detail__section-body">
+            This project took a unique approach compared to our others. We aimed to gauge customer
+            reactions to changes, finding the right balance that avoids backlash. Our strategy was
+            straightforward: we; the design team crafted mockups based on what they believed would
+            offer the best user experience, then we shared these with the studios until everyone
+            reached a consensus.
+          </p>
+        </section>
+
+        <p class="detail__body">
+          After several design and feedback sessions, we identified key insights about how the tool is
+          used and the essential needs of animators and pre-visualization teams. For instance, we
+          worked hard to make the shot visual experience clean and intuitive for users. However,
+          because the product is highly technical, removing crucial shot information to reduce clutter
+          would have harmed animators’ ability to edit effectively. This trade-off was necessary.
+          Using these insights, we began crafting the final experience designs for the Sequencer.
+          Next, you’ll see a detailed breakdown of the final design components.
+        </p>
+
+        <section class="detail__section" aria-labelledby="case-design-heading">
+          <h2 class="detail__section-heading" id="case-design-heading">The Design</h2>
+          <p class="detail__section-body">
+            A shot can include several elements. Below is an example of the most complex setup, where
+            all elements are enabled. We offer three shot heights for teams to choose from based on
+            their preference or workflow. The Max height displays the most information in a single
+            view, ideal for technical users who need to see everything at once, though it can appear
+            busy and complex. The Mid height strikes a balance by revealing some information
+            contextually upon selection, making the shot less cluttered—perfect for quickly scanning
+            key details without distraction. The Min height is the sleekest option, designed for
+            high-level sequencer workflows where many shots are present. It allows users to rearrange
+            or adjust shots efficiently without dealing with technical details, offering the most
+            streamlined experience.
+          </p>
+        </section>
+
+        <p class="detail__body">
+          After several design iterations, we chose rounded edges over sharp corners because they
+          better define the start and end of a shot. This is especially helpful in complex cases,
+          like when shots have extensions such as hold frames or handles on either edge. The rounded
+          edges create the clear separation needed to distinguish between shots with these extensions.
+        </p>
+
+        <p class="detail__body">
+          Some shots can be quite large, so loading them might take anywhere from a few seconds to a
+          minute. We need a clear way to show users that certain shots are still loading among many
+          others. They should stand out and communicate the shot’s loading status. That’s why I chose
+          a bright green loading bar at the bottom of each shot to indicating the such state .
+        </p>
+
+        <p class="detail__body">
+          Maya features a muting concept that lets you temporarily hide certain elements from execution
+          while still allowing data changes within those elements without running them. Traditionally,
+          this was shown by dark oblique overlays on the rows or elements in the UI. However, using
+          obliques over shots was tricky because each interactive element needed to remain accessible
+          without compromising input usability. This challenge was unique but solvable. To enable
+          muting on shots, I designed a layered approach: the top layer is the shot with slightly
+          reduced opacity, allowing the layers below to show through. Beneath it sits the mute
+          obliques layer. This setup avoids placing obliques directly over inputs, preserving their
+          appearance and accessibility by positioning the transparent shot above the obliques. See the
+          comparison below.
+        </p>
+
+        <p class="detail__body">
+          Shot trimming lets you adjust the shot width by clicking and dragging its edges. It’s
+          carefully designed to handle all tricky scenarios, like what happens when a shot is selected,
+          hovered over, or when adjacent shots are also selected, as you’ll see below.
+        </p>
+
+        <p class="detail__body">
+          There are three types of overlays: Cross fade: smoothly transitions between two shots by
+          blending them together. Fade in: gradually brings a single shot into view from black. Fade
+          out: gradually dims a single shot to black, ending the scene. Animators wanted precise
+          control over transition durations by entering exact values. To support this, we added an input
+          field at the center of the transition section. For fade-in and fade-out transitions, where
+          the transition section overlaps the shot values, we made the overlay transparent so
+          animators can still view shot details beneath without obscuring any elements. We also added
+          a subtle drop shadow under the input field to enhance readability.
+        </p>
+
+        <p class="detail__body">
+          Think of handles and hold frames as extra frames added to a shot. They’re similar but distinct,
+          so each requires a unique visual style in the shot to make them easy to identify.
+        </p>
+
+        <p class="detail__body">
+          An audio clip represents the waveform of a sound segment, which can be linked to a shot or
+          stand alone. Users can edit it directly in the sequencer timeline. It shares many features
+          with a shot but lacks the thumbnail, indicators, and central inputs such as shot speed and
+          sequence time.
+        </p>
+
+        <p class="detail__body">
+          Product mockups to show how the shots and the audio clips look like in an actual sequencer
+          workflow.
+        </p>
+
+        <section class="detail__section" aria-labelledby="case-handoff-heading">
+          <h2 class="detail__section-heading" id="case-handoff-heading">Design Handoff</h2>
+          <p class="detail__section-body">
+            To hand off this complex project, I developed comprehensive documentation detailing every
+            design element and its rationale, ensuring clarity and eliminating any confusion for the
+            developers. This thorough approach was highly praised by both designers and developers for
+            its clarity and ease of understanding.
+          </p>
+        </section>
+
+        <p class="detail__body">
+          Shots use various colours with different opacities, so all elements within a shot must remain
+          accessible regardless of the background colour. To solve this, I created a system that lets
+          developers build logic enabling users to select any colour from the wheel, while the elements
+          automatically adjust their colours to maintain clear contrast with the background.
+        </p>
+
+        <p class="detail__body">
+          Use black labels (#000000) on light backgrounds (Lightness ≥ 46%). If the background is darker
+          (Lightness &lt; 46%) than that, switch the label to white (#FFFFFF). This ensures all labels
+          meet WCAG AA (4.5:1) contrast. By default we have a total of 5 colours for a user to select
+          from but they can use a colour wheel to pick one they like as well Each colour has different
+          percentage values which are used for different shot elements (for eg. shot top or shot bottom)
+          and for different shot interactions as well.
+        </p>
+
+        <section class="detail__section" aria-labelledby="case-impact-heading">
+          <h2 class="detail__section-heading" id="case-impact-heading">The Impact</h2>
+          <p class="detail__section-body">
+            We launched the new Maya Sequencer for our customers for Maya 2027 release and the
+            customer are appreciating the design efforts put-in to make the tool more intuitive and
+            user friendly. A lot of big you tubers have shared amazing reviews online for the tool.
+            Like this reviewer.
+          </p>
+        </section>
+        </div>
+
       </main>
     </div>
     </div>
