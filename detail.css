@@ -33,6 +33,7 @@ body.about-view.detail {
   --detail-section-gap: 0;
   --detail-stack-gap: 32px;
   --detail-heading-body-gap: 8px;
+  --detail-list-item-gap: 8px;
 }
 
 .detail-stage {
@@ -683,7 +684,7 @@ body.detail--case .detail__tile--case {
 .detail__section-body ol {
   display: flex;
   flex-direction: column;
-  gap: var(--detail-stack-gap);
+  gap: var(--detail-list-item-gap);
   margin: 0;
   padding-left: 1.35rem;
   width: 100%;
