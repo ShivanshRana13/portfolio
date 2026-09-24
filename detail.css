@@ -584,22 +584,7 @@ body.detail--artboard-scale .detail__grey-bleed {
   align-items: flex-start;
   width: 100%;
   max-width: none;
-  gap: 0;
-}
-
-.detail__section > * + * {
-  margin-top: var(--detail-stack-gap);
-}
-
-.detail__section-heading + .detail__section-body {
-  margin-top: var(--detail-heading-body-gap);
-}
-
-.detail__section-body + .detail__figure,
-.detail__section-body + .detail__media,
-p.detail__section-body + .detail__figure,
-p.detail__section-body + .detail__media {
-  margin-top: var(--detail-stack-gap);
+  gap: var(--detail-stack-gap);
 }
 
 .detail__section-body {
@@ -670,6 +655,7 @@ body.detail--case .detail__tile--case {
 
 .detail__section-heading {
   margin: 0;
+  margin-bottom: calc(var(--detail-heading-body-gap) - var(--detail-stack-gap));
   max-width: 32.8125rem;
   width: 100%;
   font-size: var(--detail-fs-section);
