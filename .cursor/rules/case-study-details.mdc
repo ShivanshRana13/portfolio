@@ -51,12 +51,25 @@ Keep `.detail__figure { margin: 0 }` (browser default `figure` top margin otherw
 ```html
 <section class="detail__section" aria-labelledby="detail-{name}-heading">
   <h2 class="detail__section-heading" id="detail-{name}-heading">…</h2>
-  <p class="detail__section-body">…</p>   <!-- or div/ol; 8px below heading -->
-  <figure class="detail__figure detail__{name}-image">  <!-- 32px below body -->
+  <div class="detail__section-body">
+    <p>…</p>
+    <!-- optional <ol> / more <p> — 16px between children -->
+  </div>
+
+  <figure class="detail__figure detail__{name}-image">
     <picture>…</picture>
   </figure>
 </section>
 ```
+
+Copy → image gap is **only** the section flex `gap` (32px). The figure must be a **direct child of `.detail__section`**, immediately after a **closed** `.detail__section-body` (or closed `p.detail__section-body`).
+
+### HTML integrity (spacing will break if violated)
+
+- **Never** insert a stray `</p>` (or any orphan closing tag) between `.detail__section-body` and `<figure>`. That creates an empty paragraph node and can balloon the gap above the image (~96px instead of 32px).
+- **Never** put `<figure>` inside `<p class="detail__body">` or `<p class="detail__section-body">`. Close the paragraph, then place the figure as the next sibling (inside the section or as a `.detail__tile` child).
+- **Never** rely on partial figure resets — use `margin: 0` on `.detail__figure` so browser default figure margins do not add to flex `gap` (~48px).
+- After inserting images programmatically, grep for `</figure>        </p>` and `</div>\n        </p>` before figures.
 
 - Intro before first section: `.detail__lede`
 - Standalone paragraphs between sections: `.detail__body`
