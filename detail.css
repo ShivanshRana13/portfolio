@@ -630,11 +630,15 @@ p.detail__section-body + .detail__media {
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0.08);
 }
 
-.detail__tile {
+/* Default detail body is the Falcon case study; only `?tile=case` swaps in sequencer copy. */
+.detail__tile--case {
   display: none;
 }
 
-body.detail--case-tilt .detail__tile--case-tilt,
+body.detail--case .detail__tile--case-tilt {
+  display: none;
+}
+
 body.detail--case .detail__tile--case {
   display: block;
 }
