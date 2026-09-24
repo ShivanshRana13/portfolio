@@ -64,7 +64,7 @@ Do not override `.detail__figure { margin: 0 }` without re-adding body→figure 
 
 ## Images
 
-1. Export Figma frame at **4×** → `assets/detail/{name}-839-src.png`
+1. Export Figma frame at **4×** → `assets/detail/{name}-839-src.png` (e.g. Falcon `problem-839`, Sequencer `case-seq-01-839` … `case-seq-18-839`)
 2. Register in `ASSETS` tuple in `scripts/export-detail-images.py`
 3. Run script → outputs `{name}-839.{png,webp}` + `@4x` variants
 4. HTML: `<picture>` with WebP + PNG, `width="839"`, standard `sizes` using `--detail-left-w` and `--detail-scale`

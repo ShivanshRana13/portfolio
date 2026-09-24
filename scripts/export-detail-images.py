@@ -36,6 +36,25 @@ ASSETS = (
     ("precision-scale-839-src.png", "precision-scale-839", 839, 3155),
     ("design-handoff-839-src.png", "design-handoff-839", 839, 511),
     ("hitbox-839-src.png", "hitbox-839", 839, 408),
+    # Maya Sequencer case study (detail.html?tile=case)
+    ("case-seq-01-839-src.png", "case-seq-01-839", 839, 385),
+    ("case-seq-02-839-src.png", "case-seq-02-839", 839, 741),
+    ("case-seq-03-839-src.png", "case-seq-03-839", 839, 1570),
+    ("case-seq-04-839-src.png", "case-seq-04-839", 839, 744),
+    ("case-seq-05-839-src.png", "case-seq-05-839", 839, 744),
+    ("case-seq-06-839-src.png", "case-seq-06-839", 839, 514),
+    ("case-seq-07-839-src.png", "case-seq-07-839", 839, 744),
+    ("case-seq-08-839-src.png", "case-seq-08-839", 839, 954),
+    ("case-seq-09-839-src.png", "case-seq-09-839", 839, 492),
+    ("case-seq-10-839-src.png", "case-seq-10-839", 839, 1166),
+    ("case-seq-11-839-src.png", "case-seq-11-839", 839, 2432),
+    ("case-seq-12-839-src.png", "case-seq-12-839", 839, 650),
+    ("case-seq-13-839-src.png", "case-seq-13-839", 839, 1008),
+    ("case-seq-14-839-src.png", "case-seq-14-839", 839, 550),
+    ("case-seq-15-839-src.png", "case-seq-15-839", 839, 550),
+    ("case-seq-16-839-src.png", "case-seq-16-839", 839, 1398),
+    ("case-seq-17-839-src.png", "case-seq-17-839", 839, 790),
+    ("case-seq-18-839-src.png", "case-seq-18-839", 839, 471),
 )
 
 
