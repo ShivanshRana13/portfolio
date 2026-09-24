@@ -748,32 +748,36 @@ body.theme-dark .scene.scene--patent-cube-active .patent-cube__viewport {
   outline-color: var(--sticky-selected-ink);
 }
 
-.sticky--star.sticky--dragging .sticky-star__dog-stack {
+.sticky--star:hover .sticky-star__dog-stack,
+.sticky--star.sticky--dragging .sticky-star__dog-stack,
+.sticky--star:focus-visible .sticky-star__dog-stack {
   opacity: 1;
   transform: translate(0, 0);
 }
 
+.sticky--star:hover .sticky-star__dog--default,
 .sticky--star.sticky--dragging .sticky-star__dog--default {
   opacity: 0;
 }
 
+.sticky--star:hover .sticky-star__dog--smile,
 .sticky--star.sticky--dragging .sticky-star__dog--smile {
   opacity: 1;
 }
 
-@media (hover: hover) {
-  .sticky--star:hover .sticky-star__dog-stack,
-  .sticky--star:focus-visible .sticky-star__dog-stack {
-    opacity: 1;
-    transform: translate(0, 0);
-  }
-
-  .sticky--star:hover .sticky-star__dog--default {
+/* Touch: no hover — dog only while dragging (overrides stuck :hover after tap). */
+@media (hover: none) {
+  .sticky--star:not(.sticky--dragging) .sticky-star__dog-stack {
     opacity: 0;
+    transform: translate(12px, -12px);
   }
 
-  .sticky--star:hover .sticky-star__dog--smile {
+  .sticky--star:not(.sticky--dragging) .sticky-star__dog--default {
     opacity: 1;
+  }
+
+  .sticky--star:not(.sticky--dragging) .sticky-star__dog--smile {
+    opacity: 0;
   }
 }
 
