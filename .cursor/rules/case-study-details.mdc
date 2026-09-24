@@ -33,7 +33,8 @@ body.detail.detail--{tile}
 | Relationship | Gap |
 |---|---|
 | Section heading → body | **8px** (`.detail__section-heading + .detail__section-body`) |
-| Everything else (paragraphs, sections, body → image) | **32px** (`--detail-stack-gap`) |
+| Paragraph → paragraph (within `.detail__section-body`) | **16px** (`--detail-paragraph-gap`) |
+| Everything else (sections, standalone blocks, body → image) | **32px** (`--detail-stack-gap`) |
 | Numbered list item → numbered list item | **8px** (`--detail-list-item-gap`) |
 | Right column padding | 64px top/sides, 80px bottom (desktop) |
 

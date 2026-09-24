@@ -32,6 +32,7 @@ body.about-view.detail {
   --detail-left-content-max: 345px;
   --detail-section-gap: 0;
   --detail-stack-gap: 32px;
+  --detail-paragraph-gap: 16px;
   --detail-heading-body-gap: 8px;
   --detail-list-item-gap: 8px;
 }
@@ -604,7 +605,7 @@ p.detail__section-body + .detail__media {
 .detail__section-body {
   display: flex;
   flex-direction: column;
-  gap: var(--detail-stack-gap);
+  gap: var(--detail-paragraph-gap);
   align-items: flex-start;
   width: 100%;
   max-width: 32.8125rem; /* 525px — Figma frame 70:626 copy width */
