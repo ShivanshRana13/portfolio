@@ -32,6 +32,7 @@ body.about-view.detail {
   --detail-left-content-max: 345px;
   --detail-section-gap: 0;
   --detail-stack-gap: 32px;
+  --detail-heading-body-gap: 8px;
 }
 
 .detail-stage {
@@ -589,7 +590,7 @@ body.detail--artboard-scale .detail__grey-bleed {
 }
 
 .detail__section-heading + .detail__section-body {
-  margin-top: 8px;
+  margin-top: var(--detail-heading-body-gap);
 }
 
 .detail__section-body + .detail__figure,
@@ -640,6 +641,18 @@ p.detail__section-body + .detail__media {
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0.08);
 }
 
+/*
+ * Tile panels hold each case study’s right-rail copy. Flex + stack gap replaces
+ * `.detail__right` gap (children are tiles, not sections/lede/body).
+ */
+.detail__tile {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--detail-stack-gap);
+  width: 100%;
+}
+
 /* Default detail body is the Falcon case study; only `?tile=case` swaps in sequencer copy. */
 .detail__tile--case {
   display: none;
@@ -650,7 +663,7 @@ body.detail--case .detail__tile--case-tilt {
 }
 
 body.detail--case .detail__tile--case {
-  display: block;
+  display: flex;
 }
 
 .detail__section-heading {
@@ -746,10 +759,6 @@ body.detail--case .detail__tile--case {
   display: block;
   width: 100%;
   height: auto;
-}
-
-.detail__body {
-  margin-top: 0;
 }
 
 @media (max-width: 520px) {
