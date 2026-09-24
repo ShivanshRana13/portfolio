@@ -681,8 +681,17 @@ body.detail--case .detail__tile--case {
 }
 
 .detail__section-body ol {
+  display: flex;
+  flex-direction: column;
+  gap: var(--detail-stack-gap);
   margin: 0;
   padding-left: 1.35rem;
+  width: 100%;
+  max-width: 32.8125rem;
+}
+
+.detail__section-body ol li {
+  padding-left: 0;
 }
 
 .detail__split {
