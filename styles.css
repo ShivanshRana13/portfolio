@@ -761,6 +761,22 @@ body.theme-dark .scene.scene--patent-cube-active .patent-cube__viewport {
   opacity: 1;
 }
 
+@media (hover: hover) {
+  .sticky--star:hover .sticky-star__dog-stack,
+  .sticky--star:focus-visible .sticky-star__dog-stack {
+    opacity: 1;
+    transform: translate(0, 0);
+  }
+
+  .sticky--star:hover .sticky-star__dog--default {
+    opacity: 0;
+  }
+
+  .sticky--star:hover .sticky-star__dog--smile {
+    opacity: 1;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .sticky-star__dog-stack {
     transition-duration: 0.01ms;
